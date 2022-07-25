@@ -1,30 +1,26 @@
 <template>
-<!--  <li class="nav_item"-->
-<!--      v-bind:class="{nav_item_mouseover: isMouseover || navbarItem.isActive}"-->
-<!--      @mouseover="isMouseover = true"-->
-<!--      @mouseleave="isMouseover = false"-->
-<!--  >-->
-<!--    <router-link v-bind:to="navbarItem.link" class="nav_item_name"-->
-<!--         v-bind:class="{nav_item_name_mouseover: isMouseover || navbarItem.isActive}"-->
-<!--    >-->
-<!--      {{ navbarItem.title }}-->
-<!--    </router-link>-->
-<!--  </li>-->
 
   <router-link
+      class="nav_item_router"
       tag="li"
-      class="nav_item"
-      v-bind:to="navbarItem.link"
-      v-bind:class="{nav_item_mouseover: isMouseover || navbarItem.isActive}"
-      @mouseover="isMouseover = true"
-      @mouseleave="isMouseover = false"
+      :to="navbarItem.link"
   >
-    <p v-bind:class="{nav_item_name_mouseover: isMouseover || navbarItem.isActive}"
-       class="nav_item_name"
-    >
-      {{ navbarItem.title }}
-    </p>
+
+    <div class="nav_item"
+         :class="{nav_item_mouseover: isMouseover || navbarItem.isActive}"
+         @mouseover="isMouseover = true"
+         @mouseleave="isMouseover = false">
+
+      <p v-bind:class="{nav_item_name_mouseover: isMouseover || navbarItem.isActive}"
+         class="nav_item_name"
+      >
+        {{ navbarItem.title }}
+      </p>
+
+    </div>
+
   </router-link>
+
 </template>
 
 <script>
@@ -39,9 +35,14 @@
 </script>
 
 <style>
-  .nav_item {
-    list-style: none;
+
+  .nav_item_router {
     height: 25%;
+    list-style: none;
+  }
+
+  .nav_item {
+    height: 100%;
     border: dimgrey 1px solid;
   }
 
@@ -62,4 +63,5 @@
     color: white;
     font-weight: bolder;
   }
+
 </style>
