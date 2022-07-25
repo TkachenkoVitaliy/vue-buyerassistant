@@ -16,8 +16,8 @@
       class="nav_item"
       v-bind:to="navbarItem.link"
       v-bind:class="{nav_item_mouseover: isMouseover || navbarItem.isActive}"
-      @mouseover="isMouseover = true"
-      @mouseleave="isMouseover = false"
+      @mouseover.native="isMouseover = true"
+      @mouseleave.native="isMouseover = false"
   >
     <p v-bind:class="{nav_item_name_mouseover: isMouseover || navbarItem.isActive}"
        class="nav_item_name"
