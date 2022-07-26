@@ -1,16 +1,4 @@
 <template>
-<!--  <li class="nav_item"-->
-<!--      v-bind:class="{nav_item_mouseover: isMouseover || navbarItem.isActive}"-->
-<!--      @mouseover="isMouseover = true"-->
-<!--      @mouseleave="isMouseover = false"-->
-<!--  >-->
-<!--    <router-link v-bind:to="navbarItem.link" class="nav_item_name"-->
-<!--         v-bind:class="{nav_item_name_mouseover: isMouseover || navbarItem.isActive}"-->
-<!--    >-->
-<!--      {{ navbarItem.title }}-->
-<!--    </router-link>-->
-<!--  </li>-->
-
   <router-link
       tag="li"
       class="nav_item"

@@ -2,6 +2,7 @@
   <div class="application_container">
     <Navbar
         v-bind:navbarItems="navbarItems"
+        v-on:changeSelectedSection="changeSelected"
     />
     <main-container />
   </div>
@@ -26,6 +27,13 @@
     components: {
       Navbar,
       MainContainer
+    }, methods: {
+      changeSelected(selectedId) {
+        for (let item of this.navbarItems) {
+          item.isActive = false;
+          if(item.id === selectedId) item.isActive = true;
+        }
+      }
     }
   }
 </script>

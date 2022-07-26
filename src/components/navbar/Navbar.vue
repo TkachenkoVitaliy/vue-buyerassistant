@@ -3,6 +3,8 @@
     <navbarItem
         v-for="navbarItem in navbarItems"
         v-bind:navbarItem="navbarItem"
+        v-bind:key="navbarItem.id"
+        v-on:click.native="$emit('changeSelectedSection', navbarItem.id )"
     />
   </ul>
 </template>
