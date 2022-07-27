@@ -1,11 +1,17 @@
 <template>
   <div class="form_container">
-<!--    <input type="file" v-on:change="onFileSelected" accept=".xls" required>-->
-    <v-file-input v-on:change='onFileSelected' accept = '.xls' required placeholder="Акцепт ММК"/>
+    <v-file-input
+        ref="fileUpload"
+        v-on:change='onFileSelected'
+        v-model='selectedFile'
+        accept='.xls'
+        required
+        truncate-length="25"
+        placeholder='Акцепт ММК'
+    ></v-file-input>
     <v-btn v-on:click="onUpload " class="vue_button">
       Загрузить
     </v-btn>
-
   </div>
 </template>
 
@@ -20,17 +26,19 @@
       }
     },
     methods: {
-      onFileSelected(event) {
-        this.selectedFile = event.target.files[0]
+      onFileSelected(file) {
+        this.selectedFile = file
       },
       onUpload() {
-        const formData = new FormData()
-        formData.append('mmkAccept', this.selectedFile, 'mmkAccept.xls')
-        axios.post('http://localhost:8080/uploadAccept', formData)
-            .then(response => {
-              console.log(response)
-              console.log('complete')
-            })
+        if(this.selectedFile) {
+          const formData = new FormData()
+          formData.append('mmkAccept', this.selectedFile, 'mmkAccept.xls')
+          axios.post('http://localhost:8081/uploadAccept', formData)
+              .then(() => {
+                this.$refs.fileUpload.reset()
+                this.selectedFile = null
+              })
+        }
       }
     }
   }
