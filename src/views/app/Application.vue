@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import  Navbar from '@/components/navbar/Navbar'
+  import Navbar from '@/components/navbar/Navbar'
   import MainContainer from '@/components/main_container/MainContainer'
 
   export default {
@@ -17,7 +17,7 @@
     data() {
       return {
         navbarItems: [
-          {id: 1, title: 'ПРОФИЛЬ И НАСТРОЙКИ', isActive: true, link: '/profile'},
+          {id: 1, title: 'ПРОФИЛЬ И НАСТРОЙКИ', isActive: false, link: '/profile'},
           {id: 2, title: 'АКЦЕПТ И ОТГРУЗКА', isActive: false, link: '/accept_and_shipment'},
           {id: 3, title: 'ШАХМАТКА', isActive: false, link: '/capacity'},
           {id: 4, title: 'ДОВЕРЕННОСТИ', isActive: false, link: '/power_of_attorney'}
@@ -30,10 +30,18 @@
     }, methods: {
       changeSelected(selectedId) {
         for (let item of this.navbarItems) {
-          item.isActive = false;
-          if(item.id === selectedId) item.isActive = true;
+          item.isActive = false
+          if(item.id === selectedId) item.isActive = true
         }
+      },
+      setSelected() {
+        let meta = this.$route.meta
+        let tabId = meta.tabId
+        this.changeSelected(tabId)
       }
+    },
+    mounted() {
+      this.setSelected()
     }
   }
 </script>

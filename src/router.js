@@ -14,18 +14,22 @@ export default new Router({
             children: [
                 {
                     path: 'profile',
+                    meta: {tabId : 1},
                     component: () => import('@/views/app/Profile')
                 },
                 {
                     path: 'accept_and_shipment',
+                    meta: {tabId : 2},
                     component: () => import('@/views/app/AcceptAndShipment')
                 },
                 {
                     path: 'capacity',
+                    meta: {tabId : 3},
                     component: () => import('@/views/app/Capacity')
                 },
                 {
                     path: 'power_of_attorney',
+                    meta: {tabId : 4},
                     component: () => import('@/views/app/PowerOfAttorney')
                 }
             ]
