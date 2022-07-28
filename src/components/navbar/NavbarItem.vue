@@ -29,7 +29,7 @@
 <style>
   .nav_item {
     list-style: none;
-    height: 25%;
+    height: 20%;
     border: dimgrey 1px solid;
   }
 

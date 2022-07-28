@@ -1,6 +1,5 @@
 <template>
   <div>
-    Шахматка
-    <a href="http://localhost:8080">Main</a>
+    Шахматка - в разработке
   </div>
 </template>

@@ -1,6 +1,5 @@
 <template>
   <div>
-    Доверенности
-    <a href="http://localhost:8080">Main</a>
+    Доверенности - в разработке
   </div>
 </template>

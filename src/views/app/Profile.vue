@@ -1,6 +1,5 @@
 <template>
   <div>
-    Профиль и настройки
-    <a href="http://localhost:8080">Main</a>
+    Профиль и настройки - в разработке
   </div>
 </template>

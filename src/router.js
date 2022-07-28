@@ -23,13 +23,18 @@ export default new Router({
                     component: () => import('@/views/app/AcceptAndShipment')
                 },
                 {
-                    path: 'capacity',
+                    path: 'email_newsletter',
                     meta: {tabId : 3},
+                    component: () => import('@/views/app/EmailNewsletter')
+                },
+                {
+                    path: 'capacity',
+                    meta: {tabId : 4},
                     component: () => import('@/views/app/Capacity')
                 },
                 {
                     path: 'power_of_attorney',
-                    meta: {tabId : 4},
+                    meta: {tabId : 5},
                     component: () => import('@/views/app/PowerOfAttorney')
                 }
             ]
