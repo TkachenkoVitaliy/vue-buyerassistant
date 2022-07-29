@@ -5,35 +5,19 @@
     </p>
     <table class='rows_table'>
       <tr>
-        <td class='table_cell'>
-          <b>Поставщик</b>
-        </td>
-        <td class='table_cell'>
-          <b>Номер заказа</b>
-        </td>
-        <td class='table_cell'>
-          <b>Месяц</b>
-        </td>
-        <td class='table_cell'>
-          <b>Год</b>
-        </td>
+        <th>Поставщик</th>
+        <th>Номер заказа</th>
+        <th>Месяц</th>
+        <th>Год</th>
       </tr>
       <tr
           v-for='summaryRow in summaryRowsValue'
           v-bind:key='summaryRow.id'
       >
-        <td class='table_cell'>
-          {{summaryRow.supplier}}
-        </td>
-        <td class='table_cell'>
-          {{summaryRow.spec}}
-        </td>
-        <td class='table_cell'>
-          {{summaryRow.acceptMonth}}
-        </td>
-        <td class='table_cell'>
-          {{summaryRow.year}}
-        </td>
+        <td>{{ summaryRow.supplier }}</td>
+        <td>{{ summaryRow.spec }}</td>
+        <td>{{ summaryRow.acceptMonth }}</td>
+        <td>{{ summaryRow.year }}</td>
       </tr>
     </table>
   </div>
@@ -60,7 +44,6 @@
       updateSummaryRows() {
         axios.get('http://localhost:8081/undefinedRows').then((response) => {
           this.summaryRows = response.data
-          console.log(this.summaryRows.length > 0)
         }).catch(() => {
           alert('При загрузке строк произошла ошибка')
         })

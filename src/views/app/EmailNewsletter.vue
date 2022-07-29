@@ -1,6 +1,5 @@
 <template>
   <div>
-    Почтовая рассылка - в разработке
     <RecipientList />
   </div>
 </template>
@@ -14,3 +13,7 @@
     }
   }
 </script>
+
+<style>
+
+</style>

@@ -3,8 +3,11 @@
     <Navbar
         v-bind:navbarItems="navbarItems"
         v-on:changeSelectedSection="changeSelected"
+        class='navigation_bar'
     />
-    <main-container />
+    <v-app>
+      <main-container />
+    </v-app>
   </div>
 </template>
 
@@ -54,10 +57,15 @@
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
     display: flex;
-    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    min-height: 100%;
+  }
+  .navigation_bar {
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    bottom: 0;
   }
 </style>
