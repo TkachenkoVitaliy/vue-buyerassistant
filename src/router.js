@@ -18,9 +18,9 @@ export default new Router({
                     component: () => import('@/views/app/Profile')
                 },
                 {
-                    path: 'accept_and_shipment',
+                    path: 'upload_accept_and_shipment',
                     meta: {tabId : 2},
-                    component: () => import('@/views/app/AcceptAndShipment')
+                    component: () => import('@/views/app/UploadAcceptAndShipment')
                 },
                 {
                     path: 'email_newsletter',

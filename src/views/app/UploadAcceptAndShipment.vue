@@ -11,9 +11,9 @@
 </template>
 
 <script>
-  import UploadAcceptForm from '@/components/main_container/accept_and_shipment/UploadAcceptForm'
-  import UploadMultipleForm from '@/components/main_container/accept_and_shipment/UploadMultipleForm'
-  import UndefinedRowsList from "@/components/main_container/accept_and_shipment/UndefinedRowsList";
+  import UploadAcceptForm from '@/components/main_container/upload_accept_and_shipment/UploadAcceptForm'
+  import UploadMultipleForm from '@/components/main_container/upload_accept_and_shipment/UploadMultipleForm'
+  import UndefinedRowsList from "@/components/main_container/upload_accept_and_shipment/UndefinedRowsList";
   export default {
     components:
       {

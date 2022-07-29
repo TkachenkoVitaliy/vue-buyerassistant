@@ -18,7 +18,7 @@
       return {
         navbarItems: [
           {id: 1, title: 'ПРОФИЛЬ И НАСТРОЙКИ', isActive: false, link: '/profile'},
-          {id: 2, title: 'АКЦЕПТ И ОТГРУЗКА', isActive: false, link: '/accept_and_shipment'},
+          {id: 2, title: 'ЗАГРУЗИТЬ ФАЙЛЫ ЗАВОДОВ', isActive: false, link: '/upload_accept_and_shipment'},
           {id: 3, title: 'ПОЧТОВАЯ РАССЫЛКА', isActive: false, link: '/email_newsletter'},
           {id: 4, title: 'ШАХМАТКА', isActive: false, link: '/capacity'},
           {id: 5, title: 'ДОВЕРЕННОСТИ', isActive: false, link: '/power_of_attorney'}

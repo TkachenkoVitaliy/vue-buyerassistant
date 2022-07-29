@@ -41,6 +41,7 @@
     display: block;
     padding-top: 40px;
     padding-left: 20px;
+    padding-right: 20px;
     font-weight: bold;
     color: black;
     text-decoration: none;
