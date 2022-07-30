@@ -57,15 +57,17 @@
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
     display: flex;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     min-height: 100%;
   }
   .navigation_bar {
-    height: 100vh;
+    height: 100vh !important;
     position: sticky;
+    position: -webkit-sticky;
     top: 0;
-    bottom: 0;
+    border-right: #0c427a 4px solid;
   }
 </style>
