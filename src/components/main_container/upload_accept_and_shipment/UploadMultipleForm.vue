@@ -31,22 +31,30 @@
       Загрузить
     </v-btn>
     <img src='../../../assets/loading.gif' class='loading-image' v-if='isLoading'>
+    <StatusMessage
+        v-bind:message='message'
+        v-bind:has_error='hasError'
+    />
   </div>
 </template>
 
 
 <script>
   import axios from 'axios'
+  import StatusMessage from "@/components/StatusMessage";
 
   export default {
     data() {
       return {
-        selectedFileOtherFactory : null,
-        selectedFileOracleMmk : null,
-        selectedFileDependMmk : null,
-        isLoading : false,
+        selectedFileOtherFactory: null,
+        selectedFileOracleMmk: null,
+        selectedFileDependMmk: null,
+        isLoading: false,
+        message: '',
+        hasError: false
       }
     },
+    components: {StatusMessage},
     methods: {
       onFileSelectedOtherFactory(file) {
         this.selectedFileOtherFactory = file
@@ -71,14 +79,17 @@
                 this.selectedFileOracleMmk = null
                 this.selectedFileDependMmk = null
                 this.isLoading = false
+                this.message = 'Файлы были успешно загружены'
+                this.hasError = false
                 this.$emit('updateSummaryData')
               }).catch(() => {
-            alert('При отправке файлов произошла ошибка')
             this.$refs.fileUpload.reset()
             this.selectedFileOtherFactory = null
             this.selectedFileOracleMmk = null
             this.selectedFileDependMmk = null
             this.isLoading = false
+            this.message = 'При загрузке файлов произошла ошибка'
+            this.hasError = true
           })
         }
       }

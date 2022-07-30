@@ -1,21 +1,26 @@
 <template>
   <v-dialog
       v-model='isActive'
-      persistent
       max-width='400'
   >
     <v-card>
-      <v-card-title class='text-h5'>
-        Удаление {{text}} {{value}}
+      <v-card-title>
+        {{message}}
       </v-card-title>
+
+      <v-card-text>
+        {{info}}
+      </v-card-text>
+
+      <v-divider></v-divider>
 
       <v-card-actions>
 
         <v-btn
             @click='confirm'
-            class='red'
+            class='red--text'
         >
-
+          УДАЛИТЬ
         </v-btn>
 
         <v-spacer></v-spacer>
@@ -23,7 +28,7 @@
         <v-btn
             @click='cancel'
         >
-          Отмена
+          ОТМЕНА
         </v-btn>
 
       </v-card-actions>
@@ -38,11 +43,11 @@
         isActive: false
       }
     },
-    props: ['text', 'value','id'],
+    props: ['message', 'info','id'],
     methods: {
       confirm() {
         this.toggle()
-        this.$emit('confirmAction', 'id')
+        this.$emit('confirmAction', this.id)
       },
       cancel() {
         this.toggle()

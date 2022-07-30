@@ -50,8 +50,13 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-    <DeleteDialog />
+    <DeleteDialog
+        message='Подтвердите удаление получателя'
+        v-bind:info='infoForDelete'
+        v-bind:id='recipientForDeleteId'
+        v-on:confirmAction='removeRecipient'
+        ref='deleteDialog'
+    />
 
     <table class='recipients_table'>
       <tr>
@@ -66,7 +71,9 @@
         <td class='td_1'>{{recipient.branchName}}</td>
         <td class='td_2'>{{recipient.emailAddress}}</td>
         <td class='td_3'>
-          <v-btn class='remove_btn' v-on:click='removeRecipient(recipient.id)'><b>X</b></v-btn>
+          <v-btn class='remove_btn' v-on:click='activateDeleteDialog(recipient)'>
+            <b>X</b>
+          </v-btn>
         </td>
       </tr>
     </table>
@@ -94,8 +101,9 @@
           v => !!v || 'Заполните email',
           v => /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(v) || 'Введите корректную почту'
         ],
-        recipientForDeleteId: 0,
-        isDeleteDialog: false
+        recipientForDeleteId: null,
+        recipientForDelete: null,
+        infoForDelete: null
       }
     },
     methods: {
@@ -150,9 +158,15 @@
         }).catch(() => {
           alert('Не удалось удалить получателя')
         })
+      },
+      activateDeleteDialog(recipient) {
+        this.infoForDelete = recipient.branchName + ' ' + recipient.emailAddress
+        this.recipientForDeleteId = recipient.id
+        console.log(recipient)
+        this.$refs.deleteDialog.toggle()
       }
     },
-    components: [DeleteDialog],
+    components: {DeleteDialog},
     mounted() {
       this.getRecipients()
       this.getBranches()
