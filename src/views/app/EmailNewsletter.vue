@@ -1,7 +1,13 @@
 <template>
   <div class='email_newsletter_container'>
-    <SendEmail />
-    <RecipientList v-bind:branches='branches'/>
+    <SendEmail
+        v-bind:recipients='recipients'
+    />
+    <RecipientList
+        v-bind:branches='branches'
+        v-bind:recipients='recipients'
+        v-on:requestRecipients='getRecipients'
+    />
   </div>
 </template>
 
@@ -39,6 +45,7 @@
     },
     mounted() {
       this.getBranches()
+      this.getRecipients()
     }
   }
 </script>

@@ -85,10 +85,12 @@
   import DeleteDialog from "@/components/DeleteDialog";
 
   export default {
-    props: {branches : Array},
+    props: {
+      branches : Array,
+      recipients: Array
+    },
     data() {
       return {
-        recipients: [],
         isModalActive: false,
         recipient: {
           branchName: null,
@@ -107,13 +109,6 @@
       }
     },
     methods: {
-      getRecipients() {
-        axios.get('http://localhost:8081/recipients').then((response) => {
-          this.recipients = response.data
-        }).catch(() => {
-          alert('При загрузке адресатов рассылки произошла ошибка')
-        })
-      },
       toggleModalWindow() {
         this.isModalActive = !this.isModalActive
         this.resetRecipientForm()
@@ -125,7 +120,7 @@
           && /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.recipient.emailAddress)
         ) {
           axios.put('http://localhost:8081/recipients', this.recipient).then((response) => {
-              this.getRecipients()
+              this.$emit('requestRecipients')
               this.toggleModalWindow()
           }).catch(() => {
             alert('Не удалось добавить получателя')
@@ -143,7 +138,7 @@
       },
       removeRecipient(id) {
         axios.delete('http://localhost:8081/recipients/' + id).then(() => {
-          this.getRecipients()
+          this.$emit('requestRecipients')
         }).catch(() => {
           alert('Не удалось удалить получателя')
         })
@@ -151,13 +146,12 @@
       activateDeleteDialog(recipient) {
         this.infoForDelete = recipient.branchName + ' ' + recipient.emailAddress
         this.recipientForDeleteId = recipient.id
-        console.log(recipient)
         this.$refs.deleteDialog.toggle()
       }
     },
     components: {DeleteDialog},
     mounted() {
-      this.getRecipients()
+      this.$emit('requestRecipients')
     }
   }
 </script>

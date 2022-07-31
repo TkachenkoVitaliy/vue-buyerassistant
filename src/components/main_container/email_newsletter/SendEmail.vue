@@ -3,14 +3,29 @@
     <div>
       <p>ОТПРАВКА ПОЧТЫ</p>
       <v-btn v-on:click='sendToAll' class='send_to_all_btn primary'>ОТПРАВИТЬ РАССЫЛКУ</v-btn>
-      <v-btn v-on:click='activateChoosing' class='choose_branches_btn'>ВЫБРАТЬ ФИЛИАЛЫ</v-btn>
-      <div v-if='isChoosingBranches'>
-        <v-container>
-          <v-checkbox
-              v-for='branch in branches'
-          ></v-checkbox>
-        </v-container>
+      <v-btn v-on:click='activateChoosing' class='choose_branches_btn'>{{ isChoosingBranches ? '&#9650; ОТМЕНА &#9650;' : '&#9660; ВЫБРАТЬ ФИЛИАЛЫ &#9660;'}}</v-btn>
+      <div v-if='isChoosingBranches' class='checkbox_branch_container'>
+        <v-checkbox
+            dense
+            v-for='branch in branches'
+            v-bind:key='branch'
+            v-model='selectedBranches'
+            :label='branch'
+            :value='branch'
+            class='checkbox_branch'
+        ></v-checkbox>
+        <div class='checkbox_btns_container'>
+          <v-btn v-on:click='setAllChecked'>
+            <img src='../../../assets/checkbox-markedz.png'>
+            ВСЕ
+          </v-btn>
+          <v-btn v-on:click='setAllUnchecked'>
+            <img src='../../../assets/checkbox-blankz.png'>
+            НЕТ
+          </v-btn>
+        </div>
       </div>
+
       <div class='send_response_container'>
         <img src='../../../assets/send-emails.gif' v-if='isSending'>
         <p
@@ -28,9 +43,14 @@
   import axios from "axios"
 
   export default {
+    props: {
+      recipients: Array
+    },
     data() {
       return {
         completedRecipients: [],
+        branches: [],
+        selectedBranches: [],
         isSending: false,
         isChoosingBranches: false
       }
@@ -46,8 +66,30 @@
         })
       },
       activateChoosing() {
-        this.isChoosingBranches = true
+        this.selectedBranches = []
+        this.isChoosingBranches = !this.isChoosingBranches
+        console.log(this.selectedBranches)
+      },
+      mountBranches() {
+        let array = this.recipients.map(recipient => recipient.branchName)
+        let uniqueArray = [...new Set(array)]
+        this.branches = uniqueArray
+      },
+      setAllChecked() {
+        this.selectedBranches = this.branches
+      },
+      setAllUnchecked() {
+        this.selectedBranches = []
       }
+    },
+    beforeMount() {
+      this.mountBranches()
+    },
+    mounted() {
+      this.mountBranches()
+    },
+    beforeUpdate() {
+      this.mountBranches()
     }
   }
 
@@ -71,11 +113,35 @@
     margin: 10px auto;
   }
 
-  .send_response_container{
+  .checkbox_branch_container {
+    padding-left: 60px;
+    padding-right: 60px;
+    display: block;
+    justify-content: center;
+  }
+
+  .checkbox_branch {
+    margin: 0px 0px !important;
+    padding: 0px 0px !important;
+    border: 1px solid gray;
+    max-width: 230px;
+  }
+
+  .checkbox_btns_container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .send_response_container {
     padding-top: 20px;
     padding-bottom: 20px;
     text-align: center;
     justify-content: center;
+  }
+
+  .v-messages {
+    visibility: hidden !important;
+    min-height: 0px !important;
   }
 
   p {
