@@ -94,7 +94,6 @@
           branchName: null,
           emailAddress: null
         },
-        branches: [],
         branchRules: [
           v => !!v || 'Выберите филиал.'
         ],
@@ -161,7 +160,6 @@
     components: {DeleteDialog},
     mounted() {
       this.getRecipients()
-      this.getBranches()
     }
   }
 </script>
