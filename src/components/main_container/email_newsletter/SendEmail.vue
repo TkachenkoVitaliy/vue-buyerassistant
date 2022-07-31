@@ -118,20 +118,20 @@
   }
 
   .send_to_all_btn{
-    min-width: 230px !important;
+    min-width: 240px !important;
     display: block;
     margin: 10px auto;
   }
 
   .choose_branches_btn{
-    min-width: 230px !important;
+    min-width: 240px !important;
     display: block;
     margin: 10px auto;
   }
 
   .checkbox_branch_container {
-    padding-left: 60px;
-    padding-right: 60px;
+    padding-left: 55px;
+    padding-right: 55px;
     display: block;
     justify-content: center;
   }
@@ -140,7 +140,7 @@
     margin: 0px 0px !important;
     padding: 0px 0px !important;
     border: 1px solid gray;
-    max-width: 230px;
+    max-width: 240px;
   }
 
   .checkbox_btns_container {
