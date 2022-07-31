@@ -2,7 +2,7 @@
   <div class='send_mail_container'>
     <div>
       <p>ОТПРАВКА ПОЧТЫ</p>
-      <v-btn v-on:click='sendToAll' class='send_to_all_btn primary'>ОТПРАВИТЬ РАССЫЛКУ</v-btn>
+      <v-btn v-on:click='sendFiles' class='send_to_all_btn primary'>ОТПРАВИТЬ РАССЫЛКУ</v-btn>
       <v-btn v-on:click='activateChoosing' class='choose_branches_btn'>{{ isChoosingBranches ? '&#9650; ОТМЕНА &#9650;' : '&#9660; ВЫБРАТЬ ФИЛИАЛЫ &#9660;'}}</v-btn>
       <div v-if='isChoosingBranches' class='checkbox_branch_container'>
         <v-checkbox
@@ -56,14 +56,30 @@
       }
     },
     methods: {
-      sendToAll() {
-        this.isSending = true
-        axios.get('http://localhost:8081/sendAllFiles').then((response) => {
-          this.isSending = false
-          this.completedRecipients = response.data
-        }).catch(() => {
-          alert('При отправке произошла ошибка')
-        })
+      sendFiles() {
+        if(!this.isChoosingBranches) {
+          this.isSending = true
+          axios.get('http://localhost:8081/sendFiles').then((response) => {
+            this.isSending = false
+            this.completedRecipients = response.data
+          }).catch(() => {
+            alert('При отправке произошла ошибка')
+          })
+        } else {
+          this.isSending = true
+          this.isChoosingBranches = false
+          axios({
+            url: 'http://localhost:8081/sendFiles',
+            method: 'post',
+            data: this.selectedBranches
+          }).then((response) => {
+            this.selectedBranches = []
+            this.isSending = false
+            this.completedRecipients = response.data
+          }).catch(() => {
+            alert('При отправке произошла ошибка')
+          })
+        }
       },
       activateChoosing() {
         this.selectedBranches = []
