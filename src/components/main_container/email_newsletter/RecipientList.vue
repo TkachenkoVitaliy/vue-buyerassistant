@@ -21,7 +21,6 @@
               :rules='branchRules' required
               v-model='recipient.branchName'
               allow-overflow
-              autofocus
               autocomplete='off'
           ></v-autocomplete>
           <v-text-field
@@ -59,6 +58,7 @@
     />
 
     <table class='recipients_table'>
+      <caption>СПИСОК АДРЕСАТОВ</caption>
       <tr>
         <th class='th_1'>Филиал</th>
         <th class='th_2'>Почта</th>
@@ -116,7 +116,6 @@
       },
       toggleModalWindow() {
         this.isModalActive = !this.isModalActive
-        this.getBranches()
         this.resetRecipientForm()
       },
       addRecipient() {
@@ -125,7 +124,6 @@
           && this.recipient.emailAddress
           && /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.recipient.emailAddress)
         ) {
-          console.log('OK')
           axios.put('http://localhost:8081/recipients', this.recipient).then((response) => {
               this.getRecipients()
               this.toggleModalWindow()

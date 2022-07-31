@@ -17,7 +17,8 @@
     },
     data() {
       return {
-        branches: []
+        branches: [],
+        recipients: []
       }
     },
     methods: {
@@ -26,6 +27,13 @@
           this.branches = response.data
         }).catch(() => {
           alert('При загрузке списка филиалов произошла ошибка')
+        })
+      },
+      getRecipients() {
+        axios.get('http://localhost:8081/recipients').then((response) => {
+          this.recipients = response.data
+        }).catch(() => {
+          alert('При загрузке адресатов рассылки произошла ошибка')
         })
       }
     },

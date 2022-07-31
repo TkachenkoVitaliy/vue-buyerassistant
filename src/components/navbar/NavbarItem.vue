@@ -28,6 +28,10 @@
 
 <style>
   .nav_item {
+    display: flex;
+    padding: 8px;
+    justify-content: center;
+    text-align: center;
     list-style: none;
     height: 20%;
     border: dimgrey 1px solid;
@@ -39,9 +43,8 @@
 
   .nav_item_name {
     display: block;
-    padding-top: 40px;
-    padding-left: 20px;
-    padding-right: 20px;
+    margin-top: auto;
+    margin-bottom: auto;
     font-weight: bold;
     color: black;
     text-decoration: none;

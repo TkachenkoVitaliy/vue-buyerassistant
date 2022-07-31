@@ -2,7 +2,15 @@
   <div class='send_mail_container'>
     <div>
       <p>ОТПРАВКА ПОЧТЫ</p>
-      <v-btn v-on:click='sendToAll' class='send_to_all_btn'>ОТПРАВИТЬ ВСЕМ</v-btn>
+      <v-btn v-on:click='sendToAll' class='send_to_all_btn primary'>ОТПРАВИТЬ РАССЫЛКУ</v-btn>
+      <v-btn v-on:click='activateChoosing' class='choose_branches_btn'>ВЫБРАТЬ ФИЛИАЛЫ</v-btn>
+      <div v-if='isChoosingBranches'>
+        <v-container>
+          <v-checkbox
+              v-for='branch in branches'
+          ></v-checkbox>
+        </v-container>
+      </div>
       <div class='send_response_container'>
         <img src='../../../assets/send-emails.gif' v-if='isSending'>
         <p
@@ -23,7 +31,8 @@
     data() {
       return {
         completedRecipients: [],
-        isSending: false
+        isSending: false,
+        isChoosingBranches: false
       }
     },
     methods: {
@@ -35,6 +44,9 @@
         }).catch(() => {
           alert('При отправке произошла ошибка')
         })
+      },
+      activateChoosing() {
+        this.isChoosingBranches = true
       }
     }
   }
@@ -48,8 +60,15 @@
   }
 
   .send_to_all_btn{
+    min-width: 230px !important;
     display: block;
-    margin: 0px auto;
+    margin: 10px auto;
+  }
+
+  .choose_branches_btn{
+    min-width: 230px !important;
+    display: block;
+    margin: 10px auto;
   }
 
   .send_response_container{
