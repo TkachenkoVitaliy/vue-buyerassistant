@@ -1,8 +1,9 @@
 <template>
-  <div v-if='summaryRows.length > 0'>
+  <div v-if='summaryRows.length > 0' class='undefined_rows_container'>
     <p class="undefined_title">
-      <b>Заказы с неопределенным филиалом</b>
+      <b>ЗАКАЗЫ С НЕОПРЕДЕЛЕННЫМ ФИЛИАЛОМ</b>
     </p>
+    <hr>
     <table class='rows_table'>
       <tr>
         <th>Поставщик</th>
@@ -53,13 +54,20 @@
 </script>
 
 <style>
+
+  .undefined_rows_container{
+    justify-content: center;
+  }
+
   .rows_table{
+    margin-left: auto;
+    margin-right: auto;
     border-collapse: separate;
     border-spacing: 20px 5px;
   }
 
   .undefined_title{
-    margin-left: 40px;
+    text-align: center;
   }
 
 </style>

@@ -85,6 +85,7 @@
   import DeleteDialog from "@/components/DeleteDialog";
 
   export default {
+    props: {branches : Array},
     data() {
       return {
         recipients: [],
@@ -107,15 +108,6 @@
       }
     },
     methods: {
-      getBranches() {
-        axios.get('http://localhost:8081/branches').then((response) => {
-          console.log(response.data)
-          this.branches = Array.from(response.data, item => item.name)
-          console.log(this.branches)
-        }).catch(() => {
-          alert('При загрузке списка филиалов произошла ошибка')
-        })
-      },
       getRecipients() {
         axios.get('http://localhost:8081/recipients').then((response) => {
           this.recipients = response.data

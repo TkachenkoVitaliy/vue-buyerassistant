@@ -33,6 +33,7 @@
 <style>
   .accept_and_shipment_container{
     display: flex;
+    justify-content: space-around;
   }
   .forms_container{
     width: 50%;
