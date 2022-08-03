@@ -28,9 +28,9 @@ export default new Router({
                     component: () => import('@/views/app/EmailNewsletter')
                 },
                 {
-                    path: 'capacity',
+                    path: 'load_tables',
                     meta: {tabId : 4},
-                    component: () => import('@/views/app/Capacity')
+                    component: () => import('@/views/app/LoadTables')
                 },
                 {
                     path: 'power_of_attorney',

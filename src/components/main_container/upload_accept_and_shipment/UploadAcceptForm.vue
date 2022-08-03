@@ -26,7 +26,7 @@
 
 <script>
   import axios from 'axios'
-  import StatusMessage from "@/components/StatusMessage";
+  import StatusMessage from "@/components/other/StatusMessage";
 
   export default {
     data() {

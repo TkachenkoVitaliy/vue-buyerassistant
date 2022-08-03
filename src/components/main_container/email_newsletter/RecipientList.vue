@@ -82,7 +82,7 @@
 
 <script>
   import axios from "axios"
-  import DeleteDialog from "@/components/DeleteDialog";
+  import DeleteDialog from "@/components/other/DeleteDialog";
 
   export default {
     props: {

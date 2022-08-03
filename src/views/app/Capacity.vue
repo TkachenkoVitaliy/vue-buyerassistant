@@ -1,5 +1,0 @@
-<template>
-  <div>
-    <div>Шахматка - в разработке</div>
-  </div>
-</template>

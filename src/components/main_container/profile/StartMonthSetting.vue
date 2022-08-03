@@ -7,12 +7,17 @@
         <th class='th_2'>Месяц</th>
         <th class="th_3">Год</th>
       </tr>
-      <tr v-for='branchSettings in branchesSettings'
+      <tr v-for='(branchSettings, index) in branchesSettings'
           v-bind:key='branchSettings.id'
           class='branch_settings_row'
       >
-        <td class='td_1'>{{ branchSettings.name }}</td>
-        <td class='td_2'>
+        <td class='td_1'
+            v-bind:class="{changed : (branchSettings.startMonth != onMountBranchesSettings[index].startMonth ||
+            branchSettings.startYear != onMountBranchesSettings[index].startYear)}"
+        >{{ branchSettings.name }}</td>
+        <td class='td_2'
+            v-bind:class="{changed : (branchSettings.startMonth != onMountBranchesSettings[index].startMonth)}"
+        >
           <v-autocomplete
               v-on:change='compareArrays'
               v-model='branchSettings.startMonth'
@@ -25,7 +30,9 @@
           >
           </v-autocomplete>
         </td>
-        <td class='td_3'>
+        <td class='td_3'
+            v-bind:class="{changed : (branchSettings.startYear != onMountBranchesSettings[index].startYear)}"
+        >
           <v-autocomplete
               v-on:change='compareArrays'
               v-model='branchSettings.startYear'
@@ -58,7 +65,6 @@
       return {
         branchesSettings: [],
         onMountBranchesSettings: [],
-        // months: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь']
         months: [{text: 'Январь', value: 1}, {text: 'Февраль', value: 2}, {text: 'Март', value: 3},
           {text: 'Апрель', value: 4}, {text: 'Май', value: 5}, {text: 'Июнь', value: 6},
           {text: 'Июль', value: 7}, {text: 'Август', value: 8}, {text: 'Сентябрь', value: 9},
@@ -127,6 +133,10 @@
 <style>
   .start_month_setting_container {
     max-width: 372px;
+  }
+
+  .changed{
+    background-color: #90caf9 !important;
   }
 
   .btn_container{
