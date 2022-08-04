@@ -20,7 +20,7 @@
     data() {
       return {
         loadTables: [],
-        userSettings: null
+        userSettings: {}
       }
     },
     methods: {
@@ -44,12 +44,7 @@
         axios({
           url: 'http://localhost:8081/loadTables/settings',
           method: 'post',
-          data: {
-            id: 1,
-            username: 'admin',
-            month: 3,
-            year: 2022
-          }
+          data: this.userSettings
         }).then((response) => {
           this.userSettings = response.data
         }).catch(() => {
