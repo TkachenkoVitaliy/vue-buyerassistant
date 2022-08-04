@@ -15,10 +15,11 @@
         <td class='product_type table-cell product_type_item'>{{ undefinedType.name }}</td>
         <td class='table_cell'>
           <v-autocomplete
+              v-on:change='checkChanges'
               v-model='undefinedType.productGroup'
               :items='productGroups'
               item-text = 'name'
-              item-value = 'productGroup'
+              return-object
               dense
               outlined
               append-icon=''
@@ -27,6 +28,15 @@
         </td>
       </tr>
     </table>
+    <div
+        class='btn_container'
+        v-if='haveChanges'
+    >
+      <v-btn class='save_btn'>СОХРАНИТЬ</v-btn>
+      <v-btn v-on:click='cancelSettings' class='cancel_btn'>ОТМЕНА</v-btn>
+<!--      <v-btn v-on:click='saveSettings' class='save_btn'>СОХРАНИТЬ</v-btn>-->
+<!--      <v-btn v-on:click='cancelSettings' class='cancel_btn'>ОТМЕНА</v-btn>-->
+    </div>
   </div>
 </template>
 
@@ -37,7 +47,9 @@
     data() {
       return {
         undefinedTypes: [],
-        productGroups: []
+        productGroups: [],
+        initialUndefinedTypes: null,
+        haveChanges: false
       }
     },
     methods: {
@@ -58,13 +70,31 @@
       consoleLog() {
         console.log(this.undefinedTypes)
         console.log(this.productGroups)
+        console.log(this.haveChanges)
+      },
+      cancelSettings() {
+        this.getUndefinedTypes()
+        this.haveChanges = false
+      },
+      checkChanges() {
+        let count = 0;
+        for (let i = 0; i < this.undefinedTypes.length; i++) {
+          if (this.undefinedTypes[i].productGroup.name !== 'Не определена') {
+            count = count + 1
+          }
+        }
+        console.log(count)
+        if (count > 0 ) {
+          this.haveChanges = true
+        } else {
+          this.haveChanges = false
+        }
       }
     },
     created() {
       this.getUndefinedTypes()
       this.getProductGroup()
-    },
-    mounted() {
+      this.initialUndefinedTypes = JSON.stringify(this.undefinedTypes)
     }
   }
 
@@ -106,6 +136,20 @@
     border: 2px solid gray;
   }
 
+  .btn_container{
+    margin-left: auto;
+    margin-right: auto;
+    width: 340px;
+    padding-top: 10px;
+    padding-right: 5px;
+    padding-left: 5px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .save_btn, .cancel_btn {
+    display: block;
+  }
 
   .v-text-field.v-text-field--enclosed .v-text-field__details {
     padding-top: 0px;

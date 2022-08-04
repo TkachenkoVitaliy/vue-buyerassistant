@@ -119,7 +119,6 @@
         this.getBranchesSettings()
       },
       compareArrays() {
-        console.log('comparing')
         this.haveChanges = !(JSON.stringify(this.onMountBranchesSettings) == JSON.stringify(this.branchesSettings))
       }
     },
