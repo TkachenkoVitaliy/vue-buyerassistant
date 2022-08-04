@@ -39,7 +39,6 @@
         this.years = [currentYear - 1, currentYear, currentYear + 1]
       },
       updateSettings() {
-        console.log(this.settings)
         this.$emit('updateSettings')
       }
     },

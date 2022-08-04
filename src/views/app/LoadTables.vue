@@ -39,14 +39,13 @@
         })
       },
       postUserSettings() {
-        console.log('post')
-        console.log(this.userSettings)
         axios({
           url: 'http://localhost:8081/loadTables/settings',
           method: 'post',
           data: this.userSettings
         }).then((response) => {
           this.userSettings = response.data
+          this.getLoadTables()
         }).catch(() => {
           alert('При сохранении произошла ошибка')
         })

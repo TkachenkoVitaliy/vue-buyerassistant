@@ -79,7 +79,6 @@ export default {
       return this.tablesCollapse.at(ltIndex)
     },
     toggleImage(ltIndex) {
-      let name;
       if(this.tablesCollapse[ltIndex]) {
         return require('@/assets/arrow-expand-vertical.png')
       } else {
@@ -90,7 +89,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 table {
   width: 100%;
   margin-bottom: 20px;
