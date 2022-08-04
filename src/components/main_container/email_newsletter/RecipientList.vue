@@ -60,8 +60,8 @@
     <table class='recipients_table'>
       <caption>СПИСОК АДРЕСАТОВ</caption>
       <tr>
-        <th class='th_1'>Филиал</th>
-        <th class='th_2'>Почта</th>
+        <th class='th_1 th_blue'>Филиал</th>
+        <th class='th_2 th_blue'>Почта</th>
         <th class="th_3">
           <v-btn class='add_btn' v-on:click='toggleModalWindow'>+</v-btn>
         </th>
@@ -158,6 +158,10 @@
 
 <style scoped>
   @import url('https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&display=swap');
+
+  .th_blue {
+    background-color: #bbdefb;
+  }
 
   .recipients_container{
     position: relative;

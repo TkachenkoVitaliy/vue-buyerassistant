@@ -3,13 +3,12 @@
     <p class="undefined_title">
       <b>ЗАКАЗЫ С НЕОПРЕДЕЛЕННЫМ ФИЛИАЛОМ</b>
     </p>
-    <hr>
     <table class='rows_table'>
       <tr>
-        <th>Поставщик</th>
-        <th>Номер заказа</th>
-        <th>Месяц</th>
-        <th>Год</th>
+        <th class='undefined_header'>Поставщик</th>
+        <th class='undefined_header'>Номер заказа</th>
+        <th class='undefined_header'>Месяц</th>
+        <th class='undefined_header'>Год</th>
       </tr>
       <tr
           v-for='summaryRow in summaryRowsValue'
@@ -54,9 +53,12 @@
 </script>
 
 <style>
-
   .undefined_rows_container{
     justify-content: center;
+  }
+
+  .undefined_header{
+    background: none;
   }
 
   .rows_table{

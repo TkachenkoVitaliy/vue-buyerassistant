@@ -3,9 +3,9 @@
     <table class='recipients_table'>
       <caption>НАЧАЛЬНЫЙ ПЕРИОД ФАЙЛА</caption>
       <tr>
-        <th class='th_1'>Филиал</th>
-        <th class='th_2'>Месяц</th>
-        <th class="th_3">Год</th>
+        <th class='th_start_month'>Филиал</th>
+        <th class='th_start_month'>Месяц</th>
+        <th class="th_start_month">Год</th>
       </tr>
       <tr v-for='(branchSettings, index) in branchesSettings'
           v-bind:key='branchSettings.id'
@@ -156,7 +156,7 @@
     background-color: #e3f2fd;
   }
 
-  th {
+  .th_start_month {
     background-color: #bbdefb;
   }
 
@@ -185,7 +185,7 @@
 
   .v-text-field--filled.v-input--dense.v-text-field--single-line > .v-input__control > .v-input__slot, .v-text-field--filled.v-input--dense.v-text-field--outlined > .v-input__control > .v-input__slot, .v-text-field--filled.v-input--dense.v-text-field--outlined.v-text-field--filled > .v-input__control > .v-input__slot, .v-text-field--full-width.v-input--dense.v-text-field--single-line > .v-input__control > .v-input__slot, .v-text-field--full-width.v-input--dense.v-text-field--outlined > .v-input__control > .v-input__slot, .v-text-field--full-width.v-input--dense.v-text-field--outlined.v-text-field--filled > .v-input__control > .v-input__slot, .v-text-field--outlined.v-input--dense.v-text-field--single-line > .v-input__control > .v-input__slot, .v-text-field--outlined.v-input--dense.v-text-field--outlined > .v-input__control > .v-input__slot, .v-text-field--outlined.v-input--dense.v-text-field--outlined.v-text-field--filled > .v-input__control > .v-input__slot {
      min-height: 20px !important;
-    max-width:  100px;
+    max-width:  140px;
   }
 
   .v-text-field.v-text-field--enclosed:not(.v-text-field--rounded) > .v-input__control > .v-input__slot, .v-text-field.v-text-field--enclosed .v-text-field__details {

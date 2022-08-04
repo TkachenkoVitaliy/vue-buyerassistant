@@ -6,6 +6,7 @@
     </div>
     <div class='rows_container'>
       <undefined-rows-list ref="undefinedRows"/>
+      <undefined-product-group />
     </div>
   </div>
 </template>
@@ -13,13 +14,16 @@
 <script>
   import UploadAcceptForm from '@/components/main_container/upload_accept_and_shipment/UploadAcceptForm'
   import UploadMultipleForm from '@/components/main_container/upload_accept_and_shipment/UploadMultipleForm'
-  import UndefinedRowsList from "@/components/main_container/upload_accept_and_shipment/UndefinedRowsList";
+  import UndefinedRowsList from '@/components/main_container/upload_accept_and_shipment/UndefinedRowsList'
+  import UndefinedProductGroup from '@/components/main_container/upload_accept_and_shipment/UndefinedProductGroup'
+
   export default {
     components:
       {
         UndefinedRowsList,
         UploadMultipleForm,
-        UploadAcceptForm
+        UploadAcceptForm,
+        UndefinedProductGroup
       },
     methods:
       {
