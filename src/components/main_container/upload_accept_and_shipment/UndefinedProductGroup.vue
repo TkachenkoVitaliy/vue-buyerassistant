@@ -3,7 +3,6 @@
     <p>
       <b>НЕРАСПРЕДЕЛЕННЫЕ ВИДЫ ПРОДУКЦИИ</b>
     </p>
-    <button v-on:click='consoleLog'>CLICK</button>
     <table class='undefined_product_group_table'>
       <tr>
         <th class='product_type table_cell product_type_header'>Вид продукции</th>
@@ -29,13 +28,11 @@
       </tr>
     </table>
     <div
-        class='btn_container'
+        class='button_container'
         v-if='haveChanges'
     >
-      <v-btn class='save_btn'>СОХРАНИТЬ</v-btn>
-      <v-btn v-on:click='cancelSettings' class='cancel_btn'>ОТМЕНА</v-btn>
-<!--      <v-btn v-on:click='saveSettings' class='save_btn'>СОХРАНИТЬ</v-btn>-->
-<!--      <v-btn v-on:click='cancelSettings' class='cancel_btn'>ОТМЕНА</v-btn>-->
+      <v-btn v-on:click= 'saveSettings' class='save_button'>СОХРАНИТЬ</v-btn>
+      <v-btn v-on:click='cancelSettings' class='cancel_button'>ОТМЕНА</v-btn>
     </div>
   </div>
 </template>
@@ -65,6 +62,18 @@
           this.productGroups = response.data
         }).catch(() => {
           alert('При загрузке групп продукции произошла ошибка')
+        })
+      },
+      saveSettings() {
+        axios({
+          url: 'http://localhost:8081/productTypes/undefined',
+          method: 'post',
+          data: this.undefinedTypes
+        }).then(() => {
+          this.getUndefinedTypes()
+          this.haveChanges = false
+        }).catch(() => {
+          alert('При отправке видов продукции произошла ошибка')
         })
       },
       consoleLog() {
@@ -136,7 +145,7 @@
     border: 2px solid gray;
   }
 
-  .btn_container{
+  .button_container{
     margin-left: auto;
     margin-right: auto;
     width: 340px;
@@ -147,7 +156,7 @@
     justify-content: space-between;
   }
 
-  .save_btn, .cancel_btn {
+  .save_button, .cancel_button {
     display: block;
   }
 
