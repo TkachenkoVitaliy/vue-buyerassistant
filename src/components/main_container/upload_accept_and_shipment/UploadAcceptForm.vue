@@ -52,7 +52,7 @@
           this.isLoading = true
           const formData = new FormData()
           formData.append('mmkAccept', this.selectedFile, this.selectedFile.name)
-          axios.post('http://localhost:8081/uploadAccept', formData)
+          axios.post('http://localhost:8081/api/uploadAccept', formData)
               .then(() => {
                 this.$refs.fileUpload.reset()
                 this.selectedFile = null

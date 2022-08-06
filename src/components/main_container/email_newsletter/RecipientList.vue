@@ -81,8 +81,8 @@
 </template>
 
 <script>
-  import axios from "axios"
-  import DeleteDialog from "@/components/other/DeleteDialog";
+  import DeleteDialog from '@/components/other/DeleteDialog'
+  import RestService from '@/services/rest.service'
 
   export default {
     props: {
@@ -119,7 +119,7 @@
           && this.recipient.emailAddress
           && /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.recipient.emailAddress)
         ) {
-          axios.put('http://localhost:8081/recipients', this.recipient).then((response) => {
+          RestService.putRecipient(this.recipient).then(() => {
               this.$emit('requestRecipients')
               this.toggleModalWindow()
           }).catch(() => {
@@ -137,7 +137,7 @@
         }
       },
       removeRecipient(id) {
-        axios.delete('http://localhost:8081/recipients/' + id).then(() => {
+        RestService.deleteRecipient(id).then(() => {
           this.$emit('requestRecipients')
         }).catch(() => {
           alert('Не удалось удалить получателя')

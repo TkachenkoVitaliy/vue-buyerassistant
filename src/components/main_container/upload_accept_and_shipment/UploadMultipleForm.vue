@@ -72,7 +72,7 @@
           formData.append('otherFactories', this.selectedFileOtherFactory, this.selectedFileOtherFactory.name)
           formData.append('oracleMmk', this.selectedFileOracleMmk, this.selectedFileOracleMmk.name)
           formData.append('dependenciesMmk', this.selectedFileDependMmk, this.selectedFileDependMmk.name)
-          axios.post('http://localhost:8081/uploadMultipleFiles', formData)
+          axios.post('http://localhost:8081/api/uploadMultipleFiles', formData)
               .then(() => {
                 this.$refs.fileUpload.reset()
                 this.selectedFileOtherFactory = null

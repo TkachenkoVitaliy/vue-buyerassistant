@@ -14,7 +14,8 @@
 <script>
   import RecipientList from '@/components/main_container/email_newsletter/RecipientList'
   import SendEmail from '@/components/main_container/email_newsletter/SendEmail'
-  import axios from "axios";
+  import axios from "axios"
+  import RestService from '@/services/rest.service'
 
   export default {
     components: {
@@ -29,14 +30,14 @@
     },
     methods: {
       getBranches() {
-        axios.get('http://localhost:8081/branches').then((response) => {
+        RestService.getBranches().then((response) => {
           this.branches = response.data
         }).catch(() => {
           alert('При загрузке списка филиалов произошла ошибка')
         })
       },
       getRecipients() {
-        axios.get('http://localhost:8081/recipients').then((response) => {
+        RestService.getRecipients().then((response) => {
           this.recipients = response.data
         }).catch(() => {
           alert('При загрузке адресатов рассылки произошла ошибка')

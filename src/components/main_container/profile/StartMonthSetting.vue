@@ -75,7 +75,7 @@
     },
     methods: {
       getBranchesSettings() {
-        axios.get('http://localhost:8081/branches_settings').then((response) => {
+        axios.get('http://localhost:8081/api/branches_settings').then((response) => {
           this.branchesSettings = response.data
           this.haveChanges = false
           this.onMountBranchesSettings = this.copyBranchesSettings(response.data)
@@ -106,7 +106,7 @@
       },
       saveSettings() {
         axios({
-          url: 'http://localhost:8081/branches_settings',
+          url: 'http://localhost:8081/api/branches_settings',
           method: 'post',
           data: this.branchesSettings
         }).then(() => {

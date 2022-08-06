@@ -40,8 +40,18 @@ export default new Router({
             ]
         },
         {
-            path: '/auth*',
-            component: Auth
+            path: '/auth/',
+            component: Auth,
+            children: [
+                {
+                    path: 'login',
+                    component: () => import('@/views/auth/Login')
+                },
+                {
+                    path: 'register',
+                    component: () => import('@/views/auth/Register')
+                }
+            ]
         }
     ]
 })

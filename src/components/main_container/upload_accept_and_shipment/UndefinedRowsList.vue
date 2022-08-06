@@ -42,7 +42,7 @@
     },
     methods: {
       updateSummaryRows() {
-        axios.get('http://localhost:8081/undefinedRows').then((response) => {
+        axios.get('http://localhost:8081/api/undefinedRows').then((response) => {
           this.summaryRows = response.data
         }).catch(() => {
           alert('При загрузке строк произошла ошибка')

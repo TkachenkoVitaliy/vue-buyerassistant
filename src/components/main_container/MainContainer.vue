@@ -8,7 +8,6 @@
   .main_container {
     width: 100%;
     background-color: white;
-    /*border-left: #0c427a 4px solid;*/
     padding: 20px 40px;
     top: 0;
     left: 0;

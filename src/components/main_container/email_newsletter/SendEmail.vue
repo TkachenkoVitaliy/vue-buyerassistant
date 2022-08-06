@@ -59,7 +59,7 @@
       sendFiles() {
         if(!this.isChoosingBranches) {
           this.isSending = true
-          axios.get('http://localhost:8081/sendFiles').then((response) => {
+          axios.get('http://localhost:8081/api/sendFiles').then((response) => {
             this.isSending = false
             this.completedRecipients = response.data
           }).catch(() => {
@@ -69,7 +69,7 @@
           this.isSending = true
           this.isChoosingBranches = false
           axios({
-            url: 'http://localhost:8081/sendFiles',
+            url: 'http://localhost:8081/api/sendFiles',
             method: 'post',
             data: this.selectedBranches
           }).then((response) => {

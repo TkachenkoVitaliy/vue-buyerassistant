@@ -51,14 +51,14 @@
     },
     methods: {
       getUndefinedTypes() {
-        axios.get('http://localhost:8081/productTypes/undefined').then((response) => {
+        axios.get('http://localhost:8081/api/productTypes/undefined').then((response) => {
           this.undefinedTypes = response.data
         }).catch(() => {
           alert('При загрузке нераспределенных видов продукции произошла ошибка')
         })
       },
       getProductGroup() {
-        axios.get('http://localhost:8081/productGroups').then((response) => {
+        axios.get('http://localhost:8081/api/productGroups').then((response) => {
           this.productGroups = response.data
         }).catch(() => {
           alert('При загрузке групп продукции произошла ошибка')
@@ -66,7 +66,7 @@
       },
       saveSettings() {
         axios({
-          url: 'http://localhost:8081/productTypes/undefined',
+          url: 'http://localhost:8081/api/productTypes/undefined',
           method: 'post',
           data: this.undefinedTypes
         }).then(() => {

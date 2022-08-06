@@ -25,14 +25,14 @@
     },
     methods: {
       getLoadTables() {
-        axios.get('http://localhost:8081/loadTables').then((response) => {
+        axios.get('http://localhost:8081/api/loadTables').then((response) => {
           this.loadTables = response.data
         }).catch(() => {
           alert('Не удалось получить таблицы шахматки для филиалов')
         })
       },
       getUserSettings() {
-        axios.get('http://localhost:8081/loadTables/settings').then((response) => {
+        axios.get('http://localhost:8081/api/loadTables/settings').then((response) => {
           this.userSettings = response.data
         }).catch(() => {
           alert('Не удалось получить настройки шахматки')
@@ -40,7 +40,7 @@
       },
       postUserSettings() {
         axios({
-          url: 'http://localhost:8081/loadTables/settings',
+          url: 'http://localhost:8081/api/loadTables/settings',
           method: 'post',
           data: this.userSettings
         }).then((response) => {
