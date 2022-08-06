@@ -84,7 +84,6 @@
       activateChoosing() {
         this.selectedBranches = []
         this.isChoosingBranches = !this.isChoosingBranches
-        console.log(this.selectedBranches)
       },
       mountBranches() {
         let array = this.recipients.map(recipient => recipient.branchName)

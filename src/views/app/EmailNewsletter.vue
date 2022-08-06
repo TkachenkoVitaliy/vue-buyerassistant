@@ -14,7 +14,6 @@
 <script>
   import RecipientList from '@/components/main_container/email_newsletter/RecipientList'
   import SendEmail from '@/components/main_container/email_newsletter/SendEmail'
-  import axios from "axios"
   import RestService from '@/services/rest.service'
 
   export default {

@@ -2,25 +2,40 @@ import axios from 'axios'
 import authHeader from './auth-header'
 
 const API_URL = 'http://localhost:8081/api/'
+let config = {headers: authHeader()}
 
 class RestService {
-    //TODO
+
+    //EmailNewsLetter
     putRecipient(recipient) {
-        return axios.put(API_URL + 'recipients', recipient, {headers: authHeader()})
+        return axios.put(API_URL + 'recipients', recipient, config)
     }
 
     deleteRecipient(id) {
-        return axios.delete(API_URL + 'recipients/' + id, {headers: authHeader()})
+        return axios.delete(API_URL + 'recipients/' + id, config)
     }
 
     getRecipients() {
-        return axios.get(API_URL + 'recipients', {headers: authHeader()})
+        return axios.get(API_URL + 'recipients', config)
     }
 
     getBranches() {
-        return axios.get(API_URL + 'branches', {headers: authHeader()})
+        return axios.get(API_URL + 'branches', config)
     }
-    //TODO
+
+    //LoadTables
+    getLoadTables() {
+        return axios.get(API_URL + 'loadTables', config)
+    }
+
+    getLoadTablesSettings() {
+        return axios.get(API_URL + 'loadTables/settings', config)
+    }
+
+    postLoadTableSettings(userSettings) {
+        return axios.post(API_URL + 'loadTables/settings', userSettings, config)
+    }
+
 
 }
 export default new RestService();
