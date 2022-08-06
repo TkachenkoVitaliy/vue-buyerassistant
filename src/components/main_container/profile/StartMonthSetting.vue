@@ -58,7 +58,7 @@
 </template>
 
 <script>
-  import axios from "axios";
+  import RestService from '@/services/rest.service'
 
   export default {
     data() {
@@ -75,7 +75,7 @@
     },
     methods: {
       getBranchesSettings() {
-        axios.get('http://localhost:8081/api/branches_settings').then((response) => {
+        RestService.getBranchesSettings().then((response) => {
           this.branchesSettings = response.data
           this.haveChanges = false
           this.onMountBranchesSettings = this.copyBranchesSettings(response.data)
@@ -105,11 +105,7 @@
         this.years = [currentYear - 1, currentYear]
       },
       saveSettings() {
-        axios({
-          url: 'http://localhost:8081/api/branches_settings',
-          method: 'post',
-          data: this.branchesSettings
-        }).then(() => {
+        RestService.postBranchesSettings(this.branchesSettings).then(() => {
           this.getBranchesSettings()
         }).catch(() => {
           alert('При отправке настроек произошла ошибка')

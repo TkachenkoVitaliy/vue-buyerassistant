@@ -10,7 +10,7 @@
           truncate-length='25'
           placeholder='Акцепт ММК'
       ></v-file-input>
-      <v-btn v-on:click="onUpload " class='vue_button' v-if='!isLoading'>
+      <v-btn v-on:click='onUpload' class='vue_button' v-if='!isLoading'>
         Загрузить
       </v-btn>
       <img src='../../../assets/loading.gif' class='loading-image' v-if='isLoading'>
@@ -25,8 +25,8 @@
 
 
 <script>
-  import axios from 'axios'
-  import StatusMessage from "@/components/other/StatusMessage";
+  import RestService from '@/services/rest.service'
+  import StatusMessage from '@/components/other/StatusMessage'
 
   export default {
     data() {
@@ -34,10 +34,6 @@
         selectedFile : null,
         isLoading : false,
         status: '',
-        /*hasError: false,
-        errorClass: 'errorClass',
-        okClass: 'okClass',
-        upload_accept_status: 'upload_accept_status'*/
         hasError: false,
         message: ''
       }
@@ -52,7 +48,7 @@
           this.isLoading = true
           const formData = new FormData()
           formData.append('mmkAccept', this.selectedFile, this.selectedFile.name)
-          axios.post('http://localhost:8081/api/uploadAccept', formData)
+          RestService.postUploadAccept(formData)
               .then(() => {
                 this.$refs.fileUpload.reset()
                 this.selectedFile = null

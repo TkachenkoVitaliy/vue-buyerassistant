@@ -24,7 +24,7 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import RestService from '@/services/rest.service'
 
   export default {
     computed: {
@@ -42,7 +42,7 @@
     },
     methods: {
       updateSummaryRows() {
-        axios.get('http://localhost:8081/api/undefinedRows').then((response) => {
+        RestService.getUndefinedRows().then((response) => {
           this.summaryRows = response.data
         }).catch(() => {
           alert('При загрузке строк произошла ошибка')

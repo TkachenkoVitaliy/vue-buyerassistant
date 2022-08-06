@@ -36,6 +36,39 @@ class RestService {
         return axios.post(API_URL + 'loadTables/settings', userSettings, config)
     }
 
+    //Profile
+    getBranchesSettings() {
+        return axios.get(API_URL + 'branches_settings', config)
+    }
+
+    postBranchesSettings(branchesSettings) {
+        return axios.post(API_URL + 'branches_settings', branchesSettings, config)
+    }
+
+    //UploadAcceptAndShipment
+    getProductTypesUndefined() {
+        return axios.get(API_URL + 'productTypes/undefined', config)
+    }
+
+    postProductTypesUndefined(undefinedTypes) {
+        return axios.post(API_URL + 'productTypes/undefined', undefinedTypes, config)
+    }
+
+    getProductGroups() {
+        return axios.get(API_URL + 'productGroups', config)
+    }
+
+    getUndefinedRows() {
+        return axios.get(API_URL + 'undefinedRows', config)
+    }
+
+    postUploadMultipleFiles(formData) {
+        return axios.post(API_URL + 'uploadMultipleFiles', formData, config)
+    }
+
+    postUploadAccept(formData) {
+        return axios.post(API_URL + 'uploadAccept', formData, config)
+    }
 
 }
 export default new RestService();

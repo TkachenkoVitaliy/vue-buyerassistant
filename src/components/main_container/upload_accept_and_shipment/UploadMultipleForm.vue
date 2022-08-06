@@ -40,8 +40,8 @@
 
 
 <script>
-  import axios from 'axios'
-  import StatusMessage from "@/components/other/StatusMessage";
+  import RestService from '@/services/rest.service'
+  import StatusMessage from '@/components/other/StatusMessage'
 
   export default {
     data() {
@@ -72,7 +72,7 @@
           formData.append('otherFactories', this.selectedFileOtherFactory, this.selectedFileOtherFactory.name)
           formData.append('oracleMmk', this.selectedFileOracleMmk, this.selectedFileOracleMmk.name)
           formData.append('dependenciesMmk', this.selectedFileDependMmk, this.selectedFileDependMmk.name)
-          axios.post('http://localhost:8081/api/uploadMultipleFiles', formData)
+          RestService.postUploadMultipleFiles(formData)
               .then(() => {
                 this.$refs.fileUpload.reset()
                 this.selectedFileOtherFactory = null

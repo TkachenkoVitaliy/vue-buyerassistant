@@ -38,7 +38,7 @@
 </template>
 
 <script>
-  import axios from "axios"
+  import RestService from '@/services/rest.service'
 
   export default {
     data() {
@@ -51,35 +51,26 @@
     },
     methods: {
       getUndefinedTypes() {
-        axios.get('http://localhost:8081/api/productTypes/undefined').then((response) => {
+        RestService.getProductTypesUndefined().then((response) => {
           this.undefinedTypes = response.data
         }).catch(() => {
           alert('При загрузке нераспределенных видов продукции произошла ошибка')
         })
       },
       getProductGroup() {
-        axios.get('http://localhost:8081/api/productGroups').then((response) => {
+        RestService.getProductGroups().then((response) => {
           this.productGroups = response.data
         }).catch(() => {
           alert('При загрузке групп продукции произошла ошибка')
         })
       },
       saveSettings() {
-        axios({
-          url: 'http://localhost:8081/api/productTypes/undefined',
-          method: 'post',
-          data: this.undefinedTypes
-        }).then(() => {
+        RestService.postProductTypesUndefined(this.undefinedTypes).then(() => {
           this.getUndefinedTypes()
           this.haveChanges = false
         }).catch(() => {
           alert('При отправке видов продукции произошла ошибка')
         })
-      },
-      consoleLog() {
-        console.log(this.undefinedTypes)
-        console.log(this.productGroups)
-        console.log(this.haveChanges)
       },
       cancelSettings() {
         this.getUndefinedTypes()
@@ -92,7 +83,6 @@
             count = count + 1
           }
         }
-        console.log(count)
         if (count > 0 ) {
           this.haveChanges = true
         } else {

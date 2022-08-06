@@ -21,7 +21,7 @@
       <tr
           v-for = '(branchStock, stockIndex) in loadTable.branchesStock'
           v-bind:key = 'loadTable.name + branchStock + stockIndex'
-          v-bind:class= "{bold_text : (reservedNames.includes(branchStock)), hidden_row: check(ltIndex) && !reservedNames.includes(branchStock)}"
+          v-bind:class= '{bold_text : (reservedNames.includes(branchStock)), hidden_row: check(ltIndex) && !reservedNames.includes(branchStock)}'
           v-on:click='check(ltIndex)'
       >
         <td>{{ branchStock }}</td>
@@ -35,13 +35,13 @@
 
       <tr
           v-for = '(branchTransit, transitIndex) in loadTable.branchesTransit'
-          v-bind:key = 'loadTable.name + branchTransit + transitIndex + "транзит"'
+          v-bind:key = "loadTable.name + branchTransit + transitIndex + 'транзит'"
           v-bind:class= '{bold_text : (reservedNames.includes(branchTransit)), hidden_row: check(ltIndex) && !reservedNames.includes(branchTransit)}'
       >
         <td>{{ branchTransit == 'ТРАНЗИТ' ? branchTransit : branchTransit + ' транзит'}}</td>
         <td
             v-for = '(transitCell, transitCellIndex) in loadTable.transitData[transitIndex]'
-            v-bind:key = 'loadTable.name + branchTransit + transitCellIndex + transitCell + "транзит"'
+            v-bind:key = "loadTable.name + branchTransit + transitCellIndex + transitCell + 'транзит'"
         >
           {{ transitCell }}
         </td>
