@@ -28,14 +28,14 @@
         RestService.getLoadTables().then((response) => {
           this.loadTables = response.data
         }).catch(() => {
-          alert('Не удалось получить таблицы шахматки для филиалов')
+          // alert('Не удалось получить таблицы шахматки для филиалов')
         })
       },
       getUserSettings() {
         RestService.getLoadTablesSettings().then((response) => {
           this.userSettings = response.data
         }).catch(() => {
-          alert('Не удалось получить настройки шахматки')
+          // alert('Не удалось получить настройки шахматки')
         })
       },
       postUserSettings() {
@@ -43,7 +43,7 @@
           this.userSettings = response.data
           this.getLoadTables()
         }).catch(() => {
-          alert('При сохранении произошла ошибка')
+          // alert('При сохранении произошла ошибка')
         })
       }
     },

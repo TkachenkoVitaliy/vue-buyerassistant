@@ -71,4 +71,5 @@ class RestService {
     }
 
 }
-export default new RestService();
+
+export default new RestService()

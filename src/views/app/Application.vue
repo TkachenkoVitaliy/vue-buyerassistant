@@ -31,7 +31,8 @@
     components: {
       Navbar,
       MainContainer
-    }, methods: {
+    },
+    methods: {
       changeSelected(selectedId) {
         for (let item of this.navbarItems) {
           item.isActive = false
@@ -41,10 +42,30 @@
       setSelected() {
         let meta = this.$route.meta
         let tabId = meta.tabId
+        if(tabId === 0) {
+          tabId = 1
+        }
         this.changeSelected(tabId)
       }
     },
+    computed: {
+      loggedIn() {
+        return this.$store.state.auth.status.loggedIn;
+      }
+    },
+    created() {
+      if(this.loggedIn) {
+        if(this.$route.meta.tabId === 0) {
+          this.$router.push('/profile')
+          this.setSelected()
+        }
+      } else {
+        this.$router.push('/auth/login')
+      }
+    },
     mounted() {
+      this.changeSelected(1)
+      console.log('mounted')
       this.setSelected()
     }
   }

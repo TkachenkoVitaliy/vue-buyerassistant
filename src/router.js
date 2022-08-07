@@ -10,6 +10,7 @@ export default new Router({
     routes: [
         {
             path: '/',
+            meta: {tabId : 0},
             component: Application,
             children: [
                 {
