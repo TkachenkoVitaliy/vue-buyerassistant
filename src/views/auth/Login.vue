@@ -6,7 +6,7 @@
     <form name='form' @submit.prevent='handleLogin' class='login_form'>
 
       <div  class='input_container'>
-        <label for='username'><strong>ЛОГИН</strong></label>
+        <label for='username'><strong class='text'>ЛОГИН</strong></label>
         <input
             v-model='user.username'
             v-validate="'required'"
@@ -18,12 +18,12 @@
         <div
             v-if="errors.has('username')"
             role='alert'
-            class='alert'
+            class='alert text'
         >Заполните поле - Логин</div>
       </div>
 
       <div class='input_container'>
-        <label for='password'><strong>ПАРОЛЬ</strong></label>
+        <label for='password'><strong class='text'>ПАРОЛЬ</strong></label>
         <input
             v-model='user.password'
             v-validate="'required'"
@@ -35,7 +35,7 @@
         <div
             v-if="errors.has('password')"
             role='alert'
-            class='alert'
+            class='alert text'
         >Заполните поле - Пароль
         </div>
       </div>
@@ -52,6 +52,18 @@
 
       <div>
         <div v-if='message' role='alert'>{{ message }}</div>
+      </div>
+
+      <div class='if_container'><span>или</span></div>
+
+      <div class='register_btn_container'>
+        <router-link
+            to='/auth/register'
+            class='register_btn'
+            style='text-decoration: none'
+        >
+          <span>ЗАРЕГИСТРИРОВАТЬСЯ</span>
+        </router-link>
       </div>
 
     </form>
@@ -108,7 +120,7 @@
 
 </script>
 
-<style>
+<style scoped>
   .login_container {
     height: 60vh;
     width: 20%;
@@ -137,25 +149,45 @@
   }
 
   .input {
+    padding-left: 10px;
     width: 220px;
     display: block;
     border: 2px #00689a solid;
     border-radius: 5px;
   }
 
-  .login_btn_container {
+  .if_container {
     text-align: center;
+    margin: 10px 0px;
+  }
+
+  .login_btn_container {
   }
 
   .login_btn {
+    display: block;
+    margin: 0px auto;
     background-color: #00689a;
     color: white;
     padding: 10px 20px;
     border-radius: 10px;
   }
 
+  .register_btn {
+    display: block;
+    margin: 0px auto;
+    background-color: white;
+    color: #00689a;
+    padding: 0px 20px;
+    border-radius: 10px;
+  }
+
   .alert {
     color: red;
+  }
+
+  .text {
+    padding-left: 10px;
   }
 
 </style>
