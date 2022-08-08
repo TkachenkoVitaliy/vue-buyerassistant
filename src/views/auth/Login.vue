@@ -1,61 +1,68 @@
 <template>
-  <div class="col-md-12">
-    <div class="card card-container">
-      <img
-          id="profile-img"
-          src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-          class="profile-img-card"
-      />
-      <form name="form" @submit.prevent="handleLogin">
-        <div class="form-group">
-          <label for="username">Логин</label>
-          <input
-              v-model="user.username"
-              v-validate="'required'"
-              type="text"
-              class="form-control"
-              name="username"
-          />
-          <div
-              v-if="errors.has('username')"
-              class="alert alert-danger"
-              role="alert"
-          >Логин обязательное поле</div>
-        </div>
-        <div class="form-group">
-          <label for="password">Пароль</label>
-          <input
-              v-model="user.password"
-              v-validate="'required'"
-              type="password"
-              class="form-control"
-              name="password"
-          />
-          <div
-              v-if="errors.has('password')"
-              class="alert alert-danger"
-              role="alert"
-          >Пароль обязательное поле</div>
-        </div>
-        <div class="form-group">
-          <button class="primary" :disabled="loading">
-            <span v-show="loading" class="spinner-border spinner-border-sm"></span>
-            <span>Войти</span>
-          </button>
-        </div>
-        <div class="form-group">
-          <div v-if="message" class="alert alert-danger" role="alert">{{message}}</div>
-        </div>
-      </form>
+  <div class='login_container'>
+    <div>
+      <img src='@/assets/steeleks_logo.png' class='logo'/>
     </div>
+    <form name='form' @submit.prevent='handleLogin' class='login_form'>
+
+      <div  class='input_container'>
+        <label for='username'><strong>ЛОГИН</strong></label>
+        <input
+            v-model='user.username'
+            v-validate="'required'"
+            type='text'
+            name='username'
+            placeholder='Введите логин'
+            class='input'
+        />
+        <div
+            v-if="errors.has('username')"
+            role='alert'
+            class='alert'
+        >Заполните поле - Логин</div>
+      </div>
+
+      <div class='input_container'>
+        <label for='password'><strong>ПАРОЛЬ</strong></label>
+        <input
+            v-model='user.password'
+            v-validate="'required'"
+            type='password'
+            name='password'
+            placeholder='Введите пароль'
+            class='input'
+        />
+        <div
+            v-if="errors.has('password')"
+            role='alert'
+            class='alert'
+        >Заполните поле - Пароль
+        </div>
+      </div>
+
+      <div class='login_btn_container'>
+        <button
+            v-bind:disabled='loading'
+            class='login_btn'
+        >
+          <span v-show='loading'></span>
+          <span>ВОЙТИ</span>
+        </button>
+      </div>
+
+      <div>
+        <div v-if='message' role='alert'>{{ message }}</div>
+      </div>
+
+    </form>
   </div>
+
 </template>
 
 <script>
   import User from '@/models/user'
 
   export default {
-    name: 'Login',
     data() {
       return {
         user: new User('', ''),
@@ -69,7 +76,7 @@
       }
     },
     created() {
-      if (this.loggedIn) {
+      if(this.loggedIn) {
         this.$router.push('/profile')
       }
     },
@@ -89,8 +96,7 @@
                 error => {
                   this.loading = false
                   this.message =
-                      (error.response && error.response.data) ||
-                      error.message ||
+                      (error.response && error.response.data) || error.message ||
                       error.toString()
                 }
             )
@@ -99,35 +105,57 @@
       }
     }
   }
+
 </script>
 
-<style scoped>
-  label {
+<style>
+  .login_container {
+    height: 60vh;
+    width: 20%;
+    background-color: white;
+    margin: 20vh auto;
+    border: 4px #00689a solid;
+    border-radius: 10px;
+  }
+
+  .login_form {
+    padding: 20px;
+  }
+
+  .logo {
     display: block;
-    margin-top: 10px;
+    margin: 0px auto;
+    padding: 10px 0px;
+    width: 243px;
+    height: 72px;
   }
-  .card-container.card {
-    max-width: 350px !important;
-    padding: 40px 40px;
+
+  .input_container {
+    height: 86px;
+    width: 220px;
+    margin: 0px auto;
   }
-  .card {
-    background-color: #f7f7f7;
-    padding: 20px 25px 30px;
-    margin: 50px auto 25px;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    border-radius: 2px;
-    -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-    -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-  }
-  .profile-img-card {
-    width: 96px;
-    height: 96px;
-    margin: 0 auto 10px;
+
+  .input {
+    width: 220px;
     display: block;
-    -moz-border-radius: 50%;
-    -webkit-border-radius: 50%;
-    border-radius: 50%;
+    border: 2px #00689a solid;
+    border-radius: 5px;
   }
+
+  .login_btn_container {
+    text-align: center;
+  }
+
+  .login_btn {
+    background-color: #00689a;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 10px;
+  }
+
+  .alert {
+    color: red;
+  }
+
 </style>

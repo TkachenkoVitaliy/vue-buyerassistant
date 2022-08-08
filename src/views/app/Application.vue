@@ -49,24 +49,21 @@
       }
     },
     computed: {
-      loggedIn() {
-        return this.$store.state.auth.status.loggedIn;
+      currentUser() {
+        return this.$store.state.auth.user;
       }
     },
     created() {
-      if(this.loggedIn) {
-        if(this.$route.meta.tabId === 0) {
-          this.$router.push('/profile')
-          this.setSelected()
-        }
-      } else {
+      if(!this.currentUser) {
         this.$router.push('/auth/login')
+      } else {
+        if (this.$route.path === '/') {
+          this.$router.push('profile')
+        }
       }
     },
     mounted() {
-      this.changeSelected(1)
-      console.log('mounted')
-      this.setSelected()
+        this.setSelected()
     }
   }
 </script>
