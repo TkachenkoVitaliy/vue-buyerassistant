@@ -1,7 +1,8 @@
 import axios from 'axios'
 import authHeader from './auth-header'
 
-const API_URL = 'http://localhost:8081/api/'
+// const API_URL = 'http://localhost:8081/api/'
+const API_URL = 'http://194.87.238.214:8081/api/'
 let config = {headers: authHeader()}
 
 class RestService {
