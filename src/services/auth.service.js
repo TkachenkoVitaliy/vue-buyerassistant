@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // const AUTH_URL = 'http://localhost:8081/auth/';
-const AUTH_URL = 'http://194.87.238.214:8081/auth/'
+const AUTH_URL = 'http://194.87.238.214:80811/auth/'
 
 class AuthService {
     login(user) {

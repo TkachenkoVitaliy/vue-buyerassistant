@@ -50,10 +50,6 @@
         </button>
       </div>
 
-      <div>
-        <div v-if='message' role='alert'>{{ message }}</div>
-      </div>
-
       <div class='if_container'><span>или</span></div>
 
       <div class='register_btn_container'>
@@ -67,6 +63,9 @@
       </div>
 
     </form>
+
+    <div v-if='message' role='alert' class='alert_message'>{{ message }}</div>
+
   </div>
 
 </template>
@@ -188,6 +187,15 @@
 
   .text {
     padding-left: 10px;
+  }
+
+  .alert_message {
+    background-color: white;
+    font-size:20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: red;
   }
 
 </style>

@@ -71,14 +71,6 @@
         </button>
       </div>
 
-      <div>
-        <div
-            v-if='message'
-            role='alert'
-            :class="successful ? 'alert_success' : 'alert_danger'"
-        >{{ message }}</div>
-      </div>
-
       <div class='if_container'><span>или</span></div>
 
       <div class='login_btn_container'>
@@ -92,6 +84,14 @@
       </div>
 
     </form>
+
+    <div>
+      <div
+          v-if='message'
+          role='alert'
+          :class="successful ? 'alert_success' : 'alert_danger'"
+      >{{ message }}</div>
+    </div>
   </div>
 
 </template>
@@ -218,11 +218,21 @@ export default {
 }
 
 .alert_success {
-
+  background-color: white;
+  font-size:20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #00689a;
 }
 
 .alert_danger {
-
+  background-color: white;
+  font-size:20px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: red;
 }
 
 </style>
