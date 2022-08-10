@@ -6,7 +6,7 @@
     </div>
     <div class='rows_container'>
       <undefined-rows-list ref="undefinedRows"/>
-      <undefined-product-group />
+      <undefined-product-group ref="undefinedProductGroup"/>
     </div>
   </div>
 </template>
@@ -29,6 +29,7 @@
       {
         updateUndefinedRows() {
           this.$refs.undefinedRows.updateSummaryRows()
+          this.$refs.undefinedProductGroup.getUndefinedTypes()
         }
       }
   }

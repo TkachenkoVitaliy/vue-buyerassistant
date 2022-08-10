@@ -90,6 +90,7 @@
             this.isLoading = false
             this.message = 'При загрузке файлов произошла ошибка'
             this.hasError = true
+            this.$emit('updateSummaryData')
           })
         }
       }
