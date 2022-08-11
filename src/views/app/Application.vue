@@ -22,7 +22,7 @@
     data() {
       return {
         navbarItems: [
-          {id: 1, title: 'ПРОФИЛЬ И НАСТРОЙКИ', isActive: false, link: '/profile'},
+          {id: 1, title: 'НАСТРОЙКИ', isActive: false, link: '/settings'},
           {id: 2, title: 'ЗАГРУЗИТЬ ФАЙЛЫ ЗАВОДОВ', isActive: false, link: '/upload_accept_and_shipment'},
           {id: 3, title: 'ПОЧТОВАЯ РАССЫЛКА', isActive: false, link: '/email_newsletter'},
           {id: 4, title: 'ШАХМАТКА', isActive: false, link: '/load_tables'},
@@ -60,7 +60,7 @@
         this.$router.push('/auth/login')
       } else {
         if (this.$route.path === '/') {
-          this.$router.push('profile')
+          this.$router.push('settings')
         }
       }
     },

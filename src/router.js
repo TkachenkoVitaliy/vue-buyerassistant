@@ -14,9 +14,9 @@ export default new Router({
             component: Application,
             children: [
                 {
-                    path: 'profile',
+                    path: 'settings',
                     meta: {tabId : 1},
-                    component: () => import('@/views/app/Profile')
+                    component: () => import('@/views/app/Settings')
                 },
                 {
                     path: 'upload_accept_and_shipment',
