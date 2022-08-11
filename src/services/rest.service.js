@@ -32,12 +32,12 @@ class RestService {
     }
 
     //LoadTables
-    getLoadTables() {
-        return api.get('/api/loadTables')
+    getLoadTables(username) {
+        return api.get('/api/loadTables/'+ username)
     }
 
-    getLoadTablesSettings() {
-        return api.get('/api/loadTables/settings')
+    getLoadTablesSettings(username) {
+        return api.get('/api/loadTables/settings/' + username)
     }
 
     postLoadTableSettings(userSettings) {

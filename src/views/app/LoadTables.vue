@@ -16,6 +16,7 @@
   import LoadTablesSettings from '@/components/main_container/load_tables/LoadTablesSettings'
   import RestService from '@/services/rest.service'
   import EventBus from "@/common/EventBus";
+  import TokenService from "@/services/token.service";
 
   export default {
     components: {FactoriesLoadTables, LoadTablesSettings},
@@ -27,7 +28,8 @@
     },
     methods: {
       getLoadTables() {
-        RestService.getLoadTables().then(
+        let username = TokenService.getUser().username;
+        RestService.getLoadTables(username).then(
             (response) => {
               this.loadTables = response.data
             },
@@ -43,7 +45,8 @@
         )
       },
       getUserSettings() {
-        RestService.getLoadTablesSettings().then(
+        let username = TokenService.getUser().username;
+        RestService.getLoadTablesSettings(username).then(
             (response) => {
               this.userSettings = response.data
             },
