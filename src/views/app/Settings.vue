@@ -1,11 +1,11 @@
 <template>
-  <div class='profile_container'>
+  <div class='setting_container'>
     <StartMonthSetting />
   </div>
 </template>
 
 <script>
-  import StartMonthSetting from "@/components/main_container/profile/StartMonthSetting";
+  import StartMonthSetting from '@/components/main_container/settings/StartMonthSetting'
 
   export default {
     components: {StartMonthSetting}

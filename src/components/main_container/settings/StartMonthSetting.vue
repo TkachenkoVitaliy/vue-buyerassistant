@@ -54,7 +54,6 @@
       <v-btn v-on:click='saveSettings' class='save_btn'>СОХРАНИТЬ</v-btn>
       <v-btn v-on:click='cancelSettings' class='cancel_btn'>ОТМЕНА</v-btn>
     </div>
-    <div v-if='branchesSettings.length === 0' style='color: red;'>СЕРВЕР НЕ ОТВЕЧАЕТ</div>
   </div>
 </template>
 

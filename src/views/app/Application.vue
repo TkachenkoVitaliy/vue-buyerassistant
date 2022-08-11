@@ -14,6 +14,7 @@
 <script>
   import Navbar from '@/components/navbar/Navbar'
   import MainContainer from '@/components/main_container/MainContainer'
+  import Error from '@/views/app/Error'
   import RestService from '@/services/rest.service'
   import EventBus from '@/common/EventBus'
 
@@ -36,6 +37,7 @@
     },
     methods: {
       changeSelected(selectedId) {
+        this.checkBackEndServer()
         for (let item of this.navbarItems) {
           item.isActive = false
           if(item.id === selectedId) item.isActive = true
@@ -48,6 +50,24 @@
           tabId = 1
         }
         this.changeSelected(tabId)
+      },
+      checkBackEndServer() {
+        RestService.getBranches().then(
+            response => {
+            },
+            error => {
+              if (error.request && error.message == 'Network Error') {
+                this.$router.push('/error').catch(() => {})
+              }
+              this.content =
+                  (error.response && error.response.data && error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+              if (error.response && error.response.status === 403) {
+                EventBus.dispatch("logout");
+              }
+            }
+        )
       }
     },
     computed: {
@@ -67,19 +87,7 @@
     mounted() {
       this.setSelected()
 
-      RestService.getBranches().then(
-          response => {
-          },
-          error => {
-            this.content =
-                (error.response && error.response.data && error.response.data.message) ||
-                error.message ||
-                error.toString();
-            if (error.response && error.response.status === 403) {
-              EventBus.dispatch("logout");
-            }
-          }
-      )
+      this.checkBackEndServer()
     }
   }
 </script>
