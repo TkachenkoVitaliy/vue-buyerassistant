@@ -14,6 +14,8 @@
 <script>
   import Navbar from '@/components/navbar/Navbar'
   import MainContainer from '@/components/main_container/MainContainer'
+  import RestService from '@/services/rest.service'
+  import EventBus from '@/common/EventBus'
 
   export default {
     name: 'Application',
@@ -63,7 +65,21 @@
       }
     },
     mounted() {
-        this.setSelected()
+      this.setSelected()
+
+      RestService.getBranches().then(
+          response => {
+          },
+          error => {
+            this.content =
+                (error.response && error.response.data && error.response.data.message) ||
+                error.message ||
+                error.toString();
+            if (error.response && error.response.status === 403) {
+              EventBus.dispatch("logout");
+            }
+          }
+      )
     }
   }
 </script>

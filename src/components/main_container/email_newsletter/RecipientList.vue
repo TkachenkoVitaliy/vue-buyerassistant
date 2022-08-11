@@ -83,6 +83,7 @@
 <script>
   import DeleteDialog from '@/components/other/DeleteDialog'
   import RestService from '@/services/rest.service'
+  import EventBus from "@/common/EventBus";
 
   export default {
     props: {
@@ -119,12 +120,21 @@
           && this.recipient.emailAddress
           && /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.recipient.emailAddress)
         ) {
-          RestService.putRecipient(this.recipient).then(() => {
-              this.$emit('requestRecipients')
-              this.toggleModalWindow()
-          }).catch(() => {
-            alert('Не удалось добавить получателя')
-          })
+          RestService.putRecipient(this.recipient).then(
+              () => {
+                this.$emit('requestRecipients')
+                this.toggleModalWindow()
+              },
+              error => {
+                this.content =
+                    (error.response && error.response.data && error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                if (error.response && error.response.status === 403) {
+                  EventBus.dispatch("logout");
+                }
+              }
+          )
         }
       },
       validateRecipientForm() {
@@ -137,11 +147,20 @@
         }
       },
       removeRecipient(id) {
-        RestService.deleteRecipient(id).then(() => {
-          this.$emit('requestRecipients')
-        }).catch(() => {
-          alert('Не удалось удалить получателя')
-        })
+        RestService.deleteRecipient(id).then(
+            () => {
+              this.$emit('requestRecipients')
+            },
+            error => {
+              this.content =
+                  (error.response && error.response.data && error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+              if (error.response && error.response.status === 403) {
+                EventBus.dispatch("logout");
+              }
+            }
+        )
       },
       activateDeleteDialog(recipient) {
         this.infoForDelete = recipient.branchName + ' ' + recipient.emailAddress

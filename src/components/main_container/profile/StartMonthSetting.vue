@@ -59,6 +59,7 @@
 
 <script>
   import RestService from '@/services/rest.service'
+  import EventBus from '@/common/EventBus'
 
   export default {
     data() {
@@ -75,13 +76,22 @@
     },
     methods: {
       getBranchesSettings() {
-        RestService.getBranchesSettings().then((response) => {
-          this.branchesSettings = response.data
-          this.haveChanges = false
-          this.onMountBranchesSettings = this.copyBranchesSettings(response.data)
-        }).catch(() => {
-          alert('Не удалось получить список настроек для филиалов')
-        })
+        RestService.getBranchesSettings().then(
+            (response) => {
+              this.branchesSettings = response.data
+              this.haveChanges = false
+              this.onMountBranchesSettings = this.copyBranchesSettings(response.data)
+            },
+            error => {
+              this.content =
+                  (error.response && error.response.data && error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+              if (error.response && error.response.status === 403) {
+                EventBus.dispatch("logout");
+              }
+            }
+        )
       },
       copyBranchesSettings(data) {
         let copyArray = []
@@ -105,11 +115,20 @@
         this.years = [currentYear - 1, currentYear]
       },
       saveSettings() {
-        RestService.postBranchesSettings(this.branchesSettings).then(() => {
-          this.getBranchesSettings()
-        }).catch(() => {
-          alert('При отправке настроек произошла ошибка')
-        })
+        RestService.postBranchesSettings(this.branchesSettings).then(
+            () => {
+              this.getBranchesSettings()
+            },
+            error => {
+              this.content =
+                  (error.response && error.response.data && error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+              if (error.response && error.response.status === 403) {
+                EventBus.dispatch("logout");
+              }
+            }
+        )
       },
       cancelSettings() {
         this.getBranchesSettings()

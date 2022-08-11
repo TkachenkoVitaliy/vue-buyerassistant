@@ -15,6 +15,7 @@
   import RecipientList from '@/components/main_container/email_newsletter/RecipientList'
   import SendEmail from '@/components/main_container/email_newsletter/SendEmail'
   import RestService from '@/services/rest.service'
+  import EventBus from "@/common/EventBus";
 
   export default {
     components: {
@@ -29,18 +30,36 @@
     },
     methods: {
       getBranches() {
-        RestService.getBranches().then((response) => {
-          this.branches = response.data
-        }).catch(() => {
-          alert('При загрузке списка филиалов произошла ошибка')
-        })
+        RestService.getBranches().then(
+            (response) => {
+              this.branches = response.data
+            },
+            error => {
+              this.content =
+                  (error.response && error.response.data && error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+              if (error.response && error.response.status === 403) {
+                EventBus.dispatch("logout");
+              }
+            }
+        )
       },
       getRecipients() {
-        RestService.getRecipients().then((response) => {
-          this.recipients = response.data
-        }).catch(() => {
-          alert('При загрузке адресатов рассылки произошла ошибка')
-        })
+        RestService.getRecipients().then(
+            (response) => {
+              this.recipients = response.data
+            },
+            error => {
+              this.content =
+                  (error.response && error.response.data && error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+              if (error.response && error.response.status === 403) {
+                EventBus.dispatch("logout");
+              }
+            }
+        )
       }
     },
     mounted() {

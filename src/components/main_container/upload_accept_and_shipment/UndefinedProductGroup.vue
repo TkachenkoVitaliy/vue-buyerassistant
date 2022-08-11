@@ -39,6 +39,7 @@
 
 <script>
   import RestService from '@/services/rest.service'
+  import EventBus from "@/common/EventBus";
 
   export default {
     data() {
@@ -51,26 +52,53 @@
     },
     methods: {
       getUndefinedTypes() {
-        RestService.getProductTypesUndefined().then((response) => {
-          this.undefinedTypes = response.data
-        }).catch(() => {
-          alert('При загрузке нераспределенных видов продукции произошла ошибка')
-        })
+        RestService.getProductTypesUndefined().then(
+            (response) => {
+              this.undefinedTypes = response.data
+            },
+            error => {
+              this.content =
+                  (error.response && error.response.data && error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+              if (error.response && error.response.status === 403) {
+                EventBus.dispatch("logout");
+              }
+            }
+        )
       },
       getProductGroup() {
-        RestService.getProductGroups().then((response) => {
-          this.productGroups = response.data
-        }).catch(() => {
-          alert('При загрузке групп продукции произошла ошибка')
-        })
+        RestService.getProductGroups().then(
+            (response) => {
+              this.productGroups = response.data
+            },
+            error => {
+              this.content =
+                  (error.response && error.response.data && error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+              if (error.response && error.response.status === 403) {
+                EventBus.dispatch("logout");
+              }
+            }
+        )
       },
       saveSettings() {
-        RestService.postProductTypesUndefined(this.undefinedTypes).then(() => {
-          this.getUndefinedTypes()
-          this.haveChanges = false
-        }).catch(() => {
-          alert('При отправке видов продукции произошла ошибка')
-        })
+        RestService.postProductTypesUndefined(this.undefinedTypes).then(
+            response => {
+              this.getUndefinedTypes()
+              this.haveChanges = false
+            },
+            error => {
+              this.content =
+                  (error.response && error.response.data && error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+              if (error.response && error.response.status === 403) {
+                EventBus.dispatch("logout");
+              }
+            }
+        )
       },
       cancelSettings() {
         this.getUndefinedTypes()

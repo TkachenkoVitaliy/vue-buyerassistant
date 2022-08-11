@@ -27,6 +27,7 @@
 <script>
   import RestService from '@/services/rest.service'
   import StatusMessage from '@/components/other/StatusMessage'
+  import EventBus from "@/common/EventBus";
 
   export default {
     data() {
@@ -49,21 +50,37 @@
           const formData = new FormData()
           formData.append('mmkAccept', this.selectedFile, this.selectedFile.name)
           RestService.postUploadAccept(formData)
-              .then(() => {
-                this.$refs.fileUpload.reset()
-                this.selectedFile = null
-                this.isLoading = false
-                this.hasError = false
-                this.message = 'Акцепт успешно загружен'
-                // this.status = 'Акцепт успешно загружен'
-              }).catch(() => {
-                this.$refs.fileUpload.reset()
-                this.selectedFile = null
-                this.isLoading = false
-                this.hasError = true
-                this.message = 'При загрузке акцепта произошла ошибка'
-                // this.status = 'Произошла ошибка'
-          })
+              .then(
+                  () => {
+                  this.$refs.fileUpload.reset()
+                  this.selectedFile = null
+                  this.isLoading = false
+                  this.hasError = false
+                  this.message = 'Акцепт успешно загружен'
+                  // this.status = 'Акцепт успешно загружен'
+                  },
+                  error => {
+                    this.$refs.fileUpload.reset()
+                    this.selectedFile = null
+                    this.isLoading = false
+                    this.hasError = true
+                    this.message = 'При загрузке акцепта произошла ошибка'
+                    this.content =
+                        (error.response && error.response.data && error.response.data.message) ||
+                        error.message ||
+                        error.toString();
+                    if (error.response && error.response.status === 403) {
+                      EventBus.dispatch("logout");
+                    }
+                  }
+              ).catch(() => {
+                  this.$refs.fileUpload.reset()
+                  this.selectedFile = null
+                  this.isLoading = false
+                  this.hasError = true
+                  this.message = 'При загрузке акцепта произошла ошибка'
+                  // this.status = 'Произошла ошибка'
+              })
         }
       }
     }

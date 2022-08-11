@@ -1,74 +1,81 @@
-import axios from 'axios'
-import authHeader from './auth-header'
+import api from './api'
 
-// const API_URL = 'http://localhost:8081/api/'
-const API_URL = 'http://194.87.238.214:8081/api/'
-let config = {headers: authHeader()}
+const API_URL = 'http://localhost:8081/api/'
+// const API_URL = 'http://194.87.238.214:8081/api/'
+
 
 class RestService {
 
     //EmailNewsLetter
     putRecipient(recipient) {
-        return axios.put(API_URL + 'recipients', recipient, config)
+        return api.put('/api/recipients', recipient)
     }
 
     deleteRecipient(id) {
-        return axios.delete(API_URL + 'recipients/' + id, config)
+        return api.delete('/api/recipients/' + id)
     }
 
     getRecipients() {
-        return axios.get(API_URL + 'recipients', config)
+        return api.get('/api/recipients')
     }
 
     getBranches() {
-        return axios.get(API_URL + 'branches', config)
+        return api.get('/api/branches')
+    }
+
+    sendFiles() {
+        return api.get('/api/sendFiles')
+    }
+
+    postSendFiles(selectedBranches) {
+        return api.post('http://localhost:8081/api/sendFiles', selectedBranches)
     }
 
     //LoadTables
     getLoadTables() {
-        return axios.get(API_URL + 'loadTables', config)
+        return api.get('/api/loadTables')
     }
 
     getLoadTablesSettings() {
-        return axios.get(API_URL + 'loadTables/settings', config)
+        return api.get('/api/loadTables/settings')
     }
 
     postLoadTableSettings(userSettings) {
-        return axios.post(API_URL + 'loadTables/settings', userSettings, config)
+        return api.post('/api/loadTables/settings', userSettings)
     }
 
     //Profile
     getBranchesSettings() {
-        return axios.get(API_URL + 'branches_settings', config)
+        return api.get('/api/branches_settings')
     }
 
     postBranchesSettings(branchesSettings) {
-        return axios.post(API_URL + 'branches_settings', branchesSettings, config)
+        return api.post('/api/branches_settings', branchesSettings)
     }
 
     //UploadAcceptAndShipment
     getProductTypesUndefined() {
-        return axios.get(API_URL + 'productTypes/undefined', config)
+        return api.get('/api/productTypes/undefined')
     }
 
     postProductTypesUndefined(undefinedTypes) {
-        return axios.post(API_URL + 'productTypes/undefined', undefinedTypes, config)
+        return api.post('/api/productTypes/undefined', undefinedTypes)
     }
 
     getProductGroups() {
-        return axios.get(API_URL + 'productGroups', config)
+        return api.get('/api/productGroups')
     }
 
     getUndefinedRows() {
-        return axios.get(API_URL + 'undefinedRows', config)
+        return api.get('/api/undefinedRows')
     }
 
     postUploadMultipleFiles(formData) {
-        return axios.post(API_URL + 'uploadMultipleFiles', formData, config)
+        return api.post('/api/uploadMultipleFiles', formData)
     }
 
     postUploadAccept(formData) {
-        return axios.post(API_URL + 'uploadAccept', formData, config)
+        return api.post('/api/uploadAccept', formData)
     }
 
 }

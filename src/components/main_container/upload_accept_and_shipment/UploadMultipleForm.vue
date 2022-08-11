@@ -42,6 +42,7 @@
 <script>
   import RestService from '@/services/rest.service'
   import StatusMessage from '@/components/other/StatusMessage'
+  import EventBus from "@/common/EventBus";
 
   export default {
     data() {
@@ -73,25 +74,47 @@
           formData.append('oracleMmk', this.selectedFileOracleMmk, this.selectedFileOracleMmk.name)
           formData.append('dependenciesMmk', this.selectedFileDependMmk, this.selectedFileDependMmk.name)
           RestService.postUploadMultipleFiles(formData)
-              .then(() => {
-                this.$refs.fileUpload.reset()
-                this.selectedFileOtherFactory = null
-                this.selectedFileOracleMmk = null
-                this.selectedFileDependMmk = null
-                this.isLoading = false
-                this.message = 'Файлы были успешно загружены'
-                this.hasError = false
-                this.$emit('updateSummaryData')
-              }).catch(() => {
-            this.$refs.fileUpload.reset()
-            this.selectedFileOtherFactory = null
-            this.selectedFileOracleMmk = null
-            this.selectedFileDependMmk = null
-            this.isLoading = false
-            this.message = 'При загрузке файлов произошла ошибка'
-            this.hasError = true
-            this.$emit('updateSummaryData')
-          })
+              .then(
+                  () => {
+                    this.$refs.fileUpload.reset()
+                    this.selectedFileOtherFactory = null
+                    this.selectedFileOracleMmk = null
+                    this.selectedFileDependMmk = null
+                    this.isLoading = false
+                    this.message = 'Файлы были успешно загружены'
+                    this.hasError = false
+                    this.$emit('updateSummaryData')
+                  },
+                  error => {
+                    this.$refs.fileUpload.reset()
+                    this.selectedFileOtherFactory = null
+                    this.selectedFileOracleMmk = null
+                    this.selectedFileDependMmk = null
+                    this.isLoading = false
+                    this.message = 'При загрузке файлов произошла ошибка'
+                    this.hasError = true
+                    this.$emit('updateSummaryData')
+                    this.content =
+                        (error.response && error.response.data && error.response.data.message) ||
+                        error.message ||
+                        error.toString();
+                    if (error.response && error.response.status === 403) {
+                      EventBus.dispatch("logout");
+                    }
+                  }
+              )
+              .catch(
+                  () => {
+                  this.$refs.fileUpload.reset()
+                  this.selectedFileOtherFactory = null
+                  this.selectedFileOracleMmk = null
+                  this.selectedFileDependMmk = null
+                  this.isLoading = false
+                  this.message = 'При загрузке файлов произошла ошибка'
+                  this.hasError = true
+                  this.$emit('updateSummaryData')
+                  }
+              )
         }
       }
     }

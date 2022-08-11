@@ -25,6 +25,7 @@
 
 <script>
   import RestService from '@/services/rest.service'
+  import EventBus from "@/common/EventBus";
 
   export default {
     computed: {
@@ -42,11 +43,20 @@
     },
     methods: {
       updateSummaryRows() {
-        RestService.getUndefinedRows().then((response) => {
-          this.summaryRows = response.data
-        }).catch(() => {
-          alert('При загрузке строк произошла ошибка')
-        })
+        RestService.getUndefinedRows().then(
+            (response) => {
+              this.summaryRows = response.data
+            },
+            error => {
+              this.content =
+                  (error.response && error.response.data && error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+              if (error.response && error.response.status === 403) {
+                EventBus.dispatch("logout");
+              }
+            }
+        )
       }
     }
   }

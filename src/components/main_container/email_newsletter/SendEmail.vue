@@ -40,7 +40,8 @@
 </template>
 
 <script>
-  import axios from "axios"
+  import RestService from '@/services/rest.service'
+  import EventBus from '@/common/EventBus'
 
   export default {
     props: {
@@ -59,26 +60,40 @@
       sendFiles() {
         if(!this.isChoosingBranches) {
           this.isSending = true
-          axios.get('http://localhost:8081/api/sendFiles').then((response) => {
-            this.isSending = false
-            this.completedRecipients = response.data
-          }).catch(() => {
-            alert('При отправке произошла ошибка')
-          })
+          RestService.sendFiles().then(
+              (response) => {
+              this.isSending = false
+              this.completedRecipients = response.data
+              },
+              error => {
+                this.content =
+                    (error.response && error.response.data && error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                if (error.response && error.response.status === 403) {
+                  EventBus.dispatch("logout");
+                }
+              }
+          )
         } else {
           this.isSending = true
           this.isChoosingBranches = false
-          axios({
-            url: 'http://localhost:8081/api/sendFiles',
-            method: 'post',
-            data: this.selectedBranches
-          }).then((response) => {
-            this.selectedBranches = []
-            this.isSending = false
-            this.completedRecipients = response.data
-          }).catch(() => {
-            alert('При отправке произошла ошибка')
-          })
+          RestService.postSendFiles(this.selectedBranches).then(
+              (response) => {
+                this.selectedBranches = []
+                this.isSending = false
+                this.completedRecipients = response.data
+              },
+              error => {
+                this.content =
+                    (error.response && error.response.data && error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                if (error.response && error.response.status === 403) {
+                  EventBus.dispatch("logout");
+                }
+              }
+          )
         }
       },
       activateChoosing() {
