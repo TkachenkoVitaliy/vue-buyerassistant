@@ -1,5 +1,5 @@
 <template>
-  <div class='undefined_product_group_container'>
+  <div class='undefined_product_group_container' v-if='undefinedTypes.length > 0'>
     <p>
       <b>НЕРАСПРЕДЕЛЕННЫЕ ВИДЫ ПРОДУКЦИИ</b>
     </p>

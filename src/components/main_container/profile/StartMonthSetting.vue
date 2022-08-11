@@ -1,6 +1,6 @@
 <template>
   <div class='start_month_setting_container'>
-    <table class='recipients_table'>
+    <table class='recipients_table' v-if='branchesSettings.length > 0'>
       <caption>НАЧАЛЬНЫЙ ПЕРИОД ФАЙЛА</caption>
       <tr>
         <th class='th_start_month'>Филиал</th>
@@ -54,6 +54,7 @@
       <v-btn v-on:click='saveSettings' class='save_btn'>СОХРАНИТЬ</v-btn>
       <v-btn v-on:click='cancelSettings' class='cancel_btn'>ОТМЕНА</v-btn>
     </div>
+    <div v-if='branchesSettings.length === 0' style='color: red;'>СЕРВЕР НЕ ОТВЕЧАЕТ</div>
   </div>
 </template>
 

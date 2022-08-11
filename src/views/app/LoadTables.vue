@@ -3,6 +3,7 @@
     <LoadTablesSettings
         v-bind:settings = 'userSettings'
         v-on:updateSettings = 'postUserSettings'
+        v-if='loadTables.length > 0'
     />
     <FactoriesLoadTables
         v-bind:loadTables = 'loadTables'
