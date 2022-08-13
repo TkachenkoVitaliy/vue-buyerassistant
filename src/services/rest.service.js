@@ -44,7 +44,7 @@ class RestService {
         return api.post('/api/loadTables/settings', userSettings)
     }
 
-    //Profile
+    //Settings
     getBranchesSettings() {
         return api.get('/api/branches_settings')
     }
@@ -76,6 +76,11 @@ class RestService {
 
     postUploadAccept(formData) {
         return api.post('/api/uploadAccept', formData)
+    }
+
+    //Orders
+    getSpecs() {
+        return api.get('/api/specs')
     }
 
 }

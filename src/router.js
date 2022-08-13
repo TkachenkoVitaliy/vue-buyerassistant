@@ -34,8 +34,13 @@ export default new Router({
                     component: () => import('@/views/app/LoadTables')
                 },
                 {
-                    path: 'power_of_attorney',
+                    path: 'orders',
                     meta: {tabId : 5},
+                    component: () => import('@/views/app/Orders')
+                },
+                {
+                    path: 'power_of_attorney',
+                    meta: {tabId : 6},
                     component: () => import('@/views/app/PowerOfAttorney')
                 },
                 {
