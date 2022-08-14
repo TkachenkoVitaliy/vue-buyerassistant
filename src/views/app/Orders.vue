@@ -3,25 +3,42 @@
     <v-data-table
         v-model='selected'
         :headers='headers'
-        :items='specs'
-        :search='search'
+        :items='filteredSpecs'
         :items-per-page='-1'
+        item-key='name'
         disable-sort
         hide-default-footer
-        item-key='id'
         dense
         style='max-width: 90%'
     >
-      <template v-slot:header.supplier='{ header }'>
-        <v-autocomplete
-            v-model='search'
-            :items='specs'
-            item-text='supplier'
-            :label='header.text'
-            v-bind='selected'
-            dense
-            clearable
-        ></v-autocomplete>
+      <template v-slot:header='{ header }'>
+        <tr class='grey lighten-3'>
+          <th v-for='header in headers' :key='header.text' class='specs_table_th'>
+            <div v-if="filters.hasOwnProperty(header.value)">
+              <v-autocomplete
+                  flat
+                  hide-details
+                  multiple
+                  dense
+                  small-chips
+                  min-height='38px'
+                  :menu-props='{ minHeight: 304, offsetY: true }'
+                  clearable
+                  :items="columnValueList(header.value)"
+                  v-model='filters[header.value]'
+              >
+                <template v-slot:selection="{ item, index }">
+                  <v-chip v-if="index < 3">
+                    <span>{{ item }}</span>
+                  </v-chip>
+                  <span v-if="index === 3" class="grey--text caption" >
+                    (+{{ filters[header.value].length - 3 }} others)
+                  </span>
+                </template>
+              </v-autocomplete>
+            </div>
+          </th>
+        </tr>
       </template>
     </v-data-table>
   </div>
@@ -35,8 +52,19 @@
     data() {
       return {
         specs: [],
-        selected: "",
-        search: [],
+        selected: [],
+        filters: {
+          supplier: [],
+          branch: [],
+          productType: [],
+          profile: [],
+          grade: [],
+          spec: [],
+          acceptMonth: [],
+          acceptYear: [],
+          accepted: [],
+          shipped: []
+        },
         headers: [
           {
             text: 'Поставщик',
@@ -67,6 +95,8 @@
         RestService.getSpecs().then(
             (response) => {
               this.specs = response.data
+              this.specs.forEach(item => item['value'] = false)
+              console.log(this.specs)
             },
             error => {
               this.content =
@@ -78,16 +108,21 @@
               }
             }
         )
+      },
+      columnValueList(val) {
+        if(this.filters[val].length === 0) {
+          return this.filteredSpecs.map((d) => d[val])
+        }
+        return this.specs.map((d) => d[val])
       }
     },
     computed: {
-      itemsForSelected() {
-        if (this.search.length) {
-          console.log()
-          console.log(this.specs.filter(item => this.search.includes(item.supplier)))
-          return this.specs.filter(item => this.search.includes(item.supplier))
-        }
-        return this.specs
+      filteredSpecs() {
+        return this.specs.filter((d) => {
+          return Object.keys(this.filters).every((f) => {
+            return this.filters[f].length < 1 || this.filters[f].includes(d[f])
+          })
+        })
       }
     },
     mounted() {
@@ -97,5 +132,8 @@
 </script>
 
 <style>
+  .v-select__slot {
+    max-height: 500px !important;
+  }
 
 </style>
