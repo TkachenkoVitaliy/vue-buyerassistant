@@ -109,11 +109,29 @@
             }
         )
       },
+      haveOtherActiveFilters(val) {
+        let result = false;
+        for(let key in this.filters) {
+          if(key != val) {
+            if (this.filters[key].length > 0) {
+              result = true;
+            }
+          }
+        }
+        return result;
+      },
       columnValueList(val) {
         if(this.filters[val].length === 0) {
           return this.filteredSpecs.map((d) => d[val])
         }
-        return this.specs.map((d) => d[val])
+        return this.prevFilteredSpecs(val).map((d) => d[val])
+      },
+      prevFilteredSpecs(currentFilter) {
+        return this.specs.filter((d) => {
+          return Object.keys(this.filters).every((f) => {
+            return f == currentFilter || this.filters[f].length < 1 || this.filters[f].includes(d[f])
+          })
+        })
       }
     },
     computed: {
