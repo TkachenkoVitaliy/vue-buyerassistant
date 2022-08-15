@@ -122,9 +122,9 @@
       },
       columnValueList(val) {
         if(this.filters[val].length === 0) {
-          return this.filteredSpecs.map((d) => d[val])
+          return this.filteredSpecs.map((d) => d[val]).sort()
         }
-        return this.prevFilteredSpecs(val).map((d) => d[val])
+        return this.prevFilteredSpecs(val).map((d) => d[val]).sort()
       },
       prevFilteredSpecs(currentFilter) {
         return this.specs.filter((d) => {
