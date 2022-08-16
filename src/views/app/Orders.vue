@@ -9,7 +9,7 @@
         disable-sort
         hide-default-footer
         dense
-        style='max-width: 90%'
+        style='table-layout: fixed'
     >
       <template v-slot:header='{ header }'>
         <tr class='grey lighten-3'>
@@ -149,9 +149,17 @@
   }
 </script>
 
-<style>
+<style scoped>
   .v-select__slot {
     max-height: 500px !important;
   }
 
+  .v-data-table__wrapper {
+    max-width: 100%;
+  }
+
+  table {
+    width: 100%;
+    table-layout: fixed;
+  }
 </style>
