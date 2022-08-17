@@ -20,7 +20,6 @@
                   hide-details
                   multiple
                   dense
-                  small-chips
                   min-height='38px'
                   :menu-props='{ minHeight: 304, offsetY: true }'
                   clearable
@@ -28,11 +27,11 @@
                   v-model='filters[header.value]'
               >
                 <template v-slot:selection="{ item, index }">
-                  <v-chip v-if="index < 3">
-                    <span>{{ item }}</span>
-                  </v-chip>
-                  <span v-if="index === 3" class="grey--text caption" >
-                    (+{{ filters[header.value].length - 3 }} others)
+                  <span v-if="index < 2" class="grey--text caption" >
+                    {{ item }}&ensp;
+                  </span>
+                  <span v-if='index === 2' class="grey--text caption">
+                    (+{{ filters[header.value].length - 2 }} других)
                   </span>
                 </template>
               </v-autocomplete>
@@ -41,6 +40,11 @@
         </tr>
       </template>
     </v-data-table>
+
+    <div class='loading_image_container'>
+      <img src='@/assets/loading.gif' v-if='isLoading'>
+    </div>
+
   </div>
 </template>
 
@@ -87,22 +91,25 @@
           // { text: 'Дата отгрузки', value: 'shippedDate' },
           // { text: 'Номер ТС', value: 'vehicleNumber' },
           // { text: 'Цена', value: 'price' }
-        ]
+        ],
+        isLoading: false
       }
     },
     methods: {
       getAllOrders() {
+        this.isLoading = true;
         RestService.getSpecs().then(
             (response) => {
               this.specs = response.data
               this.specs.forEach(item => item['value'] = false)
-              console.log(this.specs)
+              this.isLoading = false;
             },
             error => {
               this.content =
                   (error.response && error.response.data && error.response.data.message) ||
                   error.message ||
                   error.toString();
+              this.isLoading = false;
               if (error.response && error.response.status === 403) {
                 EventBus.dispatch("logout");
               }
@@ -150,6 +157,11 @@
 </script>
 
 <style scoped>
+  .loading_image_container {
+    padding-top: 100px;
+    text-align: center;
+  }
+
   .v-select__slot {
     max-height: 500px !important;
   }

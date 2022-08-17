@@ -39,9 +39,9 @@ export default new Router({
                     component: () => import('@/views/app/Orders')
                 },
                 {
-                    path: 'power_of_attorney',
+                    path: 'loa',
                     meta: {tabId : 6},
-                    component: () => import('@/views/app/PowerOfAttorney')
+                    component: () => import('@/views/app/LetterOfAuthorization')
                 },
                 {
                     path: 'error',
