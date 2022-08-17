@@ -33,7 +33,7 @@
     justify-content: center;
     text-align: center;
     list-style: none;
-    height: 16.6%;
+    height: 15.5%;
     border: dimgrey 1px solid;
   }
 

@@ -1,8 +1,5 @@
 import api from './api'
 
-const API_URL = 'http://localhost:8081/api/'
-// const API_URL = 'http://194.87.238.214:8081/api/'
-
 
 class RestService {
 
@@ -81,6 +78,11 @@ class RestService {
     //Orders
     getSpecs() {
         return api.get('/api/specs')
+    }
+
+    //LettersOfAuthorization
+    getLettersOfAuthorization() {
+        return api.get('/api/lettersOfAuthorization')
     }
 
 }
