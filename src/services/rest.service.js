@@ -93,6 +93,10 @@ class RestService {
         return api.get('/api/suppliers')
     }
 
+    getDrivers() {
+        return api.get('/api/drivers')
+    }
+
 }
 
 export default new RestService()
