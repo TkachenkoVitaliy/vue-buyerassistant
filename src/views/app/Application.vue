@@ -27,7 +27,7 @@
           {id: 3, title: 'ПОЧТОВАЯ РАССЫЛКА', isActive: false, link: '/email_newsletter'},
           {id: 4, title: 'ШАХМАТКА', isActive: false, link: '/load_tables'},
           {id: 5, title: 'ЗАКАЗЫ', isActive: false, link: '/orders'},
-          {id: 6, title: 'ДОВЕРЕННОСТИ', isActive: false, link: '/loa'},
+          {id: 6, title: 'ДОВЕРЕННОСТИ', isActive: false, link: '/loas'},
         ]
       }
     },

@@ -85,6 +85,14 @@ class RestService {
         return api.get('/api/lettersOfAuthorization')
     }
 
+    getPrincipals() {
+        return api.get('/api/principals')
+    }
+
+    getSuppliers() {
+        return api.get('/api/suppliers')
+    }
+
 }
 
 export default new RestService()

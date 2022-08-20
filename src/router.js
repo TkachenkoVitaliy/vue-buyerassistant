@@ -39,9 +39,14 @@ export default new Router({
                     component: () => import('@/views/app/Orders')
                 },
                 {
-                    path: 'loa',
+                    path: 'loas',
                     meta: {tabId : 6},
-                    component: () => import('@/views/app/LetterOfAuthorization')
+                    component: () => import('@/views/app/LetterOfAuthorization'),
+                },
+                {
+                    path: 'loas/create',
+                    meta: {tabId : 6},
+                    component: () => import('@/views/app/CreateLetterOfAuthorization')
                 },
                 {
                     path: 'error',

@@ -1,9 +1,22 @@
 <template>
   <div>
-    <v-data-table
-        :headers='headers'
-        :items='letters'
-    ></v-data-table>
+    <v-card style="height: 92vh">
+      <v-card-title>
+        <div class='header_loa_container'>
+          <p>Доверенности</p>
+          <v-btn to='loas/create'>
+              СОЗДАТЬ
+          </v-btn>
+        </div>
+      </v-card-title>
+
+      <v-card-text>
+        <v-data-table
+            :headers='headers'
+            :items='letters'
+        ></v-data-table>
+      </v-card-text>
+    </v-card>
   </div>
 </template>
 
@@ -52,3 +65,11 @@
   }
 
 </script>
+
+<style>
+  .header_loa_container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
