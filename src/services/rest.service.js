@@ -93,8 +93,16 @@ class RestService {
         return api.get('/api/suppliers')
     }
 
+    postSuppliers(data) {
+        return api.post('/api/suppliers', data)
+    }
+
     getDrivers() {
         return api.get('/api/drivers')
+    }
+
+    getNomenclatures() {
+        return api.get('api/nomenclatures')
     }
 
 }

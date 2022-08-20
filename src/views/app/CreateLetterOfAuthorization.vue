@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card style='height: 92vh; padding: 2vh 6vw'>
+    <v-card style='height: 92vh; padding: 0vh 6vw'>
       <v-card-title>СОЗДАНИЕ ДОВЕРЕННОСТИ</v-card-title>
       <v-card-text>
         <v-row
@@ -12,6 +12,7 @@
           >
             <p class='subtitle_text'>Доверитель</p>
             <v-autocomplete
+                dense
                 :items = 'principals'
                 :item-text='item => item.name'
             >
@@ -49,6 +50,7 @@
               <v-menu>
                <template v-slot:activator="{ on, attrs }">
                  <v-text-field
+                     dense
                      v-model="formattedDate"
                      prepend-icon="mdi-calendar"
                      v-bind="attrs"
@@ -73,6 +75,7 @@
           >
             <p class='subtitle_text'>№</p>
             <v-text-field
+                dense
                 v-model='number'
                 readonly
             ></v-text-field>
@@ -88,13 +91,14 @@
           >
             <p class='subtitle_text'>Поставщик</p>
             <v-autocomplete
+                dense
                 :items = 'suppliers'
                 :item-text='item => item.supplierName'
             >
               <template v-slot:append-item>
                 <div style="padding-left: 0px; max-height: 2rem">
                   <v-btn
-                      to="/email_newsletter"
+                      @click='toggleSupplierDialog'
                       block
                       text
                       large
@@ -122,6 +126,7 @@
           >
             <p class='subtitle_text'>Водитель</p>
             <v-autocomplete
+                dense
                 :items = 'drivers'
                 :item-text='item => item.name + " " + item.passportSeries + " " + item.passportNumber'
             >
@@ -159,11 +164,13 @@
             <v-data-table
                 :headers='headers'
                 :items='letterRows'
+                disable-sort
                 hide-default-footer
                 dense
             >
               <template v-slot:item.nomenclature = 'props'>
                 <v-autocomplete
+                    solo-inverted
                     dense
                     v-model='props.item.nomenclature'
                     :items = 'nomenclatures'
@@ -194,6 +201,7 @@
               </template>
               <template v-slot:item.tonnage = 'props'>
                 <v-text-field
+                    solo-inverted
                     dense
                     v-model='props.item.tonnage'
                 ></v-text-field>
@@ -203,16 +211,101 @@
             <div style="display: flex; justify-content: space-between">
               <v-btn
                   @click='addRow'
-                  class='primary'
-              >ДОБАВИТЬ</v-btn>
+                  fab
+                  color='green'
+                  small
+                  dark
+              >
+                <v-icon dark>
+                  mdi-plus
+                </v-icon>
+              </v-btn>
               <v-btn
                   @click='removeRow'
-                  class='red white--text'
-              >УДАЛИТЬ</v-btn>
+                  fab
+                  color='red'
+                  small
+                  dark
+              >
+                <v-icon dark>
+                  mdi-minus
+                </v-icon>
+              </v-btn>
             </div>
           </v-col>
-
         </v-row>
+
+        <v-row>
+          <v-spacer></v-spacer>
+          <v-col
+              cols='12'
+              lg='2'
+          >
+            <v-btn
+                class='darken-4 green--text'
+            >СОЗДАТЬ</v-btn>
+          </v-col>
+          <v-spacer></v-spacer>
+          <v-col
+              cols='12'
+              lg='3'
+          >
+            <v-btn
+                class='primary'
+            >СОЗДАТЬ И СКАЧАТЬ</v-btn>
+          </v-col>
+          <v-spacer></v-spacer>
+          <v-col
+              cols='12'
+              lg='2'
+          >
+            <v-btn
+                class='red--text'
+            >ОТМЕНА</v-btn>
+          </v-col>
+          <v-spacer></v-spacer>
+        </v-row>
+
+
+        <v-dialog
+            v-model='isSupplierDialog'
+            max-width="50vw"
+        >
+          <v-card class='dialog_card'>
+            <v-card-title class="text-h5">
+              Добавить поставщика
+            </v-card-title>
+
+            <v-form
+            >
+              <v-text-field
+                  label='Введите поставщика'
+                  required
+                  v-model='createdSupplier.supplierName'
+              ></v-text-field>
+            </v-form>
+
+            <v-card-actions>
+
+              <v-btn
+                  @click='addSupplier'
+              >
+                Добавить
+              </v-btn>
+
+              <v-spacer></v-spacer>
+
+              <v-btn
+                  @click='toggleSupplierDialog'
+              >
+                Отмена
+              </v-btn>
+
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+
+
       </v-card-text>
     </v-card>
   </div>
@@ -231,20 +324,25 @@
         drivers: [],
         rows: [],
         suppliers: [],
-        nomenclatures: [{id: 1, name: 'Арматура Пруток МД 12*11700 А500С'}],
+        nomenclatures: [],
         letterRows: [],
         headers: [
           {
-            text: 'Номенклатура',
-            align: 'left',
+            text: 'НОМЕНКЛАТУРА',
+            align: 'center',
             value: 'nomenclature'
           },
           {
-            text: 'Тоннаж',
+            text: 'ТОННАЖ',
             align: 'center',
             value: 'tonnage'
           }
-        ]
+        ],
+        isPrincipalsDialog: false,
+        isSupplierDialog: false,
+        createdSupplier: {id: null, supplierName: null},
+        isDriverDialog: false,
+        isNomenclatureDialog: false
       }
     },
     methods: {
@@ -299,6 +397,23 @@
             }
         )
       },
+      getAllNomenclatures() {
+        RestService.getNomenclatures().then((response) =>
+            {
+              this.nomenclatures = response.data
+            },
+            error => {
+              this.content =
+                  (error.response && error.response.data && error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+              this.isLoading = false;
+              if (error.response && error.response.status === 403) {
+                EventBus.dispatch("logout");
+              }
+            }
+        )
+      },
       formatDate (date) {
         if (!date) return null
 
@@ -311,6 +426,34 @@
       removeRow() {
         if(this.letterRows.length > 1) {
           this.letterRows.pop()
+        } else {
+          this.letterRows.pop()
+          this.letterRows.push({})
+        }
+      },
+      toggleSupplierDialog() {
+        this.createdSupplier = {id: null, supplierName: null}
+        this.isSupplierDialog = !this.isSupplierDialog
+      },
+      addSupplier() {
+        if (this.createdSupplier.supplierName != null && this.createdSupplier.supplierName != '') {
+          RestService.postSuppliers(this.createdSupplier).then((response) =>
+              {
+                this.getAllSuppliers()
+              },
+              error => {
+                this.content =
+                    (error.response && error.response.data && error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                this.isLoading = false;
+                if (error.response && error.response.status === 403) {
+                  EventBus.dispatch("logout");
+                }
+              }
+          )
+          this.createdSupplier = {id: null, supplierName: null}
+          this.toggleSupplierDialog()
         }
       },
       initialize() {
@@ -333,6 +476,7 @@
       this.getAllPrincipals()
       this.getAllSuppliers()
       this.getAllDrivers()
+      this.getAllNomenclatures()
       this.initialize()
       let currentDate = new Date()
       let day = currentDate.getDate() < 10 ? "0" + currentDate.getDate() : currentDate.getDate()
@@ -356,6 +500,7 @@
     color: #00689a;
   }
 
-
-
+  .dialog_card {
+    padding: 4% 10%;
+  }
 </style>
