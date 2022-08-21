@@ -19,7 +19,6 @@
         v-bind:has_error='hasError'
         v-bind:message='message'
     />
-<!--    <p v-bind:class='[hasError ? errorClass : okClass, upload_accept_status]'>{{ status }}</p>-->
   </div>
 </template>
 

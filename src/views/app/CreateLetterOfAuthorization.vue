@@ -114,28 +114,14 @@
             <p class='subtitle_text'>Водитель</p>
             <v-autocomplete
                 dense
+                v-model='letterOfAuthorization.driver'
                 :items='drivers'
                 :item-text='item => item.name + " " + item.passportSeries + " " + item.passportNumber'
             >
               <template v-slot:append-item>
-                <div style="padding-left: 0px; max-height: 2rem">
-                  <v-btn
-                      to="/upload_accept_and_shipment"
-                      block
-                      text
-                      large
-                      style="font-size: 1em"
-                  >
-                    <v-icon
-                        left
-                        large
-                        color="green"
-                    >
-                      mdi-plus-circle
-                    </v-icon>
-                    Создать
-                  </v-btn>
-                </div>
+                <DriverDialog
+                    @added='setNewDriver($event)'
+                />
               </template>
             </v-autocomplete>
           </v-col>
@@ -251,12 +237,14 @@
 import RestService from '@/services/rest.service'
 import SupplierDialog from '@/components/main_container/letter_of_authorization/SupplierDialog'
 import NomenclatureDialog from '@/components/main_container/letter_of_authorization/NomenclatureDialog'
+import DriverDialog from '@/components/main_container/letter_of_authorization/DriverDialog'
 import EventBus from '@/common/EventBus'
 
 export default {
   components: {
     SupplierDialog,
-    NomenclatureDialog
+    NomenclatureDialog,
+    DriverDialog
   },
   data() {
     return {
@@ -348,6 +336,11 @@ export default {
             }
           }
       )
+    },
+    setNewDriver(driver) {
+      console.log(driver)
+      this.getAllDrivers()
+      this.letterOfAuthorization.driver = driver
     },
     getAllNomenclatures() {
       RestService.getNomenclatures().then((response) => {

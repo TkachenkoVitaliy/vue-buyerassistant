@@ -101,12 +101,16 @@ class RestService {
         return api.get('/api/drivers')
     }
 
+    postDrivers(data) {
+        return api.post('/api/drivers', data)
+    }
+
     getNomenclatures() {
-        return api.get('api/nomenclatures')
+        return api.get('/api/nomenclatures')
     }
 
     postNomenclatures(data) {
-        return api.post('api/nomenclatures', data)
+        return api.post('/api/nomenclatures', data)
     }
 
 }
