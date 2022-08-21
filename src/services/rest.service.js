@@ -105,6 +105,10 @@ class RestService {
         return api.get('api/nomenclatures')
     }
 
+    postNomenclatures(data) {
+        return api.post('api/nomenclatures', data)
+    }
+
 }
 
 export default new RestService()

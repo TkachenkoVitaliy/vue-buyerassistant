@@ -2,7 +2,7 @@
   <div>
     <div style="padding-left: 0px; max-height: 2rem">
       <v-btn
-          @click='toggleSupplierDialog'
+          @click='toggleNomenclatureDialog'
           block
           text
           large
@@ -19,27 +19,27 @@
       </v-btn>
 
       <v-dialog
-          v-model='isSupplierDialog'
+          v-model='isNomenclatureDialog'
           max-width="50vw"
       >
         <v-card class='dialog_card'>
           <v-card-title class="text-h5">
-            Добавить поставщика
+            Добавить номенклатуру
           </v-card-title>
 
           <v-form
           >
             <v-text-field
-                label='Введите поставщика'
+                label='Введите номенклатуру'
                 required
-                v-model='createdSupplier.supplierName'
+                v-model='createdNomenclature.name'
             ></v-text-field>
           </v-form>
 
           <v-card-actions>
 
             <v-btn
-                @click='addSupplier'
+                @click='addNomenclature'
             >
               Добавить
             </v-btn>
@@ -47,7 +47,7 @@
             <v-spacer></v-spacer>
 
             <v-btn
-                @click='toggleSupplierDialog'
+                @click='toggleNomenclatureDialog'
             >
               Отмена
             </v-btn>
@@ -64,23 +64,28 @@
   import EventBus from "@/common/EventBus"
 
   export default {
+    props: ['currentindex'],
     data() {
       return {
-        isSupplierDialog: false,
-        createdSupplier: {id: null, supplierName: null}
+        isNomenclatureDialog: false,
+        createdNomenclature: {id: null, name: null}
       }
     },
     methods: {
-      toggleSupplierDialog() {
-        this.createdSupplier = {id: null, supplierName: null}
-        this.isSupplierDialog = !this.isSupplierDialog
+      toggleNomenclatureDialog() {
+        this.createdNomenclature = {id: null, name: null}
+        this.isNomenclatureDialog = !this.isNomenclatureDialog
       },
-      addSupplier() {
-        if (this.createdSupplier.supplierName != null && this.createdSupplier.supplierName != '') {
+      addNomenclature() {
+        if (this.createdNomenclature.name != null && this.createdNomenclature.name != '') {
 
-          RestService.postSuppliers(this.createdSupplier).then((response) =>
+          RestService.postNomenclatures(this.createdNomenclature).then((response) =>
               {
-                this.$emit('added', response.data)
+                let result = {
+                  nomenclature: response.data,
+                  index: this.currentindex
+                }
+                this.$emit('added', result)
               },
               error => {
                 this.content =
@@ -93,7 +98,7 @@
                 }
               }
           )
-          this.toggleSupplierDialog()
+          this.toggleNomenclatureDialog()
         }
       }
     }
