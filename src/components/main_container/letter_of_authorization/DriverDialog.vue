@@ -209,7 +209,6 @@
         } else {
           RestService.postDrivers(this.createdDriver).then((response) =>
               {
-                console.log(response.data)
                 this.$emit('added', response.data)
               },
               error => {

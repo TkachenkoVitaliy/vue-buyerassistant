@@ -13,28 +13,14 @@
             <p class='subtitle_text'>Доверитель</p>
             <v-autocomplete
                 dense
+                v-model="letterOfAuthorization.principal"
                 :items='principals'
                 :item-text='item => item.name'
             >
               <template v-slot:append-item>
-                <div style="padding-left: 0px; max-height: 2rem">
-                  <v-btn
-                      to="/settings"
-                      block
-                      text
-                      large
-                      style="font-size: 1em"
-                  >
-                    <v-icon
-                        left
-                        large
-                        color="green"
-                    >
-                      mdi-plus-circle
-                    </v-icon>
-                    Создать
-                  </v-btn>
-                </div>
+                <PrincipalDialog
+                    @added='setNewPrincipal($event)'
+                />
               </template>
             </v-autocomplete>
           </v-col>
@@ -221,6 +207,7 @@
               lg='2'
           >
             <v-btn
+                @click='goBack'
                 class='red--text'
             >ОТМЕНА
             </v-btn>
@@ -238,13 +225,15 @@ import RestService from '@/services/rest.service'
 import SupplierDialog from '@/components/main_container/letter_of_authorization/SupplierDialog'
 import NomenclatureDialog from '@/components/main_container/letter_of_authorization/NomenclatureDialog'
 import DriverDialog from '@/components/main_container/letter_of_authorization/DriverDialog'
+import PrincipalDialog from '@/components/main_container/letter_of_authorization/PrincipalDialog'
 import EventBus from '@/common/EventBus'
 
 export default {
   components: {
     SupplierDialog,
     NomenclatureDialog,
-    DriverDialog
+    DriverDialog,
+    PrincipalDialog
   },
   data() {
     return {
@@ -300,6 +289,9 @@ export default {
             }
           }
       )
+    },
+    setNewPrincipal(principal) {
+
     },
     getAllSuppliers() {
       RestService.getSuppliers().then((response) => {
@@ -397,6 +389,9 @@ export default {
           tonnage: null
         }
       ]
+    },
+    goBack() {
+      this.$router.push('/loas')
     }
   },
   computed: {
