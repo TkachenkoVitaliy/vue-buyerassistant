@@ -12,6 +12,7 @@
           >
             <p class='subtitle_text'>Доверитель</p>
             <v-autocomplete
+                clearable
                 dense
                 v-model="letterOfAuthorization.principal"
                 :items='principals'
@@ -77,6 +78,7 @@
           >
             <p class='subtitle_text'>Поставщик</p>
             <v-autocomplete
+                clearable
                 dense
                 v-model="letterOfAuthorization.supplier"
                 :items='suppliers'
@@ -99,6 +101,7 @@
           >
             <p class='subtitle_text'>Водитель</p>
             <v-autocomplete
+                clearable
                 dense
                 v-model='letterOfAuthorization.driver'
                 :items='drivers'
@@ -291,7 +294,8 @@ export default {
       )
     },
     setNewPrincipal(principal) {
-
+      this.getAllPrincipals()
+      this.letterOfAuthorization.principal = principal
     },
     getAllSuppliers() {
       RestService.getSuppliers().then((response) => {

@@ -89,6 +89,10 @@ class RestService {
         return api.get('/api/principals')
     }
 
+    postPrincipals(data) {
+        return api.post('/api/principals', data)
+    }
+
     getSuppliers() {
         return api.get('/api/suppliers')
     }

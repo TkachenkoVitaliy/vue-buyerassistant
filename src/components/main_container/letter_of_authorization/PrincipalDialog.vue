@@ -157,12 +157,43 @@
       },
       addPrincipal() {
         let someError = false
+        let regExpInn = /^[0-9]{10,12}$/
+
+        if(this.createdPrincipal.inn == null || this.createdPrincipal.inn == '') {
+          this.info.push('Введите ИНН')
+          someError = true
+        } else {
+          if(!regExpInn.test(this.createdPrincipal.inn)) {
+            this.info.push('Введите корректный инн')
+            someError = true
+          }
+        }
+
+        if(this.createdPrincipal.name == null || this.createdPrincipal.name == '') {
+          this.info.push('Введите краткое наименование организации')
+          someError = true
+        }
+
+        if(this.createdPrincipal.address == null || this.createdPrincipal.address == '') {
+          this.info.push('Введите юр адрес организации')
+          someError = true
+        }
+
+        if(this.createdPrincipal.directorName == null || this.createdPrincipal.directorName == '') {
+          this.info.push('Введите ФИО руководителя')
+          someError = true
+        }
+
+        if(this.createdPrincipal.bankAccount == null || this.createdPrincipal.bankAccount == '') {
+          this.info.push('Введите данные по банковскому счету')
+          someError = true
+        }
 
         if(someError) {
           this.haveError = true
           return
         } else {
-          RestService.postDrivers(this.createdPrincipal).then((response) =>
+          RestService.postPrincipals(this.createdPrincipal).then((response) =>
               {
                 this.$emit('added', response.data)
               },
