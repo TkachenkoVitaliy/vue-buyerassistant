@@ -101,6 +101,14 @@ class RestService {
         return api.post('/api/suppliers', data)
     }
 
+    putSuppliers(data) {
+        return api.put('/api/suppliers', data)
+    }
+
+    deleteSuppliers(id) {
+        return api.delete('/api/suppliers/' + id)
+    }
+
     getDrivers() {
         return api.get('/api/drivers')
     }

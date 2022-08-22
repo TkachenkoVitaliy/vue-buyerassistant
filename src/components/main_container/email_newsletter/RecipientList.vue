@@ -53,7 +53,9 @@
         message='Подтвердите удаление получателя'
         v-bind:info='infoForDelete'
         v-bind:id='recipientForDeleteId'
+        v-bind:is-active='isDeleteDialogActive'
         v-on:confirmAction='removeRecipient'
+        v-on:cancelAction = 'cancelRemoveRecipient'
         ref='deleteDialog'
     />
 
@@ -92,6 +94,7 @@
     },
     data() {
       return {
+        isDeleteDialogActive: false,
         isModalActive: false,
         recipient: {
           branchName: null,
@@ -149,6 +152,7 @@
       removeRecipient(id) {
         RestService.deleteRecipient(id).then(
             () => {
+              this.isDeleteDialogActive = false
               this.$emit('requestRecipients')
             },
             error => {
@@ -162,10 +166,13 @@
             }
         )
       },
+      cancelRemoveRecipient() {
+        this.isDeleteDialogActive = false
+      },
       activateDeleteDialog(recipient) {
         this.infoForDelete = recipient.branchName + ' ' + recipient.emailAddress
         this.recipientForDeleteId = recipient.id
-        this.$refs.deleteDialog.toggle()
+        this.isDeleteDialogActive = true
       }
     },
     components: {DeleteDialog},

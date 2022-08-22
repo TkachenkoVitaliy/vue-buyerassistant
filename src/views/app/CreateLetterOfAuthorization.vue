@@ -85,9 +85,81 @@
                 :item-text='item => item.supplierName'
                 return-object
             >
+              <template v-slot:item="{ item }">
+                <v-list-item-content>
+                  <v-list-item-title v-text="item.supplierName"></v-list-item-title>
+                </v-list-item-content>
+                <v-list-item-action>
+                  <v-btn
+                      fab
+                      x-small
+                      dark
+                      color = 'primary'
+                      @click="editSupplier(item)"
+                  >
+                    <v-icon
+                        x-small
+                        dark
+
+                    >
+                      mdi-pencil
+                    </v-icon>
+                  </v-btn>
+                </v-list-item-action>
+
+                <v-list-item-action>
+                  <v-btn
+                      fab
+                      x-small
+                      dark
+                      color = 'red'
+                      @click="deleteSupplier(item)"
+                  >
+                    <v-icon
+                        x-small
+                        dark
+                    >
+                      mdi-delete
+                    </v-icon>
+                  </v-btn>
+                </v-list-item-action>
+
+                <DeleteDialog
+                    message = 'Удалить поставщика'
+                    v-bind:info = item.supplierName
+                    v-bind:id = item.id
+                    v-bind:isActive = 'isDeleteSupplierDialog'
+                    @confirmAction='confirmDeleteSupplier'
+                    @cancelAction='cancelDeleteSupplier'
+                    ref='deleteSupplierDialog'
+                />
+              </template>
+
               <template v-slot:append-item>
+                <div style="padding-left: 0px; max-height: 2rem">
+                  <v-btn
+                      @click='createSupplier'
+                      block
+                      text
+                      large
+                      style="font-size: 1em"
+                  >
+                    <v-icon
+                        left
+                        large
+                        color="green"
+                    >
+                      mdi-plus-circle
+                    </v-icon>
+                    Создать
+                  </v-btn>
+                </div>
                 <SupplierDialog
-                    @added='setNewSupplier($event)'
+                    v-bind:dialog = 'isSupplierDialog'
+                    v-bind:title = 'supplierDialogTitle'
+                    v-bind:supplier = 'currentSupplier'
+                    @cancel='cancelEditSupplier'
+                    @save='setNewSupplier($event)'
                 />
               </template>
             </v-autocomplete>
@@ -125,7 +197,7 @@
           >
             <v-data-table
                 :headers='headers'
-                :items='letterRows'
+                :items='letterOfAuthorization.letterRows'
                 disable-sort
                 hide-default-footer
                 dense
@@ -225,6 +297,7 @@
 
 <script>
 import RestService from '@/services/rest.service'
+import DeleteDialog from '@/components/other/DeleteDialog'
 import SupplierDialog from '@/components/main_container/letter_of_authorization/SupplierDialog'
 import NomenclatureDialog from '@/components/main_container/letter_of_authorization/NomenclatureDialog'
 import DriverDialog from '@/components/main_container/letter_of_authorization/DriverDialog'
@@ -233,6 +306,7 @@ import EventBus from '@/common/EventBus'
 
 export default {
   components: {
+    DeleteDialog,
     SupplierDialog,
     NomenclatureDialog,
     DriverDialog,
@@ -257,7 +331,6 @@ export default {
       rows: [],
       suppliers: [],
       nomenclatures: [],
-      letterRows: [],
       headers: [
         {
           text: 'НОМЕНКЛАТУРА',
@@ -270,7 +343,11 @@ export default {
           value: 'tonnage'
         }
       ],
-      createdSupplierName: null,
+      isSupplierDialog: false,
+      isDeleteSupplierDialog: false,
+      supplierDialogTitle: null,
+      currentSupplier: null,
+
       isPrincipalsDialog: false,
       isDriverDialog: false,
       isNomenclatureDialog: false
@@ -313,10 +390,51 @@ export default {
           }
       )
     },
+    deleteSupplier(supplier) {
+      this.letterOfAuthorization.supplier = null
+      this.isDeleteSupplierDialog = true
+    },
+    confirmDeleteSupplier(id) {
+      RestService.deleteSuppliers(id).then((response) => {
+            this.getAllSuppliers()
+            this.$nextTick(() => this.isDeleteSupplierDialog = false)
+          },
+          error => {
+            this.content =
+                (error.response && error.response.data && error.response.data.message) ||
+                error.message ||
+                error.toString();
+            this.isLoading = false;
+            if (error.response && error.response.status === 403) {
+              EventBus.dispatch("logout");
+            }
+          }
+      )
+    },
+    cancelDeleteSupplier() {
+      this.isDeleteSupplierDialog = false
+    },
+    createSupplier() {
+      this.currentSupplier = {id: null, name: null}
+      this.isSupplierDialog = true
+      this.supplierDialogTitle = 'Создание поставщика'
+    },
+    cancelEditSupplier() {
+      this.currentSupplier = {id: null, name: null}
+      this.getAllSuppliers()
+      this.isSupplierDialog = false
+    },
+    editSupplier(supplier) {
+      this.currentSupplier = supplier
+      this.isSupplierDialog = true
+      this.supplierDialogTitle = 'Редактирование поставщика'
+    },
     setNewSupplier(supplier) {
       this.getAllSuppliers()
       this.letterOfAuthorization.supplier = supplier
+      this.isSupplierDialog = false
     },
+
     getAllDrivers() {
       RestService.getDrivers().then((response) => {
             this.drivers = response.data
@@ -358,7 +476,7 @@ export default {
       let nomenclature = result.nomenclature
       let index = result.index - 1
       this.getAllNomenclatures()
-      this.letterRows[index].nomenclature = nomenclature
+      this.letterOfAuthorization.letterRows[index].nomenclature = nomenclature
     },
     formatDate(date) {
       if (!date) return null
@@ -367,18 +485,18 @@ export default {
       return `${day}-${month}-${year}`
     },
     addRow() {
-      this.letterRows.push({
-        number: this.letterRows.length + 1,
+      this.letterOfAuthorization.letterRows.push({
+        number: this.letterOfAuthorization.letterRows.length + 1,
         nomenclature: {},
         tonnage: null
       })
     },
     removeRow() {
-      if (this.letterRows.length > 1) {
-        this.letterRows.pop()
+      if (this.letterOfAuthorization.letterRows.length > 1) {
+        this.letterOfAuthorization.letterRows.pop()
       } else {
-        this.letterRows.pop()
-        this.letterRows.push({
+        this.letterOfAuthorization.letterRows.pop()
+        this.letterOfAuthorization.letterRows.push({
           number: 1,
           nomenclature: {},
           tonnage: null
@@ -386,7 +504,7 @@ export default {
       }
     },
     initialize() {
-      this.letterRows = [
+      this.letterOfAuthorization.letterRows = [
         {
           number: 1,
           nomenclature: {},

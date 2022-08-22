@@ -2,6 +2,7 @@
   <v-dialog
       v-model='isActive'
       max-width='400'
+      :retain-focus="false"
   >
     <v-card>
       <v-card-title>
@@ -40,20 +41,15 @@
   export default {
     data() {
       return {
-        isActive: false
       }
     },
-    props: ['message', 'info','id'],
+    props: ['message', 'info','id', 'isActive'],
     methods: {
       confirm() {
-        this.toggle()
         this.$emit('confirmAction', this.id)
       },
       cancel() {
-        this.toggle()
-      },
-      toggle() {
-        this.isActive = !this.isActive
+        this.$emit('cancelAction')
       }
     }
   }

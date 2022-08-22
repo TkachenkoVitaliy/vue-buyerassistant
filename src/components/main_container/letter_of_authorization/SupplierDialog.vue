@@ -1,61 +1,43 @@
 <template>
   <div>
-    <div style="padding-left: 0px; max-height: 2rem">
-      <v-btn
-          @click='toggleSupplierDialog'
-          block
-          text
-          large
-          style="font-size: 1em"
-      >
-        <v-icon
-            left
-            large
-            color="green"
+    <v-dialog
+        v-model='dialog'
+        max-width="50vw"
+        persistent
+    >
+      <v-card class='dialog_card'>
+        <v-card-title class="text-h5">
+          {{ title }}
+        </v-card-title>
+
+        <v-form
         >
-          mdi-plus-circle
-        </v-icon>
-        Создать
-      </v-btn>
+          <v-text-field
+              label='Наименование поставщика'
+              required
+              v-model='supplier.supplierName'
+          ></v-text-field>
+        </v-form>
 
-      <v-dialog
-          v-model='isSupplierDialog'
-          max-width="50vw"
-      >
-        <v-card class='dialog_card'>
-          <v-card-title class="text-h5">
-            Добавить поставщика
-          </v-card-title>
+        <v-card-actions>
 
-          <v-form
+          <v-btn
+              @click='addSupplier'
           >
-            <v-text-field
-                label='Введите поставщика'
-                required
-                v-model='createdSupplier.supplierName'
-            ></v-text-field>
-          </v-form>
+            Сохранить
+          </v-btn>
 
-          <v-card-actions>
+          <v-spacer></v-spacer>
 
-            <v-btn
-                @click='addSupplier'
-            >
-              Добавить
-            </v-btn>
+          <v-btn
+              @click='cancelDialog'
+          >
+            Отмена
+          </v-btn>
 
-            <v-spacer></v-spacer>
-
-            <v-btn
-                @click='toggleSupplierDialog'
-            >
-              Отмена
-            </v-btn>
-
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </div>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -64,36 +46,52 @@
   import EventBus from "@/common/EventBus"
 
   export default {
+    props: ['dialog', 'title', 'supplier'],
     data() {
       return {
-        isSupplierDialog: false,
-        createdSupplier: {id: null, supplierName: null}
       }
     },
     methods: {
-      toggleSupplierDialog() {
-        this.createdSupplier = {id: null, supplierName: null}
-        this.isSupplierDialog = !this.isSupplierDialog
+      cancelDialog() {
+        this.supplier = {id: null, supplierName: null}
+        this.$emit('cancel')
       },
       addSupplier() {
-        if (this.createdSupplier.supplierName != null && this.createdSupplier.supplierName != '') {
+        if (this.supplier.supplierName != null && this.supplier.supplierName != '') {
 
-          RestService.postSuppliers(this.createdSupplier).then((response) =>
-              {
-                this.$emit('added', response.data)
-              },
-              error => {
-                this.content =
-                    (error.response && error.response.data && error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                this.isLoading = false;
-                if (error.response && error.response.status === 403) {
-                  EventBus.dispatch("logout");
+          if(this.supplier.id == null) {
+            RestService.postSuppliers(this.supplier).then((response) =>
+                {
+                  this.$emit('save', response.data)
+                },
+                error => {
+                  this.content =
+                      (error.response && error.response.data && error.response.data.message) ||
+                      error.message ||
+                      error.toString();
+                  this.isLoading = false;
+                  if (error.response && error.response.status === 403) {
+                    EventBus.dispatch("logout");
+                  }
                 }
-              }
-          )
-          this.toggleSupplierDialog()
+            )
+          } else {
+            RestService.putSuppliers(this.supplier).then((response) =>
+                {
+                  this.$emit('save', response.data)
+                },
+                error => {
+                  this.content =
+                      (error.response && error.response.data && error.response.data.message) ||
+                      error.message ||
+                      error.toString();
+                  this.isLoading = false;
+                  if (error.response && error.response.status === 403) {
+                    EventBus.dispatch("logout");
+                  }
+                }
+            )
+          }
         }
       }
     }
