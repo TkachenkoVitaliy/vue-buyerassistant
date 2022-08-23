@@ -76,93 +76,94 @@
               cols='12'
               lg='5'
           >
-            <p class='subtitle_text'>Поставщик</p>
-            <v-autocomplete
-                clearable
-                dense
-                v-model="letterOfAuthorization.supplier"
-                :items='suppliers'
-                :item-text='item => item.supplierName'
-                return-object
-            >
-              <template v-slot:item="{ item }">
-                <v-list-item-content>
-                  <v-list-item-title v-text="item.supplierName"></v-list-item-title>
-                </v-list-item-content>
-                <v-list-item-action>
-                  <v-btn
-                      fab
-                      x-small
-                      dark
-                      color = 'primary'
-                      @click="editSupplier(item)"
-                  >
-                    <v-icon
-                        x-small
-                        dark
+            <SupplierForm />
+<!--            <p class='subtitle_text'>Поставщик</p>-->
+<!--            <v-autocomplete-->
+<!--                clearable-->
+<!--                dense-->
+<!--                v-model="letterOfAuthorization.supplier"-->
+<!--                :items='suppliers'-->
+<!--                :item-text='item => item.supplierName'-->
+<!--                return-object-->
+<!--            >-->
+<!--              <template v-slot:item="{ item }">-->
+<!--                <v-list-item-content>-->
+<!--                  <v-list-item-title v-text="item.supplierName"></v-list-item-title>-->
+<!--                </v-list-item-content>-->
+<!--                <v-list-item-action>-->
+<!--                  <v-btn-->
+<!--                      fab-->
+<!--                      x-small-->
+<!--                      dark-->
+<!--                      color = 'primary'-->
+<!--                      @click="editSupplier(item)"-->
+<!--                  >-->
+<!--                    <v-icon-->
+<!--                        x-small-->
+<!--                        dark-->
 
-                    >
-                      mdi-pencil
-                    </v-icon>
-                  </v-btn>
-                </v-list-item-action>
+<!--                    >-->
+<!--                      mdi-pencil-->
+<!--                    </v-icon>-->
+<!--                  </v-btn>-->
+<!--                </v-list-item-action>-->
 
-                <v-list-item-action>
-                  <v-btn
-                      fab
-                      x-small
-                      dark
-                      color = 'red'
-                      @click="deleteSupplier(item)"
-                  >
-                    <v-icon
-                        x-small
-                        dark
-                    >
-                      mdi-delete
-                    </v-icon>
-                  </v-btn>
-                </v-list-item-action>
+<!--                <v-list-item-action>-->
+<!--                  <v-btn-->
+<!--                      fab-->
+<!--                      x-small-->
+<!--                      dark-->
+<!--                      color = 'red'-->
+<!--                      @click="deleteSupplier(item)"-->
+<!--                  >-->
+<!--                    <v-icon-->
+<!--                        x-small-->
+<!--                        dark-->
+<!--                    >-->
+<!--                      mdi-delete-->
+<!--                    </v-icon>-->
+<!--                  </v-btn>-->
+<!--                </v-list-item-action>-->
 
-                <DeleteDialog
-                    message = 'Удалить поставщика'
-                    v-bind:info = item.supplierName
-                    v-bind:id = item.id
-                    v-bind:isActive = 'isDeleteSupplierDialog'
-                    @confirmAction='confirmDeleteSupplier'
-                    @cancelAction='cancelDeleteSupplier'
-                    ref='deleteSupplierDialog'
-                />
-              </template>
+<!--                <DeleteDialog-->
+<!--                    message = 'Удалить поставщика'-->
+<!--                    v-bind:info = item.supplierName-->
+<!--                    v-bind:id = item.id-->
+<!--                    v-bind:isActive = 'isDeleteSupplierDialog'-->
+<!--                    @confirmAction='confirmDeleteSupplier'-->
+<!--                    @cancelAction='cancelDeleteSupplier'-->
+<!--                    ref='deleteSupplierDialog'-->
+<!--                />-->
+<!--              </template>-->
 
-              <template v-slot:append-item>
-                <div style="padding-left: 0px; max-height: 2rem">
-                  <v-btn
-                      @click='createSupplier'
-                      block
-                      text
-                      large
-                      style="font-size: 1em"
-                  >
-                    <v-icon
-                        left
-                        large
-                        color="green"
-                    >
-                      mdi-plus-circle
-                    </v-icon>
-                    Создать
-                  </v-btn>
-                </div>
-                <SupplierDialog
-                    v-bind:dialog = 'isSupplierDialog'
-                    v-bind:title = 'supplierDialogTitle'
-                    v-bind:supplier = 'currentSupplier'
-                    @cancel='cancelEditSupplier'
-                    @save='setNewSupplier($event)'
-                />
-              </template>
-            </v-autocomplete>
+<!--              <template v-slot:append-item>-->
+<!--                <div style="padding-left: 0px; max-height: 2rem">-->
+<!--                  <v-btn-->
+<!--                      @click='createSupplier'-->
+<!--                      block-->
+<!--                      text-->
+<!--                      large-->
+<!--                      style="font-size: 1em"-->
+<!--                  >-->
+<!--                    <v-icon-->
+<!--                        left-->
+<!--                        large-->
+<!--                        color="green"-->
+<!--                    >-->
+<!--                      mdi-plus-circle-->
+<!--                    </v-icon>-->
+<!--                    Создать-->
+<!--                  </v-btn>-->
+<!--                </div>-->
+<!--                <SupplierDialog-->
+<!--                    v-bind:dialog = 'isSupplierDialog'-->
+<!--                    v-bind:title = 'supplierDialogTitle'-->
+<!--                    v-bind:supplier = 'currentSupplier'-->
+<!--                    @cancel='cancelEditSupplier'-->
+<!--                    @save='setNewSupplier($event)'-->
+<!--                />-->
+<!--              </template>-->
+<!--            </v-autocomplete>-->
           </v-col>
 
           <v-spacer></v-spacer>
@@ -298,6 +299,7 @@
 <script>
 import RestService from '@/services/rest.service'
 import DeleteDialog from '@/components/other/DeleteDialog'
+import SupplierForm from '@/components/main_container/letter_of_authorization/SupplierForm'
 import SupplierDialog from '@/components/main_container/letter_of_authorization/SupplierDialog'
 import NomenclatureDialog from '@/components/main_container/letter_of_authorization/NomenclatureDialog'
 import DriverDialog from '@/components/main_container/letter_of_authorization/DriverDialog'
@@ -307,6 +309,7 @@ import EventBus from '@/common/EventBus'
 export default {
   components: {
     DeleteDialog,
+    SupplierForm,
     SupplierDialog,
     NomenclatureDialog,
     DriverDialog,

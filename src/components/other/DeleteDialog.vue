@@ -49,6 +49,8 @@
         this.$emit('confirmAction', this.id)
       },
       cancel() {
+        console.log(this.info)
+        console.log(this.id)
         this.$emit('cancelAction')
       }
     }
