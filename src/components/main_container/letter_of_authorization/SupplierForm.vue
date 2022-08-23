@@ -87,7 +87,7 @@
         <SupplierDialog
             v-bind:dialog='isSupplierDialogActive'
             v-bind:title='supplierDialogTitle'
-            v-bind:supplier='currentSupplier'
+            v-model:supplier='currentSupplier'
             @save='confirmSupplierDialog($event)'
             @cancel='cancelSupplierDialog'
         />
@@ -138,8 +138,8 @@ export default {
       )
     },
     openEditDialog(supplier) {
-      this.currentSupplier = supplier
       this.isSupplierDialogActive = true
+      this.currentSupplier = supplier
       this.supplierDialogTitle = 'Редактирование поставщика'
     },
     openDeleteDialog(supplier) {
@@ -192,5 +192,9 @@ export default {
 </script>
 
 <style>
-
+  .subtitle_text {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #00689a;
+  }
 </style>

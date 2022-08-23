@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-dialog
-        v-model='dialog'
+      v-model='dialog'
         max-width="50vw"
         persistent
     >
@@ -46,21 +46,31 @@
   import EventBus from "@/common/EventBus"
 
   export default {
-    props: ['dialog', 'title', 'supplier'],
-    data() {
-      return {
-      }
+    props: ['dialog','title', 'supplier'],
+    model: {
+      prop: 'supplier',
+      event: 'change'
+    },
+    computed: {
+      supplierLocal: {
+        get: function () {
+          return this.supplier
+        },
+        set: function (value) {
+          this.$emit('change', value)
+        }
+      },
     },
     methods: {
       cancelDialog() {
-        this.supplier = {id: null, supplierName: null}
+        this.supplierLocal = {id: null, supplierName: null}
         this.$emit('cancel')
       },
       addSupplier() {
-        if (this.supplier.supplierName != null && this.supplier.supplierName != '') {
+        if (this.supplierLocal.supplierName != null && this.supplierLocal.supplierName != '') {
 
-          if(this.supplier.id == null) {
-            RestService.postSuppliers(this.supplier).then((response) =>
+          if(this.supplierLocal.id == null) {
+            RestService.postSuppliers(this.supplierLocal).then((response) =>
                 {
                   this.$emit('save', response.data)
                 },
@@ -76,7 +86,7 @@
                 }
             )
           } else {
-            RestService.putSuppliers(this.supplier).then((response) =>
+            RestService.putSuppliers(this.supplierLocal).then((response) =>
                 {
                   this.$emit('save', response.data)
                 },
