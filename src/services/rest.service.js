@@ -93,6 +93,14 @@ class RestService {
         return api.post('/api/principals', data)
     }
 
+    putPrincipals(data) {
+        return api.put('/api/principals', data)
+    }
+
+    deletePrincipals(id) {
+        return api.delete('/api/principals/' + id)
+    }
+
     getSuppliers() {
         return api.get('/api/suppliers')
     }

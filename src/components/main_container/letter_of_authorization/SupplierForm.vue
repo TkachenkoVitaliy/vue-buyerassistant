@@ -100,95 +100,93 @@
 </template>
 
 <script>
-import RestService from '@/services/rest.service'
-import EventBus from '@/common/EventBus'
-import DeleteDialog from '@/components/other/DeleteDialog'
-import SupplierDialog from '@/components/main_container/letter_of_authorization/SupplierDialog'
+  import RestService from '@/services/rest.service'
+  import EventBus from '@/common/EventBus'
+  import DeleteDialog from '@/components/other/DeleteDialog'
+  import SupplierDialog from '@/components/main_container/letter_of_authorization/SupplierDialog'
 
-export default {
-  components: {
-    DeleteDialog,
-    SupplierDialog
-  },
-  data() {
-    return {
-      suppliers: null,
-      currentSupplier: {id: null, name: null},
-      supplier: {id: null, name: null},
-      supplierDialogTitle: null,
-      isSupplierDialogActive: false,
-      isDeleteDialogActive: false
-    }
-  },
-  methods: {
-    getAllSuppliers() {
-      RestService.getSuppliers().then((response) => {
-            this.suppliers = response.data
-          },
-          error => {
-            this.content =
-                (error.response && error.response.data && error.response.data.message) ||
-                error.message ||
-                error.toString();
-            this.isLoading = false;
-            if (error.response && error.response.status === 403) {
-              EventBus.dispatch("logout");
+  export default {
+    components: {
+      DeleteDialog,
+      SupplierDialog
+    },
+    data() {
+      return {
+        suppliers: null,
+        currentSupplier: {id: null, name: null},
+        supplier: {id: null, name: null},
+        supplierDialogTitle: null,
+        isSupplierDialogActive: false,
+        isDeleteDialogActive: false
+      }
+    },
+    methods: {
+      getAllSuppliers() {
+        RestService.getSuppliers().then((response) => {
+              this.suppliers = response.data
+            },
+            error => {
+              this.content =
+                  (error.response && error.response.data && error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+              this.isLoading = false;
+              if (error.response && error.response.status === 403) {
+                EventBus.dispatch("logout");
+              }
             }
-          }
-      )
-    },
-    openEditDialog(supplier) {
-      this.isSupplierDialogActive = true
-      this.currentSupplier = supplier
-      this.supplierDialogTitle = 'Редактирование поставщика'
-    },
-    openDeleteDialog(supplier) {
-      this.currentSupplier = supplier
-      this.isDeleteDialogActive = true
-      this.supplier = {id: null, name: null}
-    },
-    confirmDeleteSupplier(id) {
-      RestService.deleteSuppliers(id).then((response) => {
-        this.supplier = {id: null, name: null}
-        this.getAllSuppliers()
-        this.$nextTick(() => this.isDeleteDialogActive = false)
+        )
       },
-      error => {
-        this.content =
-            (error.response && error.response.data && error.response.data.message) ||
-            error.message ||
-            error.toString();
-        this.isLoading = false;
-        if (error.response && error.response.status === 403) {
-          EventBus.dispatch("logout");
-        }
-      })
+      openEditDialog(supplier) {
+        this.isSupplierDialogActive = true
+        this.currentSupplier = supplier
+        this.supplierDialogTitle = 'Редактирование поставщика'
+      },
+      openDeleteDialog(supplier) {
+        this.currentSupplier = supplier
+        this.isDeleteDialogActive = true
+        this.supplier = {id: null, name: null}
+      },
+      confirmDeleteSupplier(id) {
+        RestService.deleteSuppliers(id).then((response) => {
+          this.supplier = {id: null, name: null}
+          this.getAllSuppliers()
+          this.$nextTick(() => this.isDeleteDialogActive = false)
+        },
+        error => {
+          this.content =
+              (error.response && error.response.data && error.response.data.message) ||
+              error.message ||
+              error.toString();
+          this.isLoading = false;
+          if (error.response && error.response.status === 403) {
+            EventBus.dispatch("logout");
+          }
+        })
+      },
+      cancelDeleteSupplier() {
+        this.isDeleteDialogActive = false
+      },
+      openCreateDialog() {
+        this.currentSupplier = {id: null, name: null}
+        this.isSupplierDialogActive = true
+        this.supplierDialogTitle = 'Создание поставщика'
+      },
+      cancelSupplierDialog() {
+        this.currentSupplier = {id: null, name: null}
+        this.getAllSuppliers()
+        this.isSupplierDialogActive = false
+      },
+      confirmSupplierDialog(supplier) {
+        this.getAllSuppliers()
+        this.supplier = supplier
+        this.isSupplierDialogActive = false
+      }
     },
-    cancelDeleteSupplier() {
-      this.isDeleteDialogActive = false
-    },
-    openCreateDialog() {
-      this.currentSupplier = {id: null, name: null}
-      this.isSupplierDialogActive = true
-      this.supplierDialogTitle = 'Создание поставщика'
-    },
-    cancelSupplierDialog() {
-      this.currentSupplier = {id: null, name: null}
+    mounted() {
       this.getAllSuppliers()
-      this.isSupplierDialogActive = false
-    },
-    confirmSupplierDialog(supplier) {
-      this.getAllSuppliers()
-      this.supplier = supplier
-      this.isSupplierDialogActive = false
     }
-  },
-  mounted() {
-    this.getAllSuppliers()
   }
-
-}
-
 </script>
 
 <style>

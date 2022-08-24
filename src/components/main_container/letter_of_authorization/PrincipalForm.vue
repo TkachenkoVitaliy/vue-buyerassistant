@@ -1,29 +1,28 @@
 <template>
   <div>
-    <p class='subtitle_text'>Водитель</p>
+    <p class='subtitle_text'>Доверитель</p>
 
     <v-autocomplete
         clearable
         dense
-        v-model='driver'
-        :items='drivers'
-        :item-text='item => item.name + " " + item.passportSeries + " " + item.passportNumber'
+        @input="emitChangePrincipal($event)"
+        v-model="principal"
+        :items='principals'
+        :item-text='item => item.name'
         return-object
     >
-
-      <template v-slot:item='{ item }'>
+      <template v-slot:item="{ item }">
 
         <v-list-item-content>
-          <v-list-item-title v-text='item.name + " " + item.passportSeries + " " + item.passportNumber'></v-list-item-title>
+          <v-list-item-title v-text="item.name"></v-list-item-title>
         </v-list-item-content>
-
         <v-list-item-action>
           <v-btn
               fab
               x-small
               dark
               color='primary'
-              @click='openEditDialog(item)'
+              @click="openEditDialog(item)"
           >
             <v-icon
                 x-small
@@ -33,7 +32,6 @@
             </v-icon>
           </v-btn>
         </v-list-item-action>
-
         <v-list-item-action>
           <v-btn
               style='margin-left: 15px'
@@ -41,7 +39,7 @@
               x-small
               dark
               color='red'
-              @click='openDeleteDialog(item)'
+              @click="openDeleteDialog(item)"
           >
             <v-icon
                 x-small
@@ -53,19 +51,18 @@
         </v-list-item-action>
 
         <DeleteDialog
-            message = 'Удалить водителя'
-            v-bind:info = "[currentDriver.name, currentDriver.passportSeries, currentDriver.passportNumber]"
-            v-bind:id = currentDriver.id
+            message = 'Удалить доверителя'
+            v-bind:info = currentPrincipal.name
+            v-bind:id = currentPrincipal.id
             v-bind:isActive = 'isDeleteDialogActive'
-            @confirmAction = 'confirmDeleteDriver'
-            @cancelAction = 'cancelDeleteDriver'
+            @confirmAction = 'confirmDeletePrincipal'
+            @cancelAction = 'cancelDeletePrincipal'
             ref='deleteDialog'
         />
+
       </template>
 
-
       <template v-slot:append-item>
-
         <div style="padding-left: 0px; max-height: 2rem">
           <v-btn
               @click='openCreateDialog'
@@ -85,12 +82,12 @@
           </v-btn>
         </div>
 
-        <DriverDialog
-            v-bind:dialog='isDriverDialogActive'
-            v-bind:title='driverDialogTitle'
-            v-model:driver='currentDriver'
-            @save='confirmDriverDialog($event)'
-            @cancel='cancelDriverDialog'
+        <PrincipalDialog
+            v-bind:dialog='isPrincipalDialogActive'
+            v-bind:title='principalDialogTitle'
+            v-model:supplier='currentPrincipal'
+            @save='confirmPrincipalDialog($event)'
+            @cancel='cancelPrincipalDialog'
         />
       </template>
     </v-autocomplete>
@@ -101,41 +98,43 @@
   import RestService from '@/services/rest.service'
   import EventBus from '@/common/EventBus'
   import DeleteDialog from '@/components/other/DeleteDialog'
-  import DriverDialog from '@/components/main_container/letter_of_authorization/DriverDialog'
+  import PrincipalDialog from '@/components/main_container/letter_of_authorization/PrincipalDialog'
 
   export default {
     components: {
       DeleteDialog,
-      DriverDialog
+      PrincipalDialog
     },
     data() {
       return {
-        drivers: null,
-        driver: {
+        principals: null,
+        currentPrincipal: {
           id: null,
           name: null,
-          passportSeries: null,
-          passportNumber: null,
-          issuedBy: null,
-          dateOfIssue: null
+          inn: null,
+          kpp: null,
+          address: null,
+          bankAccount: null,
+          directorName: null
         },
-        currentDriver: {
+        principal: {
           id: null,
           name: null,
-          passportSeries: null,
-          passportNumber: null,
-          issuedBy: null,
-          dateOfIssue: null
+          inn: null,
+          kpp: null,
+          address: null,
+          bankAccount: null,
+          directorName: null
         },
-        driverDialogTitle: null,
-        isDriverDialogActive: false,
+        principalDialogTitle: null,
+        isPrincipalDialogActive: false,
         isDeleteDialogActive: false
       }
     },
     methods: {
-      getAllDrivers() {
-        RestService.getDrivers().then((response) => {
-              this.drivers = response.data
+      getAllPrincipals() {
+        RestService.getPrincipals().then((response) => {
+              this.principals = response.data
             },
             error => {
               this.content =
@@ -149,30 +148,29 @@
             }
         )
       },
-      openEditDialog(driver) {
-        this.currentDriver = driver
-        this.isDriverDialogActive = true
-        this.driverDialogTitle = 'Редактирование водителя'
+      openEditDialog(principal) {
+        this.isPrincipalDialogActive = true
+        this.currentPrincipal = principal
+        this.principalDialogTitle = 'Редактирование доверителя'
       },
-      openDeleteDialog(driver) {
-        this.currentDriver = driver
+      openDeleteDialog(principal) {
+        this.currentPrincipal = principal
         this.isDeleteDialogActive = true
-        this.driver = {
+        this.principal = {
           id: null,
           name: null,
-          passportSeries: null,
-          passportNumber: null,
-          issuedBy: null,
-          dateOfIssue: null
+          inn: null,
+          kpp: null,
+          address: null,
+          bankAccount: null,
+          directorName: null
         }
       },
-      confirmDeleteDriver(id) {
-        RestService.deleteDrivers(id).then((response) => {
-              this.driver = {
-                id: null, name: null, passportSeries: null, passportNumber: null, issuedBy: null,
-                dateOfIssue: null
-              }
-              this.getAllDrivers()
+      confirmDeletePrincipal(id) {
+        RestService.deletePrincipals(id).then((response) => {
+              this.principal = {id: null, name: null, inn: null, kpp: null, address: null, bankAccount: null,
+                directorName: null}
+              this.getAllPrincipals()
               this.$nextTick(() => this.isDeleteDialogActive = false)
             },
             error => {
@@ -186,32 +184,34 @@
               }
             })
       },
-      cancelDeleteDriver() {
+      cancelDeletePrincipal() {
         this.isDeleteDialogActive = false
       },
       openCreateDialog() {
-        this.currentDriver = {id: null, name: null, passportSeries: null, passportNumber: null, issuedBy: null,
-          dateOfIssue: null}
-        this.isDriverDialogActive = true
-        this.driverDialogTitle = 'Создание водителя'
+        this.currentPrincipal = {id: null, name: null, inn: null, kpp: null, address: null, bankAccount: null,
+          directorName: null}
+        this.isPrincipalDialogActive = true
+        this.principalDialogTitle = 'Создание доверителя'
       },
-      cancelDriverDialog() {
-        this.currentDriver = {id: null, name: null, passportSeries: null, passportNumber: null, issuedBy: null,
-          dateOfIssue: null}
-        this.getAllDrivers()
-        this.isDriverDialogActive = false
+      cancelPrincipalDialog() {
+        this.currentPrincipal = {id: null, name: null, inn: null, kpp: null, address: null, bankAccount: null,
+          directorName: null}
+        this.getAllPrincipals()
+        this.isPrincipalDialogActive = false
       },
-      confirmDriverDialog(driver) {
-        this.getAllDrivers()
-        this.driver = driver
-        this.isDriverDialogActive = false
+      confirmPrincipalDialog(principal) {
+        this.getAllPrincipals()
+        this.principal = principal
+        this.isPrincipalDialogActive = false
       },
+      emitChangePrincipal(principal) {
+          this.$emit('change:principal', principal)
+      }
     },
     mounted() {
-      this.getAllDrivers()
+      this.getAllPrincipals()
     }
   }
-
 </script>
 
 <style>

@@ -10,20 +10,9 @@
               cols='12'
               lg='5'
           >
-            <p class='subtitle_text'>Доверитель</p>
-            <v-autocomplete
-                clearable
-                dense
-                v-model="letterOfAuthorization.principal"
-                :items='principals'
-                :item-text='item => item.name'
-            >
-              <template v-slot:append-item>
-                <PrincipalDialog
-                    @added='setNewPrincipal($event)'
-                />
-              </template>
-            </v-autocomplete>
+            <PrincipalForm
+                @change:principal='testPrincipal($event)'
+            />
           </v-col>
 
           <v-spacer></v-spacer>
@@ -86,20 +75,6 @@
               lg='6'
           >
             <DriverForm />
-<!--            <p class='subtitle_text'>Водитель</p>-->
-<!--            <v-autocomplete-->
-<!--                clearable-->
-<!--                dense-->
-<!--                v-model='letterOfAuthorization.driver'-->
-<!--                :items='drivers'-->
-<!--                :item-text='item => item.name + " " + item.passportSeries + " " + item.passportNumber'-->
-<!--            >-->
-<!--              <template v-slot:append-item>-->
-<!--                <DriverDialog-->
-<!--                    @added='setNewDriver($event)'-->
-<!--                />-->
-<!--              </template>-->
-<!--            </v-autocomplete>-->
           </v-col>
 
         </v-row>
@@ -218,18 +193,20 @@ import SupplierDialog from '@/components/main_container/letter_of_authorization/
 import NomenclatureDialog from '@/components/main_container/letter_of_authorization/NomenclatureDialog'
 import DriverForm from '@/components/main_container/letter_of_authorization/DriverForm'
 import DriverDialog from '@/components/main_container/letter_of_authorization/DriverDialog'
+import PrincipalForm from '@/components/main_container/letter_of_authorization/PrincipalForm'
 import PrincipalDialog from '@/components/main_container/letter_of_authorization/PrincipalDialog'
 import EventBus from '@/common/EventBus'
 
 export default {
   components: {
+    PrincipalForm,
+    PrincipalDialog,
     DeleteDialog,
     SupplierForm,
     SupplierDialog,
     NomenclatureDialog,
     DriverForm,
-    DriverDialog,
-    PrincipalDialog
+    DriverDialog
   },
   data() {
     return {
@@ -246,9 +223,7 @@ export default {
       principals: [],
       number: 1,
       issuedDate: null,
-      drivers: [],
       rows: [],
-      suppliers: [],
       nomenclatures: [],
       headers: [
         {
@@ -263,10 +238,6 @@ export default {
         }
       ],
       isSupplierDialog: false,
-      isDeleteSupplierDialog: false,
-      supplierDialogTitle: null,
-      currentSupplier: null,
-
       isPrincipalsDialog: false,
       isDriverDialog: false,
       isNomenclatureDialog: false
@@ -372,6 +343,9 @@ export default {
     },
     goBack() {
       this.$router.push('/loas')
+    },
+    testPrincipal(principal) {
+      console.log(principal)
     }
   },
   computed: {
@@ -391,17 +365,16 @@ export default {
   }
 }
 </script>
+  <style scoped>
+  .svg_create {
+    height: 1.5rem;
+    width: 1.5rem;
+    fill: green;
+  }
 
-<style scoped>
-.svg_create {
-  height: 1.5rem;
-  width: 1.5rem;
-  fill: green;
-}
-
-.subtitle_text {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #00689a;
-}
+  .subtitle_text {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #00689a;
+  }
 </style>
