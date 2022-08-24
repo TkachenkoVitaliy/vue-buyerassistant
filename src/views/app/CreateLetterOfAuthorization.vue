@@ -85,20 +85,21 @@
               cols='12'
               lg='6'
           >
-            <p class='subtitle_text'>Водитель</p>
-            <v-autocomplete
-                clearable
-                dense
-                v-model='letterOfAuthorization.driver'
-                :items='drivers'
-                :item-text='item => item.name + " " + item.passportSeries + " " + item.passportNumber'
-            >
-              <template v-slot:append-item>
-                <DriverDialog
-                    @added='setNewDriver($event)'
-                />
-              </template>
-            </v-autocomplete>
+            <DriverForm />
+<!--            <p class='subtitle_text'>Водитель</p>-->
+<!--            <v-autocomplete-->
+<!--                clearable-->
+<!--                dense-->
+<!--                v-model='letterOfAuthorization.driver'-->
+<!--                :items='drivers'-->
+<!--                :item-text='item => item.name + " " + item.passportSeries + " " + item.passportNumber'-->
+<!--            >-->
+<!--              <template v-slot:append-item>-->
+<!--                <DriverDialog-->
+<!--                    @added='setNewDriver($event)'-->
+<!--                />-->
+<!--              </template>-->
+<!--            </v-autocomplete>-->
           </v-col>
 
         </v-row>
@@ -215,6 +216,7 @@ import DeleteDialog from '@/components/other/DeleteDialog'
 import SupplierForm from '@/components/main_container/letter_of_authorization/SupplierForm'
 import SupplierDialog from '@/components/main_container/letter_of_authorization/SupplierDialog'
 import NomenclatureDialog from '@/components/main_container/letter_of_authorization/NomenclatureDialog'
+import DriverForm from '@/components/main_container/letter_of_authorization/DriverForm'
 import DriverDialog from '@/components/main_container/letter_of_authorization/DriverDialog'
 import PrincipalDialog from '@/components/main_container/letter_of_authorization/PrincipalDialog'
 import EventBus from '@/common/EventBus'
@@ -225,6 +227,7 @@ export default {
     SupplierForm,
     SupplierDialog,
     NomenclatureDialog,
+    DriverForm,
     DriverDialog,
     PrincipalDialog
   },
@@ -290,66 +293,6 @@ export default {
       this.getAllPrincipals()
       this.letterOfAuthorization.principal = principal
     },
-    getAllSuppliers() {
-      RestService.getSuppliers().then((response) => {
-            this.suppliers = response.data
-          },
-          error => {
-            this.content =
-                (error.response && error.response.data && error.response.data.message) ||
-                error.message ||
-                error.toString();
-            this.isLoading = false;
-            if (error.response && error.response.status === 403) {
-              EventBus.dispatch("logout");
-            }
-          }
-      )
-    },
-    deleteSupplier(supplier) {
-      this.letterOfAuthorization.supplier = null
-      this.isDeleteSupplierDialog = true
-    },
-    confirmDeleteSupplier(id) {
-      RestService.deleteSuppliers(id).then((response) => {
-            this.getAllSuppliers()
-            this.$nextTick(() => this.isDeleteSupplierDialog = false)
-          },
-          error => {
-            this.content =
-                (error.response && error.response.data && error.response.data.message) ||
-                error.message ||
-                error.toString();
-            this.isLoading = false;
-            if (error.response && error.response.status === 403) {
-              EventBus.dispatch("logout");
-            }
-          }
-      )
-    },
-    cancelDeleteSupplier() {
-      this.isDeleteSupplierDialog = false
-    },
-    createSupplier() {
-      this.currentSupplier = {id: null, name: null}
-      this.isSupplierDialog = true
-      this.supplierDialogTitle = 'Создание поставщика'
-    },
-    cancelEditSupplier() {
-      this.currentSupplier = {id: null, name: null}
-      this.getAllSuppliers()
-      this.isSupplierDialog = false
-    },
-    editSupplier(supplier) {
-      this.currentSupplier = supplier
-      this.isSupplierDialog = true
-      this.supplierDialogTitle = 'Редактирование поставщика'
-    },
-    setNewSupplier(supplier) {
-      this.getAllSuppliers()
-      this.letterOfAuthorization.supplier = supplier
-      this.isSupplierDialog = false
-    },
 
     getAllDrivers() {
       RestService.getDrivers().then((response) => {
@@ -368,7 +311,6 @@ export default {
       )
     },
     setNewDriver(driver) {
-      console.log(driver)
       this.getAllDrivers()
       this.letterOfAuthorization.driver = driver
     },
@@ -439,8 +381,6 @@ export default {
   },
   mounted() {
     this.getAllPrincipals()
-    this.getAllSuppliers()
-    this.getAllDrivers()
     this.getAllNomenclatures()
     this.initialize()
     let currentDate = new Date()

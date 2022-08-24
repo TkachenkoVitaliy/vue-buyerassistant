@@ -117,6 +117,14 @@ class RestService {
         return api.post('/api/drivers', data)
     }
 
+    putDrivers(data) {
+        return api.put('/api/drivers', data)
+    }
+
+    deleteDrivers(id) {
+        return api.delete('/api/drivers/' + id)
+    }
+
     getNomenclatures() {
         return api.get('/api/nomenclatures')
     }
