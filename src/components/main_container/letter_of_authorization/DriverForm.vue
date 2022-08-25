@@ -5,6 +5,7 @@
     <v-autocomplete
         clearable
         dense
+        @input="emitChangeDriver($event)"
         v-model='driver'
         :items='drivers'
         :item-text='item => item.name + " " + item.passportSeries + " " + item.passportNumber'
@@ -206,6 +207,9 @@
         this.driver = driver
         this.isDriverDialogActive = false
       },
+      emitChangeDriver(driver) {
+        this.$emit('change:driver', driver)
+      }
     },
     mounted() {
       this.getAllDrivers()

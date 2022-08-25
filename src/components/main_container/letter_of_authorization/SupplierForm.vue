@@ -6,6 +6,7 @@
     <v-autocomplete
         clearable
         dense
+        @input="emitChangeSupplier($event)"
         v-model='supplier'
         :items='suppliers'
         :item-text='item => item.supplierName'
@@ -181,6 +182,9 @@
         this.getAllSuppliers()
         this.supplier = supplier
         this.isSupplierDialogActive = false
+      },
+      emitChangeSupplier(supplier) {
+        this.$emit('change:supplier', supplier)
       }
     },
     mounted() {

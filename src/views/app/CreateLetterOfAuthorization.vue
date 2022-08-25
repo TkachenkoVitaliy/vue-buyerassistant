@@ -11,7 +11,7 @@
               lg='5'
           >
             <PrincipalForm
-                @change:principal='testPrincipal($event)'
+                @change:principal='changePrincipal($event)'
             />
           </v-col>
 
@@ -34,7 +34,7 @@
                   ></v-text-field>
                 </template>
                 <v-date-picker
-                    v-model="issuedDate"
+                    v-model="letterOfAuthorization.issuedDate"
                     no-title
                     locale='ru-RU'
                     :first-day-of-week='1'
@@ -52,7 +52,7 @@
             <p class='subtitle_text'>№</p>
             <v-text-field
                 dense
-                v-model='number'
+                v-model='letterOfAuthorization.number'
                 readonly
             ></v-text-field>
           </v-col>
@@ -65,7 +65,9 @@
               cols='12'
               lg='5'
           >
-            <SupplierForm />
+            <SupplierForm
+                @change:supplier='changeSupplier($event)'
+            />
           </v-col>
 
           <v-spacer></v-spacer>
@@ -74,7 +76,9 @@
               cols='12'
               lg='6'
           >
-            <DriverForm />
+            <DriverForm
+                @change:driver='changeDriver($event)'
+            />
           </v-col>
 
         </v-row>
@@ -220,9 +224,6 @@ export default {
         letterRows: [],
         sellType: null
       },
-      principals: [],
-      number: 1,
-      issuedDate: null,
       rows: [],
       nomenclatures: [],
       headers: [
@@ -344,13 +345,49 @@ export default {
     goBack() {
       this.$router.push('/loas')
     },
-    testPrincipal(principal) {
-      console.log(principal)
+    changePrincipal(principal) {
+      this.letterOfAuthorization.principal = principal
+      if(principal == null) {
+        this.letterOfAuthorization.number = null
+        return
+      }
+      RestService.getLettersOfAuthorization(principal.id)
+          .then((response) => {
+            let maxNumber = 0
+            let principalLetters = response.data
+            if (principalLetters == null || principalLetters.length === 0) {
+              this.letterOfAuthorization.number = 1
+              return
+            }
+            principalLetters.forEach(e => {
+              if (e.number > maxNumber) {
+                maxNumber = e.number
+              }
+            })
+            this.letterOfAuthorization.number = maxNumber + 1;
+          },
+          error => {
+            this.content =
+                (error.response && error.response.data && error.response.data.message) ||
+                error.message ||
+                error.toString();
+            this.isLoading = false;
+            if (error.response && error.response.status === 403) {
+              EventBus.dispatch("logout");
+            }
+          }
+      )
+    },
+    changeSupplier(supplier) {
+      this.letterOfAuthorization.supplier = supplier
+    },
+    changeDriver(driver) {
+      this.letterOfAuthorization.driver = driver
     }
   },
   computed: {
     formattedDate() {
-      return this.formatDate(this.issuedDate)
+      return this.formatDate(this.letterOfAuthorization.issuedDate)
     }
   },
   mounted() {
@@ -361,7 +398,7 @@ export default {
     let day = currentDate.getDate() < 10 ? "0" + currentDate.getDate() : currentDate.getDate()
     let month = (currentDate.getMonth() + 1) < 10 ? "0" + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1
     let year = currentDate.getFullYear()
-    this.issuedDate = year + "-" + month + "-" + day
+    this.letterOfAuthorization.issuedDate = year + "-" + month + "-" + day
   }
 }
 </script>
