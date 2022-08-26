@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card style="height: 92vh">
+    <v-card min-height='92vh'>
       <v-card-title>
         <div class='header_loa_container'>
           <p>Доверенности</p>

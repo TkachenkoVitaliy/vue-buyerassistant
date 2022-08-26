@@ -1,8 +1,16 @@
 <template>
   <div>
-    <v-card style='height: 92vh; padding: 0vh 6vw'>
+    <v-card style='min-height: 92vh; padding: 0vh 6vw'>
       <v-card-title>СОЗДАНИЕ ДОВЕРЕННОСТИ</v-card-title>
       <v-card-text>
+        <ErrorDialog
+            v-bind:message='message'
+            v-bind:info='info'
+            v-bind:isActive='haveError'
+            @closed='haveErrorSetFalse'
+        />
+
+
         <v-row
         >
 
@@ -157,6 +165,7 @@
           >
             <v-btn
                 class='darken-4 green--text'
+                @click='createLoA'
             >СОЗДАТЬ
             </v-btn>
           </v-col>
@@ -192,6 +201,7 @@
 <script>
 import RestService from '@/services/rest.service'
 import DeleteDialog from '@/components/other/DeleteDialog'
+import ErrorDialog from '@/components/other/ErrorDialog'
 import SupplierForm from '@/components/main_container/letter_of_authorization/SupplierForm'
 import SupplierDialog from '@/components/main_container/letter_of_authorization/SupplierDialog'
 import NomenclatureDialog from '@/components/main_container/letter_of_authorization/NomenclatureDialog'
@@ -203,9 +213,10 @@ import EventBus from '@/common/EventBus'
 
 export default {
   components: {
+    DeleteDialog,
+    ErrorDialog,
     PrincipalForm,
     PrincipalDialog,
-    DeleteDialog,
     SupplierForm,
     SupplierDialog,
     NomenclatureDialog,
@@ -241,7 +252,10 @@ export default {
       isSupplierDialog: false,
       isPrincipalsDialog: false,
       isDriverDialog: false,
-      isNomenclatureDialog: false
+      isNomenclatureDialog: false,
+      message: 'Ошибка при создании новой доверенности',
+      info: [],
+      haveError: false,
     }
   },
   methods: {
@@ -383,6 +397,78 @@ export default {
     },
     changeDriver(driver) {
       this.letterOfAuthorization.driver = driver
+    },
+    cleanLetterRows() {
+      this.letterOfAuthorization.letterRows = this.letterOfAuthorization.letterRows
+          .filter(function (item) {
+            return (item.nomenclature != null && Object.keys(item.nomenclature).length !== 0)
+            || (item.tonnage != null && item.tonnage >= 0.001)
+          })
+      if(this.letterOfAuthorization.letterRows.length === 0) {
+        return false
+      } else {
+        return true
+      }
+    },
+    checkErrors() {
+      let someError = false
+
+      if(this.letterOfAuthorization.principal == null) {
+        someError = true
+        this.info.push('Выберите доверителя')
+      }
+
+      if(this.letterOfAuthorization.issuedDate == null) {
+        someError = true
+        this.info.push('Выберите дату выдачи доверенности')
+      }
+      if(this.letterOfAuthorization.number == null) {
+        someError = true
+      }
+      if(this.letterOfAuthorization.supplier == null) {
+        someError = true
+        this.info.push('Выберите поставщика')
+      }
+      if(this.letterOfAuthorization.driver == null) {
+        someError = true
+        this.info.push('Выберите водителя')
+      }
+
+      let checkFullProps = function (elem) {
+        if(elem.nomenclature == null || Object.keys(elem.nomenclature).length == 0 || elem.tonnage == null) {
+          return false
+        } else {
+          return true
+        }
+      }
+
+      if(this.cleanLetterRows()) {
+        if(!this.letterOfAuthorization.letterRows.every(checkFullProps)) {
+          someError = true
+          this.info.push('Во всех строках ТМЦ должны быть указаны номенклатура и тоннаж')
+        }
+      } else {
+        someError = true
+        this.letterOfAuthorization.letterRows.push({
+          number: 1,
+          nomenclature: {},
+          tonnage: null
+        })
+        this.info.push('Укажите хотя бы одну строку ТМЦ')
+      }
+
+      return someError;
+    },
+    createLoA() {
+      if(this.checkErrors()) {
+        this.haveError = true
+      } else {
+        console.log('OK')
+      }
+    },
+    haveErrorSetFalse() {
+      this.info = []
+      this.haveError = false
     }
   },
   computed: {
