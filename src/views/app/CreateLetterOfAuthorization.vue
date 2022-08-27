@@ -61,7 +61,7 @@
             <v-text-field
                 dense
                 v-model='letterOfAuthorization.number'
-                readonly
+                :readonly='haveInitialNumber'
             ></v-text-field>
           </v-col>
 
@@ -256,6 +256,7 @@ export default {
       message: 'Ошибка при создании новой доверенности',
       info: [],
       haveError: false,
+      haveInitialNumber: false
     }
   },
   methods: {
@@ -350,9 +351,11 @@ export default {
     initialize() {
       this.letterOfAuthorization.letterRows = [
         {
+          id: null,
           number: 1,
           nomenclature: {},
-          tonnage: null
+          tonnage: null,
+          letter_of_authorization_id: null
         }
       ]
     },
@@ -363,6 +366,7 @@ export default {
       this.letterOfAuthorization.principal = principal
       if(principal == null) {
         this.letterOfAuthorization.number = null
+        this.haveInitialNumber = true
         return
       }
       RestService.getLettersOfAuthorization(principal.id)
@@ -371,6 +375,7 @@ export default {
             let principalLetters = response.data
             if (principalLetters == null || principalLetters.length === 0) {
               this.letterOfAuthorization.number = 1
+              this.haveInitialNumber = false
               return
             }
             principalLetters.forEach(e => {
@@ -379,6 +384,7 @@ export default {
               }
             })
             this.letterOfAuthorization.number = maxNumber + 1;
+            this.haveInitialNumber = true
           },
           error => {
             this.content =
@@ -450,9 +456,11 @@ export default {
       } else {
         someError = true
         this.letterOfAuthorization.letterRows.push({
+          id: null,
           number: 1,
           nomenclature: {},
-          tonnage: null
+          tonnage: null,
+          letterOfAuthorization_id: null
         })
         this.info.push('Укажите хотя бы одну строку ТМЦ')
       }
@@ -463,7 +471,37 @@ export default {
       if(this.checkErrors()) {
         this.haveError = true
       } else {
-        console.log('OK')
+        RestService.postLettersOfAuthorization(this.letterOfAuthorization).then((response) => {
+              console.log(response.data)
+              this.letterOfAuthorization.letterRows.forEach(item => item.letter_of_authorization_id = response.data.id)
+              console.log(this.letterOfAuthorization.letterRows)
+              RestService.postArrayLetterRows(this.letterOfAuthorization.letterRows).then((response) => {
+                    console.log(response.data)
+                    this.$router.push('/loas')
+                  },
+                  error => {
+                    this.content =
+                        (error.response && error.response.data && error.response.data.message) ||
+                        error.message ||
+                        error.toString();
+                    this.isLoading = false;
+                    if (error.response && error.response.status === 403) {
+                      EventBus.dispatch("logout");
+                    }
+                  }
+              )
+            },
+            error => {
+              this.content =
+                  (error.response && error.response.data && error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+              this.isLoading = false;
+              if (error.response && error.response.status === 403) {
+                EventBus.dispatch("logout");
+              }
+            }
+        )
       }
     },
     haveErrorSetFalse() {

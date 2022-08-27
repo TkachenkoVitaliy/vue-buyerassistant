@@ -89,6 +89,14 @@ class RestService {
         return api.get('/api/lettersOfAuthorization', {params: {principal_id: principal_id}})
     }
 
+    postLettersOfAuthorization(data) {
+        return api.post('/api/lettersOfAuthorization', data)
+    }
+
+    postArrayLetterRows(data) {
+        return api.post('/api/letterRows', data)
+    }
+
     getPrincipals() {
         return api.get('/api/principals')
     }

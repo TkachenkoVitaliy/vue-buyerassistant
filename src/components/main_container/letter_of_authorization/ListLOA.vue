@@ -14,7 +14,20 @@
         <v-data-table
             :headers='headers'
             :items='letters'
-        ></v-data-table>
+            single-expand
+            show-expand
+        >
+          <template v-slot:item.issuedDate='{ item }'>
+            {{ formatDate(item.issuedDate) }}
+          </template>
+
+          <template v-slot:expanded-item="{ headers, item }">
+            <td :colspan='headers.length - 1 '>
+              {{ item.letterRows }}
+            </td>
+            <td> {{ item.sellType }} </td>
+          </template>
+        </v-data-table>
       </v-card-text>
     </v-card>
   </div>
@@ -32,12 +45,12 @@
           {
             text: 'Доверитель',
             align: 'start',
-            value: 'principal',
+            value: 'principal.name',
           },
           { text: 'Номер', value: 'number' },
           { text: 'Дата выдачи', value: 'issuedDate' },
-          { text: 'Водитель', value: 'driver' },
-          { text: 'Поставщик', value: 'supplier' },
+          { text: 'Водитель', value: 'driver.name' },
+          { text: 'Поставщик', value: 'supplier.supplierName' },
         ],
       }
     },
@@ -57,6 +70,13 @@
                 EventBus.dispatch("logout");
               }
             })
+      },
+      formatDate(date) {
+        let datePart = date.match(/\d+/g),
+            year = datePart[0],
+            month = datePart[1],
+            day = datePart[2];
+        return day+'-'+month+'-'+year;
       }
     },
     mounted() {
