@@ -27,7 +27,25 @@
 
           <v-col
               cols='12'
-              lg='3'
+              lg='2'
+          >
+            <div>
+              <p class='subtitle_text'>Тип</p>
+              <v-select
+                  required
+                  dense
+                  clearable
+                  v-model='letterOfAuthorization.sellType'
+                  :items='sellTypes'
+              ></v-select>
+            </div>
+          </v-col>
+
+          <v-spacer></v-spacer>
+
+          <v-col
+              cols='12'
+              lg='2'
           >
             <div>
               <p class='subtitle_text'>Дата выдачи</p>
@@ -99,7 +117,7 @@
           >
             <v-data-table
                 :headers='headers'
-                :items='letterOfAuthorization.letterRows'
+                :items='letterRows'
                 disable-sort
                 hide-default-footer
                 dense
@@ -170,14 +188,28 @@
             </v-btn>
           </v-col>
           <v-spacer></v-spacer>
-          <v-col
+          <v-col style='border: #00689a 2px solid; border-radius: 10px; background-color: #00689a'
               cols='12'
-              lg='3'
+              lg='2'
           >
-            <v-btn
-                class='primary'
-            >СОЗДАТЬ И СКАЧАТЬ
-            </v-btn>
+            <p style='text-align: center; color: #fff; font-weight: bolder; margin-bottom: 0px'>СОХРАНИТЬ И СКАЧАТЬ</p>
+            <hr style='margin: 10px 0px'>
+            <div style='display: flex; justify-content: space-between'>
+              <button style='width: 74px'
+              >
+                <svg style='height: 96px; width: 74px'>
+                  <use xlink:href='@/assets/Extension.svg#xls'></use>
+                </svg>
+              </button>
+
+              <button style='width: 74px'
+              >
+                <svg style='height: 96px; width: 74px'>
+                  <use xlink:href='@/assets/Extension.svg#pdf'></use>
+                </svg>
+              </button>
+            </div>
+
           </v-col>
           <v-spacer></v-spacer>
           <v-col
@@ -232,11 +264,13 @@ export default {
         validUntil: null,
         supplier: null,
         driver: null,
-        letterRows: [],
         sellType: null
       },
+      LoA_id: null,
+      letterRows: [],
       rows: [],
       nomenclatures: [],
+      sellTypes: ['На склад', 'На клиента'],
       headers: [
         {
           text: 'НОМЕНКЛАТУРА',
@@ -321,7 +355,7 @@ export default {
       let nomenclature = result.nomenclature
       let index = result.index - 1
       this.getAllNomenclatures()
-      this.letterOfAuthorization.letterRows[index].nomenclature = nomenclature
+      this.letterRows[index].nomenclature = nomenclature
     },
     formatDate(date) {
       if (!date) return null
@@ -330,18 +364,18 @@ export default {
       return `${day}-${month}-${year}`
     },
     addRow() {
-      this.letterOfAuthorization.letterRows.push({
-        number: this.letterOfAuthorization.letterRows.length + 1,
+      this.letterRows.push({
+        number: this.letterRows.length + 1,
         nomenclature: {},
         tonnage: null
       })
     },
     removeRow() {
-      if (this.letterOfAuthorization.letterRows.length > 1) {
-        this.letterOfAuthorization.letterRows.pop()
+      if (this.letterRows.length > 1) {
+        this.letterRows.pop()
       } else {
-        this.letterOfAuthorization.letterRows.pop()
-        this.letterOfAuthorization.letterRows.push({
+        this.letterRows.pop()
+        this.letterRows.push({
           number: 1,
           nomenclature: {},
           tonnage: null
@@ -349,13 +383,13 @@ export default {
       }
     },
     initialize() {
-      this.letterOfAuthorization.letterRows = [
+      this.letterRows = [
         {
           id: null,
           number: 1,
           nomenclature: {},
           tonnage: null,
-          letter_of_authorization_id: null
+          letterOfAuthorization: null
         }
       ]
     },
@@ -405,12 +439,12 @@ export default {
       this.letterOfAuthorization.driver = driver
     },
     cleanLetterRows() {
-      this.letterOfAuthorization.letterRows = this.letterOfAuthorization.letterRows
+      this.letterRows = this.letterRows
           .filter(function (item) {
             return (item.nomenclature != null && Object.keys(item.nomenclature).length !== 0)
             || (item.tonnage != null && item.tonnage >= 0.001)
           })
-      if(this.letterOfAuthorization.letterRows.length === 0) {
+      if(this.letterRows.length === 0) {
         return false
       } else {
         return true
@@ -422,6 +456,11 @@ export default {
       if(this.letterOfAuthorization.principal == null) {
         someError = true
         this.info.push('Выберите доверителя')
+      }
+
+      if(this.letterOfAuthorization.sellType == null || this.letterOfAuthorization.sellType === '') {
+        someError = true
+        this.info.push('Выберите тип отгрузки')
       }
 
       if(this.letterOfAuthorization.issuedDate == null) {
@@ -449,13 +488,13 @@ export default {
       }
 
       if(this.cleanLetterRows()) {
-        if(!this.letterOfAuthorization.letterRows.every(checkFullProps)) {
+        if(!this.letterRows.every(checkFullProps)) {
           someError = true
           this.info.push('Во всех строках ТМЦ должны быть указаны номенклатура и тоннаж')
         }
       } else {
         someError = true
-        this.letterOfAuthorization.letterRows.push({
+        this.letterRows.push({
           id: null,
           number: 1,
           nomenclature: {},
@@ -471,13 +510,14 @@ export default {
       if(this.checkErrors()) {
         this.haveError = true
       } else {
+        let date = new Date(this.letterOfAuthorization.issuedDate)
+        this.letterOfAuthorization.validUntil =  date.setDate(date.getDate() + 10)
         RestService.postLettersOfAuthorization(this.letterOfAuthorization).then((response) => {
               console.log(response.data)
-              this.letterOfAuthorization.letterRows.forEach(item => item.letter_of_authorization_id = response.data.id)
-              console.log(this.letterOfAuthorization.letterRows)
-              RestService.postArrayLetterRows(this.letterOfAuthorization.letterRows).then((response) => {
+              this.letterRows.forEach(item => item.letterOfAuthorization = response.data)
+              RestService.postArrayLetterRows(this.letterRows).then((response) => {
                     console.log(response.data)
-                    this.$router.push('/loas')
+                    this.$router.push("/loas")
                   },
                   error => {
                     this.content =
@@ -503,6 +543,7 @@ export default {
             }
         )
       }
+      return true
     },
     haveErrorSetFalse() {
       this.info = []

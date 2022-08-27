@@ -23,7 +23,11 @@
 
           <template v-slot:expanded-item="{ headers, item }">
             <td :colspan='headers.length - 1 '>
-              {{ item.letterRows }}
+              <p
+                  style='margin-bottom: 0px'
+                  v-for="element in additionalInfo(item.letterRows)"
+              >{{ element }}
+              </p>
             </td>
             <td> {{ item.sellType }} </td>
           </template>
@@ -77,6 +81,13 @@
             month = datePart[1],
             day = datePart[2];
         return day+'-'+month+'-'+year;
+      },
+      additionalInfo(item) {
+        let infoArray = []
+        item.forEach(element => {
+          infoArray.push(element.nomenclature.name + ": " + element.tonnage + 'тн')
+        })
+        return infoArray
       }
     },
     mounted() {
