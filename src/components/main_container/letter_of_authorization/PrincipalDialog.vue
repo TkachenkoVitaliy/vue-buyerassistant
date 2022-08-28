@@ -36,6 +36,12 @@
           ></v-text-field>
 
           <v-text-field
+              label='Введите ОКПО'
+              required
+              v-model='principal.okpo'
+          ></v-text-field>
+
+          <v-text-field
               label='Введите краткое наименование организации'
               required
               v-model='principal.name'
@@ -126,7 +132,10 @@
               .catch(() => {
               })
           daDataInstance.post('', {query : this.principalLocal.inn})
-              .then((response) => this.principalLocal.address = response.data.suggestions[0].data.address.unrestricted_value)
+              .then((response) => {
+                this.principalLocal.address = response.data.suggestions[0].data.address.unrestricted_value
+                this.principalLocal.okpo = response.data.suggestions[0].data.okpo
+              })
               .catch(() => {})
         }
       },
@@ -138,7 +147,8 @@
           kpp: null,
           address: null,
           bankAccount: null,
-          directorName: null
+          directorName: null,
+          okpo: null
         }
         this.$emit('cancel')
       },
@@ -168,6 +178,11 @@
 
         if(this.principalLocal.directorName == null || this.principalLocal.directorName == '') {
           this.info.push('Введите ФИО руководителя')
+          someError = true
+        }
+
+        if(this.principalLocal.okpo == null || this.principalLocal.okpo == '') {
+          this.info.push('Введите ОКПО')
           someError = true
         }
 

@@ -183,7 +183,7 @@
           >
             <v-btn
                 class='darken-4 green--text'
-                @click='createLoA'
+                @click='onlySaveLoa'
             >СОЗДАТЬ
             </v-btn>
           </v-col>
@@ -195,7 +195,9 @@
             <p style='text-align: center; color: #fff; font-weight: bolder; margin-bottom: 0px'>СОХРАНИТЬ И СКАЧАТЬ</p>
             <hr style='margin: 10px 0px'>
             <div style='display: flex; justify-content: space-between'>
-              <button style='width: 74px'
+              <button
+                  style='width: 74px'
+                  @click='saveAndDownloadXlsLoa'
               >
                 <svg style='height: 96px; width: 74px'>
                   <use xlink:href='@/assets/Extension.svg#xls'></use>
@@ -204,7 +206,10 @@
 
               <button style='width: 74px'
               >
-                <svg style='height: 96px; width: 74px'>
+                <svg
+                    style='height: 96px; width: 74px'
+                    @click='saveAndDownloadPdfLoa'
+                >
                   <use xlink:href='@/assets/Extension.svg#pdf'></use>
                 </svg>
               </button>
@@ -507,43 +512,88 @@ export default {
       return someError;
     },
     createLoA() {
-      if(this.checkErrors()) {
-        this.haveError = true
-      } else {
-        let date = new Date(this.letterOfAuthorization.issuedDate)
-        this.letterOfAuthorization.validUntil =  date.setDate(date.getDate() + 10)
-        RestService.postLettersOfAuthorization(this.letterOfAuthorization).then((response) => {
-              console.log(response.data)
-              this.letterRows.forEach(item => item.letterOfAuthorization = response.data)
-              RestService.postArrayLetterRows(this.letterRows).then((response) => {
-                    console.log(response.data)
-                    this.$router.push("/loas")
-                  },
-                  error => {
-                    this.content =
-                        (error.response && error.response.data && error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-                    this.isLoading = false;
-                    if (error.response && error.response.status === 403) {
-                      EventBus.dispatch("logout");
+      return new Promise((resolve, reject) => {
+        let result = null
+        if(this.checkErrors()) {
+          this.haveError = true
+        } else {
+          let date = new Date(this.letterOfAuthorization.issuedDate)
+          this.letterOfAuthorization.validUntil =  date.setDate(date.getDate() + 10)
+          RestService.postLettersOfAuthorization(this.letterOfAuthorization).then((response) => {
+                console.log(response.data)
+                this.letterRows.forEach(item => item.letterOfAuthorization = response.data)
+                result = response.data
+                RestService.postArrayLetterRows(this.letterRows).then((response) => {
+                      console.log(response.data)
+                      resolve(result)
+                    },
+                    error => {
+                      this.content =
+                          (error.response && error.response.data && error.response.data.message) ||
+                          error.message ||
+                          error.toString();
+                      this.isLoading = false;
+                      if (error.response && error.response.status === 403) {
+                        EventBus.dispatch("logout");
+                      }
                     }
-                  }
-              )
-            },
-            error => {
-              this.content =
-                  (error.response && error.response.data && error.response.data.message) ||
-                  error.message ||
-                  error.toString();
-              this.isLoading = false;
-              if (error.response && error.response.status === 403) {
-                EventBus.dispatch("logout");
+                )
+              },
+              error => {
+                this.content =
+                    (error.response && error.response.data && error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                this.isLoading = false;
+                if (error.response && error.response.status === 403) {
+                  EventBus.dispatch("logout");
+                }
               }
-            }
-        )
-      }
-      return true
+          )
+        }
+      })
+    },
+    onlySaveLoa() {
+      this.createLoA().then(res => {
+        console.log(res)
+        this.$router.push('/loas')
+      })
+    },
+    saveAndDownloadXlsLoa() {
+      this.createLoA().then(res => {
+        const id = res.id
+        RestService.downloadXlsLoa(id).then(response => {
+          let fileUrl = window.URL.createObjectURL(response.data);
+          let fileLink = document.createElement('a');
+
+          fileLink.href = fileUrl;
+          fileLink.setAttribute('download', 'Доверенность.xls');
+          document.body.appendChild(fileLink)
+          fileLink.click();
+
+          this.$router.push('/loas')
+        }).catch(error => {
+          console.log(error.response.data)
+        })
+      })
+    },
+    saveAndDownloadPdfLoa() {
+      this.createLoA().then(res => {
+        const id = res.id
+        RestService.downloadPdfLoa(id).then(response => {
+          let fileUrl = window.URL.createObjectURL(response.data);
+          let fileLink = document.createElement('a');
+
+          fileLink.href = fileUrl;
+          fileLink.setAttribute('download', 'Доверенность.pdf');
+          document.body.appendChild(fileLink)
+          fileLink.click();
+
+          this.$router.push('/loas')
+        }).catch(error => {
+          console.log(error.response.data)
+        })
+      })
     },
     haveErrorSetFalse() {
       this.info = []

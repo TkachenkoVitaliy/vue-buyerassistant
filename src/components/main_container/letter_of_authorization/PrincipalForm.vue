@@ -115,7 +115,8 @@
           kpp: null,
           address: null,
           bankAccount: null,
-          directorName: null
+          directorName: null,
+          okpo: null
         },
         principal: {
           id: null,
@@ -124,7 +125,8 @@
           kpp: null,
           address: null,
           bankAccount: null,
-          directorName: null
+          directorName: null,
+          okpo: null
         },
         principalDialogTitle: null,
         isPrincipalDialogActive: false,
@@ -163,13 +165,14 @@
           kpp: null,
           address: null,
           bankAccount: null,
-          directorName: null
+          directorName: null,
+          okpo: null
         }
       },
       confirmDeletePrincipal(id) {
         RestService.deletePrincipals(id).then((response) => {
               this.principal = {id: null, name: null, inn: null, kpp: null, address: null, bankAccount: null,
-                directorName: null}
+                directorName: null, okpo: null}
               this.getAllPrincipals()
               this.$nextTick(() => this.isDeleteDialogActive = false)
             },
@@ -189,13 +192,13 @@
       },
       openCreateDialog() {
         this.currentPrincipal = {id: null, name: null, inn: null, kpp: null, address: null, bankAccount: null,
-          directorName: null}
+          directorName: null, okpo: null}
         this.isPrincipalDialogActive = true
         this.principalDialogTitle = 'Создание доверителя'
       },
       cancelPrincipalDialog() {
         this.currentPrincipal = {id: null, name: null, inn: null, kpp: null, address: null, bankAccount: null,
-          directorName: null}
+          directorName: null, okpo: null}
         this.getAllPrincipals()
         this.isPrincipalDialogActive = false
       },

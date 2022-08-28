@@ -81,6 +81,14 @@ class RestService {
     }
 
     //LettersOfAuthorization
+    downloadXlsLoa(id) {
+        return api.get('/api/lettersOfAuthorization/xls/' + id, {responseType: 'blob'})
+    }
+
+    downloadPdfLoa(id) {
+        return api.get('/api/lettersOfAuthorization/pdf/' + id, {responseType: 'blob'})
+    }
+
     getLettersOfAuthorization() {
         return api.get('/api/lettersOfAuthorization')
     }
