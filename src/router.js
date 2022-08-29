@@ -69,9 +69,5 @@ export default new Router({
                 }
             ]
         }
-    ],
-    navigationFallback: {
-        "rewrite": "/index.html",
-        "exclude": ["/images/*.{png,jpg,gif}", "/css/*"]
-    }
+    ]
 })
