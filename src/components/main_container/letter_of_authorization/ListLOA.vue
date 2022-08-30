@@ -21,6 +21,41 @@
             {{ formatDate(item.issuedDate) }}
           </template>
 
+          <template v-slot:item.actions='{ item }'>
+
+              <v-btn
+                  fab
+                  x-small
+                  dark
+                  color='primary'
+                  @click="openEditDialog(item)"
+              >
+                <v-icon
+                    x-small
+                    dark
+                >
+                  mdi-pencil
+                </v-icon>
+              </v-btn>
+
+              <v-btn
+                  style='margin-left: 15px'
+                  fab
+                  x-small
+                  dark
+                  color='red'
+                  @click="openDeleteDialog(item)"
+              >
+                <v-icon
+                    x-small
+                    dark
+                >
+                  mdi-delete
+                </v-icon>
+              </v-btn>
+
+          </template>
+
           <template v-slot:expanded-item="{ headers, item }">
             <td :colspan='headers.length - 1 '>
               <p
@@ -55,6 +90,7 @@
           { text: 'Дата выдачи', value: 'issuedDate' },
           { text: 'Водитель', value: 'driver.name' },
           { text: 'Поставщик', value: 'supplier.supplierName' },
+          { text: 'Действия', value: 'actions', sortable: false },
         ],
       }
     },
@@ -88,6 +124,87 @@
           infoArray.push(element.nomenclature.name + ": " + element.tonnage + 'тн')
         })
         return infoArray
+      },
+      openEditDialog(loa) {
+        this.isLoaDialogActive = true
+        this.currentLoa = loa
+        this.loaDialogTitle = 'Редактирование доверенности'
+      },
+      openDeleteDialog(loa) {
+        this.currentLoa = loa
+        this.isDeleteDialogActive = true
+        this.loa = {
+          id: null,
+          principal: null,
+          number: null,
+          issuedDate: null,
+          validUntil: null,
+          supplier: null,
+          driver: null,
+          sellType: null
+        }
+      },
+      confirmDeleteLoa(id) {
+        RestService.deleteLoa(id).then((response) => {
+              this.loa = {
+                id: null,
+                principal: null,
+                number: null,
+                issuedDate: null,
+                validUntil: null,
+                supplier: null,
+                driver: null,
+                sellType: null
+              }
+              this.getAllLetters()
+              this.$nextTick(() => this.isDeleteDialogActive = false)
+            },
+            error => {
+              this.content =
+                  (error.response && error.response.data && error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+              this.isLoading = false;
+              if (error.response && error.response.status === 403) {
+                EventBus.dispatch("logout");
+              }
+            })
+      },
+      cancelDeleteLoa() {
+        this.isDeleteDialogActive = false
+      },
+      openCreateDialog() {
+        this.loa = {
+          id: null,
+          principal: null,
+          number: null,
+          issuedDate: null,
+          validUntil: null,
+          supplier: null,
+          driver: null,
+          sellType: null
+        }
+        this.isLoaDialogActive = true
+        this.loaDialogTitle = 'Создание доверенности'
+      },
+      cancelLoaDialog() {
+        this.currentLoa = {
+          id: null,
+          principal: null,
+          number: null,
+          issuedDate: null,
+          validUntil: null,
+          supplier: null,
+          driver: null,
+          sellType: null
+        }
+        this.getAllLetters()
+        this.isLoaDialogActive = false
+      },
+      confirmLoaDialog(loa) {
+        this.getAllLetters()
+        this.loa = loa
+        this.isLoaDialogActive = false
       }
     },
     mounted() {
