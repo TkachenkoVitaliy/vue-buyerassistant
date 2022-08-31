@@ -4,7 +4,9 @@
       <v-card-title>
         <div class='header_loa_container'>
           <p>Доверенности</p>
-          <v-btn to='loas/create'>
+          <v-btn
+              @click='openCreateDialog'
+          >
               СОЗДАТЬ
           </v-btn>
         </div>
@@ -23,36 +25,46 @@
 
           <template v-slot:item.actions='{ item }'>
 
-              <v-btn
-                  fab
+            <v-btn
+                fab
+                x-small
+                dark
+                color='primary'
+                @click="openEditDialog(item)"
+            >
+              <v-icon
                   x-small
                   dark
-                  color='primary'
-                  @click="openEditDialog(item)"
               >
-                <v-icon
-                    x-small
-                    dark
-                >
-                  mdi-pencil
-                </v-icon>
-              </v-btn>
+                mdi-pencil
+              </v-icon>
+            </v-btn>
 
-              <v-btn
-                  style='margin-left: 15px'
-                  fab
+            <v-btn
+                style='margin-left: 15px'
+                fab
+                x-small
+                dark
+                color='red'
+                @click="openDeleteDialog(item)"
+            >
+              <v-icon
                   x-small
                   dark
-                  color='red'
-                  @click="openDeleteDialog(item)"
               >
-                <v-icon
-                    x-small
-                    dark
-                >
-                  mdi-delete
-                </v-icon>
-              </v-btn>
+                mdi-delete
+              </v-icon>
+            </v-btn>
+
+            <DeleteDialog
+                message = 'Удалить доверенность'
+                v-bind:info = 'currentLoa.principal ? currentLoa.principal.name +" "+ currentLoa.number: " "'
+                v-bind:id = currentLoa.id
+                v-bind:isActive = 'isDeleteDialogActive'
+                @confirmAction = 'confirmDeleteLoa'
+                @cancelAction = 'cancelDeleteLoa'
+                ref='deleteDialog'
+            />
 
           </template>
 
@@ -68,15 +80,29 @@
           </template>
         </v-data-table>
       </v-card-text>
+      <LetterOfAuthorizationDialog
+          v-bind:dialog='isLoaDialogActive'
+          v-bind:title='loaDialogTitle'
+          v-model:loa='currentLoa'
+          @save='confirmLoaDialog($event)'
+          @cancel='cancelLoaDialog'
+      />
     </v-card>
   </div>
 </template>
 
 <script>
+  import DeleteDialog from '@/components/other/DeleteDialog'
+  import LetterOfAuthorizationDialog
+    from '@/components/main_container/letter_of_authorization/LetterOfAuthorizationDialog'
   import RestService from '@/services/rest.service'
-  import EventBus from "@/common/EventBus";
+  import EventBus from '@/common/EventBus'
 
   export default {
+    components: {
+      DeleteDialog,
+      LetterOfAuthorizationDialog
+    },
     data() {
       return {
         letters: [],
@@ -92,6 +118,13 @@
           { text: 'Поставщик', value: 'supplier.supplierName' },
           { text: 'Действия', value: 'actions', sortable: false },
         ],
+        loaDialogTitle: null,
+        isLoaDialogActive: false,
+        isDeleteDialogActive: false,
+        currentLoa: {id: null, principal: null, number: null, issuedDate: null, validUntil: null, supplier: null,
+          driver: null, sellType: null},
+        loa: {id: null, principal: null, number: null, issuedDate: null, validUntil: null, supplier: null,
+          driver: null, sellType: null}
       }
     },
     methods: {
@@ -185,6 +218,7 @@
           sellType: null
         }
         this.isLoaDialogActive = true
+        console.log(this.isLoaDialogActive)
         this.loaDialogTitle = 'Создание доверенности'
       },
       cancelLoaDialog() {
