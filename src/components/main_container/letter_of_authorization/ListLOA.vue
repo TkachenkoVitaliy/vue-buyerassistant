@@ -58,7 +58,7 @@
 
             <DeleteDialog
                 message = 'Удалить доверенность'
-                v-bind:info = 'currentLoa.principal ? currentLoa.principal.name +" "+ currentLoa.number: " "'
+                v-bind:info = 'currentLoa.principal ? currentLoa.principal.name +" №"+ currentLoa.number: " "'
                 v-bind:id = currentLoa.id
                 v-bind:isActive = 'isDeleteDialogActive'
                 @confirmAction = 'confirmDeleteLoa'
@@ -178,7 +178,7 @@
         }
       },
       confirmDeleteLoa(id) {
-        RestService.deleteLoa(id).then((response) => {
+        RestService.deleteLettersOfAuthorization(id).then((response) => {
               this.loa = {
                 id: null,
                 principal: null,
@@ -190,7 +190,7 @@
                 sellType: null
               }
               this.getAllLetters()
-              this.$nextTick(() => this.isDeleteDialogActive = false)
+              this.isDeleteDialogActive = false
             },
             error => {
               this.content =

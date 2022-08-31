@@ -24,6 +24,7 @@
             >
               <PrincipalForm
                   @change:principal='changePrincipal($event)'
+                  ref='principal_form'
               />
             </v-col>
 
@@ -97,6 +98,7 @@
             >
               <SupplierForm
                   @change:supplier='changeSupplier($event)'
+                  ref='supplier_form'
               />
             </v-col>
 
@@ -108,6 +110,7 @@
             >
               <DriverForm
                   @change:driver='changeDriver($event)'
+                  ref='driver_form'
               />
             </v-col>
 
@@ -273,6 +276,7 @@ export default {
   data() {
     return {
       letterOfAuthorization: {
+        id: null,
         principal: null,
         number: null,
         issuedDate: null,
@@ -468,6 +472,8 @@ export default {
     checkErrors() {
       let someError = false
 
+      this.letterOfAuthorization.principal = this.$refs.principal_form.principal
+
       if(this.letterOfAuthorization.principal == null) {
         someError = true
         this.info.push('Выберите доверителя')
@@ -482,13 +488,19 @@ export default {
         someError = true
         this.info.push('Выберите дату выдачи доверенности')
       }
+
+      this.changePrincipal(this.letterOfAuthorization.principal)
       if(this.letterOfAuthorization.number == null) {
         someError = true
       }
+
+      this.letterOfAuthorization.supplier = this.$refs.supplier_form.supplier
       if(this.letterOfAuthorization.supplier == null) {
         someError = true
         this.info.push('Выберите поставщика')
       }
+
+      this.letterOfAuthorization.driver = this.$refs.driver_form.driver
       if(this.letterOfAuthorization.driver == null) {
         someError = true
         this.info.push('Выберите водителя')
