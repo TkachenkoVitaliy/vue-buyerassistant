@@ -84,8 +84,9 @@
           v-bind:dialog='isLoaDialogActive'
           v-bind:title='loaDialogTitle'
           v-model:loa='currentLoa'
-          @save='confirmLoaDialog($event)'
+          @save='confirmLoaDialog'
           @cancel='cancelLoaDialog'
+          ref='loaDialog'
       />
     </v-card>
   </div>
@@ -162,6 +163,7 @@
         this.isLoaDialogActive = true
         this.currentLoa = loa
         this.loaDialogTitle = 'Редактирование доверенности'
+        this.$refs.loaDialog.initializeEditMode(loa)
       },
       openDeleteDialog(loa) {
         this.currentLoa = loa
@@ -235,9 +237,8 @@
         this.getAllLetters()
         this.isLoaDialogActive = false
       },
-      confirmLoaDialog(loa) {
+      confirmLoaDialog() {
         this.getAllLetters()
-        this.loa = loa
         this.isLoaDialogActive = false
       }
     },

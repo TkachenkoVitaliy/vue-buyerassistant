@@ -5,7 +5,7 @@
         persistent
     >
       <v-card style='min-height: 92vh; padding: 0vh 6vw'>
-        <v-card-title>СОЗДАНИЕ ДОВЕРЕННОСТИ</v-card-title>
+        <v-card-title> {{ title }} </v-card-title>
         <v-card-text>
           <ErrorDialog
               v-bind:message='message'
@@ -191,7 +191,7 @@
               <v-btn
                   class='darken-4 green--text'
                   @click='onlySaveLoa'
-              >СОЗДАТЬ
+              >СОХРАНИТЬ
               </v-btn>
             </v-col>
             <v-spacer></v-spacer>
@@ -229,7 +229,7 @@
                 lg='2'
             >
               <v-btn
-                  @click='goBack'
+                  @click='cancelDialog'
                   class='red--text'
               >ОТМЕНА
               </v-btn>
@@ -272,6 +272,19 @@ export default {
   model: {
     prop: 'loa',
     event: 'change'
+  },
+  computed: {
+    loaLocal: {
+      get: function () {
+        return this.loa
+      },
+      set: function (value) {
+        this.$emit('change', value)
+      }
+    },
+    formattedDate() {
+      return this.formatDate(this.letterOfAuthorization.issuedDate)
+    }
   },
   data() {
     return {
@@ -412,8 +425,17 @@ export default {
         }
       ]
     },
-    goBack() {
-      this.$router.push('/loas')
+    cancelDialog() {
+      this.letterOfAuthorization.id = null
+      this.$refs.principal_form.principal = null
+      this.letterOfAuthorization.number = null
+      this.letterOfAuthorization.issuedDate = null
+      this.letterOfAuthorization.validUntil = null
+      this.$refs.supplier_form.supplier = null
+      this.$refs.driver_form.driver = null
+      this.letterOfAuthorization.sellType = null
+      this.initialize()
+      this.$emit('cancel')
     },
     changePrincipal(principal) {
       this.letterOfAuthorization.principal = principal
@@ -575,64 +597,156 @@ export default {
         }
       })
     },
-    onlySaveLoa() {
-      this.createLoA().then(res => {
-        console.log(res)
-        this.$router.push('/loas')
+    updateLoA() {
+      return new Promise((resolve, reject) => {
+        let result = null
+        if(this.checkErrors()) {
+          this.haveError = true
+        } else {
+          let date = new Date(this.letterOfAuthorization.issuedDate)
+          this.letterOfAuthorization.validUntil =  date.setDate(date.getDate() + 10)
+          RestService.putLettersOfAuthorization(this.letterOfAuthorization).then((response) => {
+                console.log(response.data)
+                this.letterRows.forEach(item => item.letterOfAuthorization = response.data)
+                result = response.data
+                RestService.putArrayLetterRows(this.letterRows).then((response) => {
+                      console.log(response.data)
+                      resolve(result)
+                    },
+                    error => {
+                      this.content =
+                          (error.response && error.response.data && error.response.data.message) ||
+                          error.message ||
+                          error.toString();
+                      this.isLoading = false;
+                      if (error.response && error.response.status === 403) {
+                        EventBus.dispatch("logout");
+                      }
+                    }
+                )
+              },
+              error => {
+                this.content =
+                    (error.response && error.response.data && error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                this.isLoading = false;
+                if (error.response && error.response.status === 403) {
+                  EventBus.dispatch("logout");
+                }
+              }
+          )
+        }
       })
+    },
+    onlySaveLoa() {
+      if(this.letterOfAuthorization.id == null) {
+        this.createLoA().then(res => {
+          console.log(res)
+          this.$emit('save')
+        })
+      } else {
+        this.updateLoA().then(res => {
+          console.log(res)
+          this.$emit('save')
+        })
+      }
+
     },
     saveAndDownloadXlsLoa() {
-      this.createLoA().then(res => {
-        const id = res.id
-        RestService.downloadXlsLoa(id).then(response => {
-          let fileUrl = window.URL.createObjectURL(response.data);
-          let fileLink = document.createElement('a');
+      if (this.letterOfAuthorization.id == null) {
+        this.createLoA().then(res => {
+          const id = res.id
+          RestService.downloadXlsLoa(id).then(response => {
+            let fileUrl = window.URL.createObjectURL(response.data);
+            let fileLink = document.createElement('a');
 
-          fileLink.href = fileUrl;
-          fileLink.setAttribute('download', 'Доверенность.xls');
-          document.body.appendChild(fileLink)
-          fileLink.click();
+            fileLink.href = fileUrl;
+            fileLink.setAttribute('download', 'Доверенность.xls');
+            document.body.appendChild(fileLink)
+            fileLink.click();
 
-          this.$router.push('/loas')
-        }).catch(error => {
-          console.log(error.response.data)
+            this.$emit('save')
+          }).catch(error => {
+            console.log(error.response.data)
+          })
         })
-      })
+      } else {
+        this.updateLoA().then(res => {
+          const id = res.id
+          RestService.downloadXlsLoa(id).then(response => {
+            let fileUrl = window.URL.createObjectURL(response.data);
+            let fileLink = document.createElement('a');
+
+            fileLink.href = fileUrl;
+            fileLink.setAttribute('download', 'Доверенность.xls');
+            document.body.appendChild(fileLink)
+            fileLink.click();
+
+            this.$emit('save')
+          }).catch(error => {
+            console.log(error.response.data)
+          })
+        })
+      }
     },
     saveAndDownloadPdfLoa() {
-      this.createLoA().then(res => {
-        const id = res.id
-        RestService.downloadPdfLoa(id).then(response => {
-          let fileUrl = window.URL.createObjectURL(response.data);
-          let fileLink = document.createElement('a');
+      if(this.letterOfAuthorization.id == null) {
+        this.createLoA().then(res => {
+          const id = res.id
+          RestService.downloadPdfLoa(id).then(response => {
+            let fileUrl = window.URL.createObjectURL(response.data);
+            let fileLink = document.createElement('a');
 
-          fileLink.href = fileUrl;
-          fileLink.setAttribute('download', 'Доверенность.pdf');
-          document.body.appendChild(fileLink)
-          fileLink.click();
+            fileLink.href = fileUrl;
+            fileLink.setAttribute('download', 'Доверенность.pdf');
+            document.body.appendChild(fileLink)
+            fileLink.click();
 
-          this.$router.push('/loas')
-        }).catch(error => {
-          console.log(error.response.data)
+            this.$emit('save')
+          }).catch(error => {
+            console.log(error.response.data)
+          })
         })
-      })
+      } else {
+        this.updateLoA().then(res => {
+          const id = res.id
+          RestService.downloadPdfLoa(id).then(response => {
+            let fileUrl = window.URL.createObjectURL(response.data);
+            let fileLink = document.createElement('a');
+
+            fileLink.href = fileUrl;
+            fileLink.setAttribute('download', 'Доверенность.pdf');
+            document.body.appendChild(fileLink)
+            fileLink.click();
+
+            this.$emit('save')
+          }).catch(error => {
+            console.log(error.response.data)
+          })
+        })
+      }
     },
     haveErrorSetFalse() {
       this.info = []
       this.haveError = false
+    },
+    initializeEditMode() {
+      this.$refs.principal_form.principal = this.loaLocal.principal
+      this.$refs.supplier_form.supplier = this.loaLocal.supplier
+      this.$refs.driver_form.driver = this.loaLocal.driver
+      // this.letterOfAuthorization.number = this.loaLocal.number
+      // this.letterOfAuthorization.issuedDate = this.loaLocal.issuedDate
+      // this.letterOfAuthorization.validUntil = this.loaLocal.validUntil
+      // this.letterOfAuthorization.id = this.loaLocal.id
+      // this.letterOfAuthorization.sellType = this.loaLocal.sellType
+      this.letterRows = this.loaLocal.letterRows
     }
   },
-  computed: {
-    loaLocal: {
-      get: function () {
-        return this.loa
-      },
-      set: function (value) {
-        this.$emit('change', value)
-      }
-    },
-    formattedDate() {
-      return this.formatDate(this.letterOfAuthorization.issuedDate)
+  updated() {
+    if(this.loaLocal.id != null) {
+      console.log('loa.id != null', this.loa, this.loaLocal)
+      this.initializeEditMode()
     }
   },
   mounted() {

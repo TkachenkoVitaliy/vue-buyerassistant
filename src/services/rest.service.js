@@ -101,12 +101,20 @@ class RestService {
         return api.post('/api/lettersOfAuthorization', data)
     }
 
+    putLettersOfAuthorization(data) {
+        return api.put('/api/lettersOfAuthorization', data)
+    }
+
     deleteLettersOfAuthorization(id) {
         return api.delete('/api/lettersOfAuthorization/' + id)
     }
 
     postArrayLetterRows(data) {
         return api.post('/api/letterRows', data)
+    }
+
+    putArrayLetterRows(data) {
+        return api.put('/api/letterRows', data)
     }
 
     getPrincipals() {

@@ -105,20 +105,11 @@
       DeleteDialog,
       PrincipalDialog
     },
+    props: ['principal'],
     data() {
       return {
         principals: null,
         currentPrincipal: {
-          id: null,
-          name: null,
-          inn: null,
-          kpp: null,
-          address: null,
-          bankAccount: null,
-          directorName: null,
-          okpo: null
-        },
-        principal: {
           id: null,
           name: null,
           inn: null,
