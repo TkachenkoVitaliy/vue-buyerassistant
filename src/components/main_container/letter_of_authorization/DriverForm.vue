@@ -103,23 +103,26 @@
   import EventBus from '@/common/EventBus'
   import DeleteDialog from '@/components/other/DeleteDialog'
   import DriverDialog from '@/components/main_container/letter_of_authorization/DriverDialog'
+  import store from '@/store'
 
   export default {
     components: {
       DeleteDialog,
       DriverDialog
     },
+    computed: {
+      driver: {
+        get: function () {
+          return store.getters["loa/driver"]
+        },
+        set: function (value) {
+          store.commit('loa/setDriver', value)
+        }
+      },
+    },
     data() {
       return {
         drivers: null,
-        driver: {
-          id: null,
-          name: null,
-          passportSeries: null,
-          passportNumber: null,
-          issuedBy: null,
-          dateOfIssue: null
-        },
         currentDriver: {
           id: null,
           name: null,

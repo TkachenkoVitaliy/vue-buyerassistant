@@ -6,7 +6,7 @@
         clearable
         dense
         @input="emitChangePrincipal($event)"
-        v-model="principal"
+        v-model='principal'
         :items='principals'
         :item-text='item => item.name'
         return-object
@@ -99,13 +99,23 @@
   import EventBus from '@/common/EventBus'
   import DeleteDialog from '@/components/other/DeleteDialog'
   import PrincipalDialog from '@/components/main_container/letter_of_authorization/PrincipalDialog'
+  import store from "@/store";
 
   export default {
     components: {
       DeleteDialog,
       PrincipalDialog
     },
-    props: ['principal'],
+    computed: {
+      principal: {
+        get: function () {
+          return store.getters["loa/principal"]
+        },
+        set: function (value) {
+          store.commit('loa/setPrincipal', value)
+        }
+      },
+    },
     data() {
       return {
         principals: null,

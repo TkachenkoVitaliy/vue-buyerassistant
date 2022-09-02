@@ -58,8 +58,8 @@
 
             <DeleteDialog
                 message = 'Удалить доверенность'
-                v-bind:info = 'currentLoa.principal ? currentLoa.principal.name +" №"+ currentLoa.number: " "'
-                v-bind:id = currentLoa.id
+                v-bind:info = 'letterOfAuthorization.principal ? letterOfAuthorization.principal.name +" №"+ letterOfAuthorization.number: " "'
+                v-bind:id = 'letterOfAuthorization.id'
                 v-bind:isActive = 'isDeleteDialogActive'
                 @confirmAction = 'confirmDeleteLoa'
                 @cancelAction = 'cancelDeleteLoa'
@@ -83,7 +83,6 @@
       <LetterOfAuthorizationDialog
           v-bind:dialog='isLoaDialogActive'
           v-bind:title='loaDialogTitle'
-          v-model:loa='currentLoa'
           @save='confirmLoaDialog'
           @cancel='cancelLoaDialog'
           ref='loaDialog'
@@ -98,11 +97,18 @@
     from '@/components/main_container/letter_of_authorization/LetterOfAuthorizationDialog'
   import RestService from '@/services/rest.service'
   import EventBus from '@/common/EventBus'
+  import store from '@/store'
 
   export default {
     components: {
       DeleteDialog,
       LetterOfAuthorizationDialog
+    },
+    computed: {
+      letterOfAuthorization: {
+        get: function () {return store.getters["loa/letterOfAuthorization"]},
+        set: function (value) {store.commit('loa/setLetterOfAuthorization', value)}
+      }
     },
     data() {
       return {
@@ -117,21 +123,18 @@
           { text: 'Дата выдачи', value: 'issuedDate' },
           { text: 'Водитель', value: 'driver.name' },
           { text: 'Поставщик', value: 'supplier.supplierName' },
-          { text: 'Действия', value: 'actions', sortable: false },
+          { text: '', value: 'actions', sortable: false },
         ],
         loaDialogTitle: null,
         isLoaDialogActive: false,
         isDeleteDialogActive: false,
-        currentLoa: {id: null, principal: null, number: null, issuedDate: null, validUntil: null, supplier: null,
-          driver: null, sellType: null},
-        loa: {id: null, principal: null, number: null, issuedDate: null, validUntil: null, supplier: null,
-          driver: null, sellType: null}
       }
     },
     methods: {
       getAllLetters() {
         RestService.getLettersOfAuthorization().then((response) =>
             {
+              console.log(response.data)
               this.letters = response.data
             },
             error => {
@@ -160,37 +163,20 @@
         return infoArray
       },
       openEditDialog(loa) {
+        this.letterOfAuthorization = loa
         this.isLoaDialogActive = true
-        this.currentLoa = loa
         this.loaDialogTitle = 'Редактирование доверенности'
-        this.$refs.loaDialog.initializeEditMode(loa)
       },
       openDeleteDialog(loa) {
-        this.currentLoa = loa
+        //TODO refactor
+        // this.currentLoa = loa
+        this.letterOfAuthorization = loa
         this.isDeleteDialogActive = true
-        this.loa = {
-          id: null,
-          principal: null,
-          number: null,
-          issuedDate: null,
-          validUntil: null,
-          supplier: null,
-          driver: null,
-          sellType: null
-        }
       },
       confirmDeleteLoa(id) {
         RestService.deleteLettersOfAuthorization(id).then((response) => {
-              this.loa = {
-                id: null,
-                principal: null,
-                number: null,
-                issuedDate: null,
-                validUntil: null,
-                supplier: null,
-                driver: null,
-                sellType: null
-              }
+              store.dispatch("loa/resetLetterOfAuthorization")
+              store.dispatch("loa/resetLetterRows")
               this.getAllLetters()
               this.isDeleteDialogActive = false
             },
@@ -209,31 +195,22 @@
         this.isDeleteDialogActive = false
       },
       openCreateDialog() {
-        this.loa = {
-          id: null,
-          principal: null,
-          number: null,
-          issuedDate: null,
-          validUntil: null,
-          supplier: null,
-          driver: null,
-          sellType: null
-        }
+        store.dispatch('loa/resetLetterOfAuthorization')
         this.isLoaDialogActive = true
-        console.log(this.isLoaDialogActive)
         this.loaDialogTitle = 'Создание доверенности'
       },
       cancelLoaDialog() {
-        this.currentLoa = {
-          id: null,
-          principal: null,
-          number: null,
-          issuedDate: null,
-          validUntil: null,
-          supplier: null,
-          driver: null,
-          sellType: null
-        }
+        //TODO refactor
+        // this.currentLoa = {
+        //   id: null,
+        //   principal: null,
+        //   number: null,
+        //   issuedDate: null,
+        //   validUntil: null,
+        //   supplier: null,
+        //   driver: null,
+        //   sellType: null
+        // }
         this.getAllLetters()
         this.isLoaDialogActive = false
       },
@@ -242,7 +219,7 @@
         this.isLoaDialogActive = false
       }
     },
-    mounted() {
+    created() {
       this.getAllLetters()
     }
   }

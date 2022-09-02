@@ -1,35 +1,3 @@
-const emptyLetterOfAuthorization = {
-    id: null,
-    principal: {
-        id: null,
-        name: null,
-        inn: null,
-        kpp: null,
-        address: null,
-        bankAccount: null,
-        directorName: null,
-        okpo: null
-    },
-    sellType: null,
-    issuedDate: null,
-    validUntil: null,
-    number: null,
-    supplier: {
-        id: null,
-        supplierName: null
-    },
-
-    driver: {
-        id: null,
-        name: null,
-        passportSeries: null,
-        passportNumber: null,
-        issuedBy: null,
-        dateOfIssue: null
-    },
-}
-
-
 export const loa = {
     namespaced: true,
 
@@ -69,9 +37,9 @@ export const loa = {
                 issuedBy: null,
                 dateOfIssue: null
             },
-        },
 
-        letterRows: []
+            letterRows: [{id:null, nomenclature: null, number: 1}]
+        },
     },
 
     getters: {
@@ -104,7 +72,7 @@ export const loa = {
         },
 
         supplier: state => {
-            return state.letterOfAuthorization.principal
+            return state.letterOfAuthorization.supplier
         },
 
         driver: state => {
@@ -112,7 +80,7 @@ export const loa = {
         },
 
         letterRows: state => {
-            return state.letterRows
+            return state.letterOfAuthorization.letterRows
         }
     },
 
@@ -154,17 +122,36 @@ export const loa = {
         },
 
         setLetterRows: (state, payload) => {
-            state.letterRows = payload
+            state.letterOfAuthorization.letterRows = payload
         },
     },
 
     actions: {
-        resetLetterOfAuthorization: (context, payload) => {
-            context.commit('setLetterOfAuthorization', emptyLetterOfAuthorization)
+        resetLetterOfAuthorization: (context) => {
+            context.commit('setLetterOfAuthorization', {
+                id: null,
+                principal: {id: null, name: null, inn: null, kpp: null, address: null, bankAccount: null,
+                    directorName: null, okpo: null},
+                sellType: null,
+                issuedDate: null,
+                validUntil: null,
+                number: null,
+                supplier: {id: null, supplierName: null},
+                driver: {id: null, name: null, passportSeries: null, passportNumber: null, issuedBy: null,
+                    dateOfIssue: null},
+                letterRows: [{id:null, nomenclature: null, number: 1}]
+            })
+            if (context.getters.letterOfAuthorization.issuedDate == null) {
+                let currentDate = new Date()
+                let day = currentDate.getDate() < 10 ? "0" + currentDate.getDate() : currentDate.getDate()
+                let month = (currentDate.getMonth() + 1) < 10 ? "0" + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1
+                let year = currentDate.getFullYear()
+                context.commit('setIssuedDate', year + "-" + month + "-" + day)
+            }
         },
 
-        resetLetterRows: (context, payload) => {
-            context.commit('setLetterRows', [])
+        resetLetterRows: (context) => {
+            context.commit('setLetterRows', [{id:null, nomenclature: null, number: 1}])
         }
     }
 }

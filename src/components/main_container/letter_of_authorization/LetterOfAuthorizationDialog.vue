@@ -255,6 +255,7 @@ import DriverDialog from '@/components/main_container/letter_of_authorization/Dr
 import PrincipalForm from '@/components/main_container/letter_of_authorization/PrincipalForm'
 import PrincipalDialog from '@/components/main_container/letter_of_authorization/PrincipalDialog'
 import EventBus from '@/common/EventBus'
+import store from '@/store'
 
 export default {
   components: {
@@ -268,39 +269,22 @@ export default {
     DriverForm,
     DriverDialog
   },
-  props: ['dialog','title', 'loa'],
-  model: {
-    prop: 'loa',
-    event: 'change'
-  },
+  props: ['dialog','title'],
   computed: {
-    loaLocal: {
-      get: function () {
-        return this.loa
-      },
-      set: function (value) {
-        this.$emit('change', value)
-      }
+    letterOfAuthorization: {
+      get: function () {return store.getters["loa/letterOfAuthorization"]},
+      set: function (value) {store.commit('loa/setLetterOfAuthorization', value)}
+    },
+    letterRows: {
+      get: function () {return store.getters["loa/letterRows"]},
+      set: function (value) {store.commit('loa/setLetterRows', value)}
     },
     formattedDate() {
-      return this.formatDate(this.letterOfAuthorization.issuedDate)
+      return this.formatDate(store.getters["loa/issuedDate"])
     }
   },
   data() {
     return {
-      letterOfAuthorization: {
-        id: null,
-        principal: null,
-        number: null,
-        issuedDate: null,
-        validUntil: null,
-        supplier: null,
-        driver: null,
-        sellType: null
-      },
-      LoA_id: null,
-      letterRows: [],
-      rows: [],
       nomenclatures: [],
       sellTypes: ['На склад', 'На клиента'],
       headers: [
@@ -326,47 +310,18 @@ export default {
     }
   },
   methods: {
-    getAllPrincipals() {
-      RestService.getPrincipals().then((response) => {
-            this.principals = response.data
-          },
-          error => {
-            this.content =
-                (error.response && error.response.data && error.response.data.message) ||
-                error.message ||
-                error.toString();
-            this.isLoading = false;
-            if (error.response && error.response.status === 403) {
-              EventBus.dispatch("logout");
-            }
-          }
-      )
-    },
+    //TODO remove
     setNewPrincipal(principal) {
       this.getAllPrincipals()
       this.letterOfAuthorization.principal = principal
     },
 
-    getAllDrivers() {
-      RestService.getDrivers().then((response) => {
-            this.drivers = response.data
-          },
-          error => {
-            this.content =
-                (error.response && error.response.data && error.response.data.message) ||
-                error.message ||
-                error.toString();
-            this.isLoading = false;
-            if (error.response && error.response.status === 403) {
-              EventBus.dispatch("logout");
-            }
-          }
-      )
-    },
+    //TODO remove
     setNewDriver(driver) {
       this.getAllDrivers()
       this.letterOfAuthorization.driver = driver
     },
+
     getAllNomenclatures() {
       RestService.getNomenclatures().then((response) => {
             this.nomenclatures = response.data
@@ -383,18 +338,21 @@ export default {
           }
       )
     },
+    //TODO remove
     setNewNomenclature(result) {
       let nomenclature = result.nomenclature
       let index = result.index - 1
       this.getAllNomenclatures()
       this.letterRows[index].nomenclature = nomenclature
     },
+
     formatDate(date) {
       if (!date) return null
 
       const [year, month, day] = date.split('-')
       return `${day}-${month}-${year}`
     },
+
     addRow() {
       this.letterRows.push({
         number: this.letterRows.length + 1,
@@ -415,28 +373,15 @@ export default {
       }
     },
     initialize() {
-      this.letterRows = [
-        {
-          id: null,
-          number: 1,
-          nomenclature: {},
-          tonnage: null,
-          letterOfAuthorization: null
-        }
-      ]
+      store.dispatch("loa/resetLetterRows")
     },
     cancelDialog() {
-      this.letterOfAuthorization.id = null
-      this.$refs.principal_form.principal = null
-      this.letterOfAuthorization.number = null
-      this.letterOfAuthorization.issuedDate = null
-      this.letterOfAuthorization.validUntil = null
-      this.$refs.supplier_form.supplier = null
-      this.$refs.driver_form.driver = null
-      this.letterOfAuthorization.sellType = null
-      this.initialize()
+      store.dispatch("loa/resetLetterOfAuthorization")
+      store.dispatch("loa/resetLetterRows")
       this.$emit('cancel')
     },
+
+    //TODO remove
     changePrincipal(principal) {
       this.letterOfAuthorization.principal = principal
       if(principal == null) {
@@ -473,12 +418,18 @@ export default {
           }
       )
     },
+
+    //TODO remove
     changeSupplier(supplier) {
       this.letterOfAuthorization.supplier = supplier
     },
+
+    //TODO remove
     changeDriver(driver) {
       this.letterOfAuthorization.driver = driver
     },
+
+    //TODO remove
     cleanLetterRows() {
       this.letterRows = this.letterRows
           .filter(function (item) {
@@ -731,33 +682,35 @@ export default {
       this.info = []
       this.haveError = false
     },
-    initializeEditMode() {
-      this.$refs.principal_form.principal = this.loaLocal.principal
-      this.$refs.supplier_form.supplier = this.loaLocal.supplier
-      this.$refs.driver_form.driver = this.loaLocal.driver
+    // initializeEditMode() {
+    //   this.$refs.principal_form.principal = this.loaLocal.principal
+    //   this.$refs.supplier_form.supplier = this.loaLocal.supplier
+    //   this.$refs.driver_form.driver = this.loaLocal.driver
       // this.letterOfAuthorization.number = this.loaLocal.number
       // this.letterOfAuthorization.issuedDate = this.loaLocal.issuedDate
       // this.letterOfAuthorization.validUntil = this.loaLocal.validUntil
       // this.letterOfAuthorization.id = this.loaLocal.id
       // this.letterOfAuthorization.sellType = this.loaLocal.sellType
-      this.letterRows = this.loaLocal.letterRows
-    }
+  //     this.letterRows = this.loaLocal.letterRows
+  //   }
   },
-  updated() {
-    if(this.loaLocal.id != null) {
-      console.log('loa.id != null', this.loa, this.loaLocal)
-      this.initializeEditMode()
-    }
-  },
+  // updated() {
+  //   if(this.loaLocal.id != null) {
+  //     console.log('loa.id != null', this.loa, this.loaLocal)
+  //     this.initializeEditMode()
+  //   }
+  // },
   mounted() {
-    this.getAllPrincipals()
     this.getAllNomenclatures()
     this.initialize()
-    let currentDate = new Date()
-    let day = currentDate.getDate() < 10 ? "0" + currentDate.getDate() : currentDate.getDate()
-    let month = (currentDate.getMonth() + 1) < 10 ? "0" + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1
-    let year = currentDate.getFullYear()
-    this.letterOfAuthorization.issuedDate = year + "-" + month + "-" + day
+
+    if (this.letterOfAuthorization.issuedDate == null) {
+      let currentDate = new Date()
+      let day = currentDate.getDate() < 10 ? "0" + currentDate.getDate() : currentDate.getDate()
+      let month = (currentDate.getMonth() + 1) < 10 ? "0" + (currentDate.getMonth() + 1) : currentDate.getMonth() + 1
+      let year = currentDate.getFullYear()
+      this.letterOfAuthorization.issuedDate = year + "-" + month + "-" + day
+    }
   }
 }
 </script>
