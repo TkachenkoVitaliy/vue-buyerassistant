@@ -1,8 +1,17 @@
 <template>
   <div class="main_container">
     <router-view />
+    <StatusMessageDialog />
   </div>
 </template>
+
+<script>
+import StatusMessageDialog from '@/components/other/StatusMessageDialog'
+
+export default {
+  components: {StatusMessageDialog},
+}
+</script>
 
 <style>
   .main_container {

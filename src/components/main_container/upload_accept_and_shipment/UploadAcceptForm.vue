@@ -15,30 +15,26 @@
       </v-btn>
       <img src='../../../assets/loading.gif' class='loading-image' v-if='isLoading'>
     </div>
-    <StatusMessage
-        v-bind:has_error='hasError'
-        v-bind:message='message'
-    />
   </div>
 </template>
 
 
 <script>
-  import RestService from '@/services/rest.service'
-  import StatusMessage from '@/components/other/StatusMessage'
   import EventBus from "@/common/EventBus";
+  import store from "@/store";
 
   export default {
+    computed: {
+      isLoading: {
+        get: function () {return store.getters["factory_files/acceptLoading"]},
+        set: function (value) {store.commit('factory_files/setAcceptLoading', value)}
+      }
+    },
     data() {
       return {
         selectedFile : null,
-        isLoading : false,
-        status: '',
-        hasError: false,
-        message: ''
       }
     },
-    components: {StatusMessage},
     methods: {
       onFileSelected(file) {
         this.selectedFile = file
@@ -46,40 +42,28 @@
       onUpload() {
         if(this.selectedFile) {
           this.isLoading = true
-          const formData = new FormData()
-          formData.append('mmkAccept', this.selectedFile, this.selectedFile.name)
-          RestService.postUploadAccept(formData)
-              .then(
-                  () => {
-                  this.$refs.fileUpload.reset()
-                  this.selectedFile = null
-                  this.isLoading = false
-                  this.hasError = false
-                  this.message = 'Акцепт успешно загружен'
-                  // this.status = 'Акцепт успешно загружен'
-                  },
-                  error => {
-                    this.$refs.fileUpload.reset()
-                    this.selectedFile = null
-                    this.isLoading = false
-                    this.hasError = true
-                    this.message = 'При загрузке акцепта произошла ошибка'
-                    this.content =
-                        (error.response && error.response.data && error.response.data.message) ||
-                        error.message ||
-                        error.toString();
-                    if (error.response && error.response.status === 403) {
-                      EventBus.dispatch("logout");
-                    }
-                  }
-              ).catch(() => {
-                  this.$refs.fileUpload.reset()
-                  this.selectedFile = null
-                  this.isLoading = false
-                  this.hasError = true
-                  this.message = 'При загрузке акцепта произошла ошибка'
-                  // this.status = 'Произошла ошибка'
-              })
+          store.dispatch('factory_files/uploadAccept', this.selectedFile).then(
+              () => {
+                if(this.$refs.fileUpload) this.$refs.fileUpload.reset()
+                this.selectedFile = null
+              },
+              error => {
+                if(this.$refs.fileUpload) this.$refs.fileUpload.reset()
+                this.selectedFile = null
+                this.content =
+                    (error.response && error.response.data && error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                if (error.response && error.response.status === 403) {
+                  EventBus.dispatch("logout");
+                }
+              }
+          ).catch(
+              () => {
+                if (this.$refs.fileUpload) this.$refs.fileUpload.reset()
+                this.selectedFile = null
+              }
+          )
         }
       }
     }
@@ -97,20 +81,5 @@
     margin-top: 15px;
     margin-left: 10px;
   }
-
-  /*.upload_accept_status{
-    min-height: 29px;
-    margin-top: 15px;
-    margin-left: 10px;
-    font-size: larger;
-  }
-
-  .errorClass {
-    color: red;
-  }
-
-  .okClass {
-    color: green;
-  }*/
 
 </style>

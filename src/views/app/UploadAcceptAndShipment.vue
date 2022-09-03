@@ -16,6 +16,7 @@
   import UploadMultipleForm from '@/components/main_container/upload_accept_and_shipment/UploadMultipleForm'
   import UndefinedRowsList from '@/components/main_container/upload_accept_and_shipment/UndefinedRowsList'
   import UndefinedProductGroup from '@/components/main_container/upload_accept_and_shipment/UndefinedProductGroup'
+  import store from "@/store";
 
   export default {
     components:
@@ -25,13 +26,30 @@
         UploadAcceptForm,
         UndefinedProductGroup
       },
+    computed: {
+      needUpdate: {
+        get: function () {return store.getters["factory_files/updated"]},
+        set: function (value) {store.commit('factory_files/setUpdated', value)}
+      }
+    },
+    watch: {
+      needUpdate: function () {
+        if (this.needUpdate) {
+          this.updateUndefinedRows()
+          this.needUpdate = false
+        }
+      }
+    },
     methods:
       {
         updateUndefinedRows() {
           this.$refs.undefinedRows.updateSummaryRows()
           this.$refs.undefinedProductGroup.getUndefinedTypes()
         }
-      }
+      },
+    mounted() {
+      this.updateUndefinedRows()
+    }
   }
 </script>
 
