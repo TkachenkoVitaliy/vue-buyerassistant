@@ -2,7 +2,8 @@
   <div>
     <v-dialog
         v-model='active'
-        max-width='400'
+        min-width='400'
+        max-width='700'
         :retain-focus="false"
     >
       <v-card>
@@ -11,6 +12,18 @@
         >
           {{message}}
         </v-card-title>
+
+        <v-divider></v-divider>
+
+        <v-card-text>
+          <p
+              v-for='infoItem in detailInfo'
+              v-bind:key='infoItem'
+              style='margin-bottom: 5px'
+          >
+            {{ infoItem }}
+          </p>
+        </v-card-text>
 
         <v-divider></v-divider>
 
@@ -46,7 +59,17 @@
         get: function () {return store.getters["status_message/active"]},
         set: function (value) {store.commit('status_message/setActive', value)}
       },
+      detailInfo: {
+        get: function () {return store.getters["status_message/detailInfo"]},
+        set: function (value) {store.commit('status_message/setDetailInfo', value)}
+      }
     },
+    watch: {
+      active: function () {
+        if(!this.active()) this.confirm()
+      }
+    },
+
     data() {
       return {
         errorClass: 'errorClass',
@@ -57,6 +80,9 @@
     methods: {
       confirm() {
         store.commit('status_message/setActive', false)
+        store.commit('status_message/setHaveError', false)
+        store.commit('status_message/setMessage', null)
+        store.commit('status_message/setDetailInfo', [])
       }
     }
   }

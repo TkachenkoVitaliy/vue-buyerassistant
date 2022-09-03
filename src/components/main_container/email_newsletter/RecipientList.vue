@@ -60,7 +60,9 @@
     />
 
     <table class='recipients_table'>
-      <caption>СПИСОК АДРЕСАТОВ</caption>
+      <caption>
+        <h3>СПИСОК АДРЕСАТОВ</h3>
+      </caption>
       <tr>
         <th class='th_1 th_blue'>Филиал</th>
         <th class='th_2 th_blue'>Почта</th>
@@ -229,6 +231,10 @@
   .contact_form {
     padding-left: 20px;
     padding-right: 20px;
+  }
+
+  h3 {
+    text-align: center;
   }
 
 </style>

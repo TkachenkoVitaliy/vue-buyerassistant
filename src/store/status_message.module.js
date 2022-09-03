@@ -5,6 +5,7 @@ export const status_message = {
         haveError: null,
         message: null,
         active: false,
+        detailInfo: []
     },
 
     getters: {
@@ -16,6 +17,9 @@ export const status_message = {
         },
         active: state => {
             return state.active
+        },
+        detailInfo: state => {
+            return state.detailInfo
         }
     },
 
@@ -33,9 +37,15 @@ export const status_message = {
         setAcceptLoading: (state, payload) => {
             state.acceptLoading = payload
         },
+        setDetailInfo: (state, payload) => {
+            state.detailInfo = payload
+        }
     },
 
     actions: {
-
+        clean: (context) => {
+            context.commit('setMessage', null)
+            context.commit('setDetailInfo', [])
+        }
     }
 }

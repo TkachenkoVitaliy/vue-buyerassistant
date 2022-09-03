@@ -1,7 +1,7 @@
 <template>
   <div class='send_mail_container'>
     <div>
-      <p>ОТПРАВКА ПОЧТЫ</p>
+      <h3>ОТПРАВКА ПОЧТЫ</h3>
       <v-btn v-on:click='sendFiles' class='send_to_all_btn primary'>ОТПРАВИТЬ РАССЫЛКУ</v-btn>
       <v-btn v-on:click='activateChoosing' class='choose_branches_btn'>{{ isChoosingBranches ? '&#9650; ОТМЕНА &#9650;' : '&#9660; ВЫБРАТЬ ФИЛИАЛЫ &#9660;'}}</v-btn>
       <div v-if='isChoosingBranches' class='checkbox_branch_container'>
@@ -28,9 +28,11 @@
 
       <div class='send_response_container'>
         <img src='../../../assets/send-emails.gif' v-if='isSending'>
+        <h4 v-if='completedRecipients.length > 0' style='margin-bottom: 15px'>Последние отправленные сообщения</h4>
         <p
             v-for='completedRecipient in completedRecipients'
             v-bind:key='completedRecipient'
+            style='margin-bottom: 5px'
         >
           {{ completedRecipient }}
         </p>
@@ -40,58 +42,59 @@
 </template>
 
 <script>
-  import RestService from '@/services/rest.service'
-  import EventBus from '@/common/EventBus'
+  import store from '@/store'
+  import EventBus from "@/common/EventBus";
 
   export default {
+    computed: {
+      isSending: {
+        get: function () {return store.getters["email/emailSending"]},
+        set: function (value) {store.commit('email/setEmailSending', value)}
+      },
+      completedRecipients: {
+        get: function () {return store.getters["email/completedRecipients"]},
+        set: function (value) {store.commit('email/setCompletedRecipients', value)}
+      }
+    },
     props: {
       recipients: Array
     },
     data() {
       return {
-        completedRecipients: [],
         branches: [],
         selectedBranches: [],
-        isSending: false,
         isChoosingBranches: false
       }
     },
     methods: {
       sendFiles() {
         if(!this.isChoosingBranches) {
-          this.isSending = true
-          RestService.sendFiles().then(
-              (response) => {
-              this.isSending = false
-              this.completedRecipients = response.data
-              },
-              error => {
-                this.content =
-                    (error.response && error.response.data && error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                if (error.response && error.response.status === 403) {
-                  EventBus.dispatch("logout");
-                }
+          store.dispatch('email/sendAllEmails').then(
+              (result) => {
+                store.commit('status_message/setDetailInfo', store.getters["email/completedRecipients"])
+                store.commit('status_message/setActive', true)
+                store.commit('status_message/setHaveError', false)
+                store.commit('status_message/setMessage', 'Рассылка была успешно отправлена')
+              }, error => {
+                store.commit('status_message/setDetailInfo', store.getters["email/completedRecipients"])
+                store.commit('status_message/setActive', true)
+                store.commit('status_message/setHaveError', true)
+                store.commit('status_message/setMessage', 'При рассылке произошла ошибка')
               }
           )
         } else {
-          this.isSending = true
           this.isChoosingBranches = false
-          RestService.postSendFiles(this.selectedBranches).then(
-              (response) => {
-                this.selectedBranches = []
-                this.isSending = false
-                this.completedRecipients = response.data
-              },
-              error => {
-                this.content =
-                    (error.response && error.response.data && error.response.data.message) ||
-                    error.message ||
-                    error.toString();
-                if (error.response && error.response.status === 403) {
-                  EventBus.dispatch("logout");
-                }
+          store.dispatch('email/sendCheckedEmails', this.selectedBranches).then(
+              (result) => {
+                store.commit('status_message/setDetailInfo', store.getters["email/completedRecipients"])
+                store.commit('status_message/setActive', true)
+                store.commit('status_message/setHaveError', false)
+                store.commit('status_message/setMessage', 'Рассылка была успешно отправлена')
+              }, error => {
+                store.commit('status_message/setDetailInfo', store.getters["email/completedRecipients"])
+                store.commit('status_message/setActive', true)
+                store.commit('status_message/setHaveError', true)
+                store.commit('status_message/setMessage', 'При рассылке произошла ошибка')
               }
           )
         }
@@ -175,6 +178,10 @@
   }
 
   p {
+    text-align: center;
+  }
+
+  h3 {
     text-align: center;
   }
 

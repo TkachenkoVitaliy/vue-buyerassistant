@@ -5,6 +5,7 @@ import { auth } from './auth.module'
 import { loa } from './loa.module'
 import { factory_files } from './factory_files.module'
 import { status_message } from '@/store/status_message.module'
+import { email } from '@/store/email.module'
 import ru from 'vee-validate/dist/locale/ru'
 
 Validator.localize('ru', ru)
@@ -26,6 +27,7 @@ export default new Vuex.Store({
     auth,
     loa,
     factory_files,
-    status_message
+    status_message,
+    email
   }
 })
