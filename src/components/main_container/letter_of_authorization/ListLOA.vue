@@ -134,7 +134,6 @@
       getAllLetters() {
         RestService.getLettersOfAuthorization().then((response) =>
             {
-              console.log(response.data)
               this.letters = response.data
             },
             error => {
@@ -200,17 +199,6 @@
         this.loaDialogTitle = 'Создание доверенности'
       },
       cancelLoaDialog() {
-        //TODO refactor
-        // this.currentLoa = {
-        //   id: null,
-        //   principal: null,
-        //   number: null,
-        //   issuedDate: null,
-        //   validUntil: null,
-        //   supplier: null,
-        //   driver: null,
-        //   sellType: null
-        // }
         this.getAllLetters()
         this.isLoaDialogActive = false
       },

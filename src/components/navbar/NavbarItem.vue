@@ -2,6 +2,7 @@
   <router-link
       tag="li"
       class="nav_item"
+      style="cursor: pointer"
       v-bind:to="navbarItem.link"
       v-bind:class="{nav_item_mouseover: isMouseover || navbarItem.isActive}"
       @mouseover.native="isMouseover = true"

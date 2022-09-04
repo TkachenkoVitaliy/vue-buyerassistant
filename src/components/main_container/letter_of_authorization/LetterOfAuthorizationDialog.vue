@@ -434,7 +434,7 @@ export default {
       this.letterRows = this.letterRows
           .filter(function (item) {
             return (item.nomenclature != null && Object.keys(item.nomenclature).length !== 0)
-            || (item.tonnage != null && item.tonnage >= 0.001)
+            || (item.tonnage != null && item.tonnage !=='' && item.tonnage >= 0.001)
           })
       if(this.letterRows.length === 0) {
         return false
@@ -444,10 +444,10 @@ export default {
     },
     checkErrors() {
       let someError = false
-
+      console.log('checkErrors')
       this.letterOfAuthorization.principal = this.$refs.principal_form.principal
 
-      if(this.letterOfAuthorization.principal == null) {
+      if(this.letterOfAuthorization.principal == null || this.letterOfAuthorization.principal.name == null) {
         someError = true
         this.info.push('Выберите доверителя')
       }
@@ -468,19 +468,20 @@ export default {
       }
 
       this.letterOfAuthorization.supplier = this.$refs.supplier_form.supplier
-      if(this.letterOfAuthorization.supplier == null) {
+      if(this.letterOfAuthorization.supplier == null || this.letterOfAuthorization.supplier.supplierName == null) {
         someError = true
         this.info.push('Выберите поставщика')
       }
 
       this.letterOfAuthorization.driver = this.$refs.driver_form.driver
-      if(this.letterOfAuthorization.driver == null) {
+      if(this.letterOfAuthorization.driver == null || this.letterOfAuthorization.driver.name == null) {
         someError = true
         this.info.push('Выберите водителя')
       }
 
       let checkFullProps = function (elem) {
-        if(elem.nomenclature == null || Object.keys(elem.nomenclature).length == 0 || elem.tonnage == null) {
+        if(elem.nomenclature == null || Object.keys(elem.nomenclature).length == 0 || elem.tonnage == null
+            || elem.tonnage === '' || elem.tonnage === 0) {
           return false
         } else {
           return true
@@ -515,11 +516,9 @@ export default {
           let date = new Date(this.letterOfAuthorization.issuedDate)
           this.letterOfAuthorization.validUntil =  date.setDate(date.getDate() + 10)
           RestService.postLettersOfAuthorization(this.letterOfAuthorization).then((response) => {
-                console.log(response.data)
                 this.letterRows.forEach(item => item.letterOfAuthorization = response.data)
                 result = response.data
                 RestService.postArrayLetterRows(this.letterRows).then((response) => {
-                      console.log(response.data)
                       resolve(result)
                     },
                     error => {
@@ -557,11 +556,9 @@ export default {
           let date = new Date(this.letterOfAuthorization.issuedDate)
           this.letterOfAuthorization.validUntil =  date.setDate(date.getDate() + 10)
           RestService.putLettersOfAuthorization(this.letterOfAuthorization).then((response) => {
-                console.log(response.data)
                 this.letterRows.forEach(item => item.letterOfAuthorization = response.data)
                 result = response.data
                 RestService.putArrayLetterRows(this.letterRows).then((response) => {
-                      console.log(response.data)
                       resolve(result)
                     },
                     error => {
@@ -593,12 +590,10 @@ export default {
     onlySaveLoa() {
       if(this.letterOfAuthorization.id == null) {
         this.createLoA().then(res => {
-          console.log(res)
           this.$emit('save')
         })
       } else {
         this.updateLoA().then(res => {
-          console.log(res)
           this.$emit('save')
         })
       }
@@ -619,7 +614,6 @@ export default {
 
             this.$emit('save')
           }).catch(error => {
-            console.log(error.response.data)
           })
         })
       } else {
@@ -682,24 +676,7 @@ export default {
       this.info = []
       this.haveError = false
     },
-    // initializeEditMode() {
-    //   this.$refs.principal_form.principal = this.loaLocal.principal
-    //   this.$refs.supplier_form.supplier = this.loaLocal.supplier
-    //   this.$refs.driver_form.driver = this.loaLocal.driver
-      // this.letterOfAuthorization.number = this.loaLocal.number
-      // this.letterOfAuthorization.issuedDate = this.loaLocal.issuedDate
-      // this.letterOfAuthorization.validUntil = this.loaLocal.validUntil
-      // this.letterOfAuthorization.id = this.loaLocal.id
-      // this.letterOfAuthorization.sellType = this.loaLocal.sellType
-  //     this.letterRows = this.loaLocal.letterRows
-  //   }
   },
-  // updated() {
-  //   if(this.loaLocal.id != null) {
-  //     console.log('loa.id != null', this.loa, this.loaLocal)
-  //     this.initializeEditMode()
-  //   }
-  // },
   mounted() {
     this.getAllNomenclatures()
     this.initialize()

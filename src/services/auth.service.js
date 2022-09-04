@@ -1,8 +1,6 @@
 import api from './api'
 import TokenService from './token.service'
 
-// const AUTH_URL = 'http://194.87.238.214:8081/auth/'
-
 class AuthService {
     login(user) {
         return api

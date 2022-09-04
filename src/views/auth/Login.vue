@@ -58,7 +58,7 @@
             class='register_btn'
             style='text-decoration: none'
         >
-          <span>ЗАРЕГИСТРИРОВАТЬСЯ</span>
+          <p style='text-align: center'>ЗАРЕГИСТРИРОВАТЬСЯ</p>
         </router-link>
       </div>
 
@@ -161,6 +161,7 @@
   }
 
   .login_btn_container {
+    margin-top: 10px;
   }
 
   .login_btn {
