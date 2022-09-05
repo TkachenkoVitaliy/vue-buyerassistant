@@ -173,6 +173,14 @@ class RestService {
         return api.post('/api/nomenclatures', data)
     }
 
+    putNomenclatures(data) {
+        return api.put('/api/nomenclatures', data)
+    }
+
+    deleteNomenclatures(id) {
+        return api.delete('/api/nomenclatures/' + id)
+    }
+
 }
 
 export default new RestService()

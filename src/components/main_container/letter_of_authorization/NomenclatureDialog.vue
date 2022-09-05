@@ -1,91 +1,80 @@
 <template>
   <div>
-    <div style="padding-left: 0px; max-height: 2rem">
-      <v-btn
-          @click='toggleNomenclatureDialog'
-          block
-          text
-          large
-          style="font-size: 1em"
-      >
-        <v-icon
-            left
-            large
-            color="green"
+    <v-dialog
+        v-model='dialog'
+        max-width="50vw"
+    >
+      <v-card class='dialog_card'>
+        <v-card-title class="text-h5">
+          {{ title }}
+        </v-card-title>
+
+        <v-form
         >
-          mdi-plus-circle
-        </v-icon>
-        Создать
-      </v-btn>
+          <v-text-field
+              label='Введите номенклатуру'
+              required
+              v-model='nomenclature.name'
+          ></v-text-field>
+        </v-form>
 
-      <v-dialog
-          v-model='isNomenclatureDialog'
-          max-width="50vw"
-      >
-        <v-card class='dialog_card'>
-          <v-card-title class="text-h5">
-            Добавить номенклатуру
-          </v-card-title>
+        <v-card-actions>
 
-          <v-form
+          <v-btn
+              @click='addNomenclature'
           >
-            <v-text-field
-                label='Введите номенклатуру'
-                required
-                v-model='createdNomenclature.name'
-            ></v-text-field>
-          </v-form>
+            Сохранить
+          </v-btn>
 
-          <v-card-actions>
+          <v-spacer></v-spacer>
 
-            <v-btn
-                @click='addNomenclature'
-            >
-              Добавить
-            </v-btn>
+          <v-btn
+              @click='cancelDialog'
+          >
+            Отмена
+          </v-btn>
 
-            <v-spacer></v-spacer>
-
-            <v-btn
-                @click='toggleNomenclatureDialog'
-            >
-              Отмена
-            </v-btn>
-
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </div>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
-  import RestService from '@/services/rest.service'
-  import EventBus from "@/common/EventBus"
+import RestService from '@/services/rest.service'
+import EventBus from "@/common/EventBus"
 
-  export default {
-    props: ['currentindex'],
-    data() {
-      return {
-        isNomenclatureDialog: false,
-        createdNomenclature: {id: null, name: null}
-      }
-    },
-    methods: {
-      toggleNomenclatureDialog() {
-        this.createdNomenclature = {id: null, name: null}
-        this.isNomenclatureDialog = !this.isNomenclatureDialog
+export default {
+  props: ['dialog', 'title', 'nomenclature', 'currentIndex'],
+  model: {
+    prop: 'nomenclature',
+    event: 'change'
+  },
+  computed: {
+    nomenclatureLocal: {
+      get: function () {
+        return this.nomenclature
       },
-      addNomenclature() {
-        if (this.createdNomenclature.name != null && this.createdNomenclature.name != '') {
+      set: function (value) {
+        this.$emit('change', value)
+      }
+    }
+  },
+  methods: {
+    cancelDialog() {
+      this.nomenclatureLocal = {id: null, name: null}
+      this.$emit('cancel')
+    },
+    addNomenclature() {
+      if (this.nomenclatureLocal.name != null && this.nomenclatureLocal.name != '') {
 
-          RestService.postNomenclatures(this.createdNomenclature).then((response) =>
-              {
+        if (this.nomenclatureLocal.id == null) {
+          RestService.postNomenclatures(this.nomenclatureLocal).then((response) => {
                 let result = {
                   nomenclature: response.data,
-                  index: this.currentindex
+                  index: this.currentIndex
                 }
-                this.$emit('added', result)
+                this.$emit('save', result)
               },
               error => {
                 this.content =
@@ -98,11 +87,30 @@
                 }
               }
           )
-          this.toggleNomenclatureDialog()
+        } else {
+          RestService.putNomenclatures(this.nomenclatureLocal).then((response) => {
+                let result = {
+                  nomenclature: response.data,
+                  index: this.currentIndex
+                }
+                this.$emit('save', result)
+              },
+              error => {
+                this.content =
+                    (error.response && error.response.data && error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                this.isLoading = false;
+                if (error.response && error.response.status === 403) {
+                  EventBus.dispatch("logout");
+                }
+              }
+          )
         }
       }
     }
   }
+}
 
 </script>
 

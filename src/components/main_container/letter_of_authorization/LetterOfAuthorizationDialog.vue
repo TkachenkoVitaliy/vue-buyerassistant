@@ -130,21 +130,9 @@
                   dense
               >
                 <template v-slot:item.nomenclature='props'>
-                  <v-autocomplete
-                      solo-inverted
-                      dense
-                      v-model='props.item.nomenclature'
-                      :items='nomenclatures'
-                      :item-text='item => item.name'
-                      return-object
-                  >
-                    <template v-slot:append-item>
-                      <NomenclatureDialog
-                          v-bind:currentindex = 'props.item.number'
-                          @added='setNewNomenclature($event)'
-                      />
-                    </template>
-                  </v-autocomplete>
+                  <NomenclatureForm
+                      v-model:row='props.item'
+                  />
                 </template>
                 <template v-slot:item.tonnage='props'>
                   <v-text-field
@@ -249,6 +237,7 @@ import DeleteDialog from '@/components/other/DeleteDialog'
 import ErrorDialog from '@/components/other/ErrorDialog'
 import SupplierForm from '@/components/main_container/letter_of_authorization/SupplierForm'
 import SupplierDialog from '@/components/main_container/letter_of_authorization/SupplierDialog'
+import NomenclatureForm from '@/components/main_container/letter_of_authorization/NomenclatureForm'
 import NomenclatureDialog from '@/components/main_container/letter_of_authorization/NomenclatureDialog'
 import DriverForm from '@/components/main_container/letter_of_authorization/DriverForm'
 import DriverDialog from '@/components/main_container/letter_of_authorization/DriverDialog'
@@ -265,6 +254,7 @@ export default {
     PrincipalDialog,
     SupplierForm,
     SupplierDialog,
+    NomenclatureForm,
     NomenclatureDialog,
     DriverForm,
     DriverDialog

@@ -124,7 +124,7 @@ export default {
   data() {
     return {
       suppliers: null,
-      currentSupplier: {id: null, name: null},
+      currentSupplier: {id: null, supplierName: null},
       supplierDialogTitle: null,
       isSupplierDialogActive: false,
       isDeleteDialogActive: false
@@ -155,11 +155,11 @@ export default {
     openDeleteDialog(supplier) {
       this.currentSupplier = supplier
       this.isDeleteDialogActive = true
-      this.supplier = {id: null, name: null}
+      this.supplier = {id: null, supplierName: null}
     },
     confirmDeleteSupplier(id) {
       RestService.deleteSuppliers(id).then((response) => {
-            this.supplier = {id: null, name: null}
+            this.supplier = {id: null, supplierName: null}
             this.getAllSuppliers()
             this.$nextTick(() => this.isDeleteDialogActive = false)
           },
@@ -178,12 +178,12 @@ export default {
       this.isDeleteDialogActive = false
     },
     openCreateDialog() {
-      this.currentSupplier = {id: null, name: null}
+      this.currentSupplier = {id: null, supplierName: null}
       this.isSupplierDialogActive = true
       this.supplierDialogTitle = 'Создание поставщика'
     },
     cancelSupplierDialog() {
-      this.currentSupplier = {id: null, name: null}
+      this.currentSupplier = {id: null, supplierName: null}
       this.getAllSuppliers()
       this.isSupplierDialogActive = false
     },
