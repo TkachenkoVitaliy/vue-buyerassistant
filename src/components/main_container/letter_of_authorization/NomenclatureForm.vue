@@ -51,7 +51,7 @@
       </v-list-item-action>
 
       <DeleteDialog
-          message='Удалить поставщика'
+          message='Удалить номенклатуру'
           v-bind:info=currentNomenclature.name
           v-bind:id=currentNomenclature.id
           v-bind:isActive='isDeleteDialogActive'
