@@ -25,7 +25,7 @@ class RestService {
     }
 
     postSendFiles(selectedBranches) {
-        return api.post('http://localhost:8081/api/sendFiles', selectedBranches)
+        return api.post('/api/sendFiles', selectedBranches)
     }
 
     //LoadTables
