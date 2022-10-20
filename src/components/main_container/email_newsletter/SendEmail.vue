@@ -105,7 +105,6 @@
         if(!this.isChoosingBranches) {
           RestService.downloadFiles().then(
               (response) => {
-                console.log(response)
                 let blob = new Blob([response.data], {type: 'application/zip'})
                 let link = document.createElement('a')
                 link.href = window.URL.createObjectURL(blob)
@@ -125,18 +124,15 @@
           )
         } else {
           this.isChoosingBranches = false
-          RestService.postDownloadFiles(payload).then(
+          //TODO add for download check files
+          RestService.postDownloadFiles().then(
               (response) => {
-                const binaryData = []
-                binaryData.push(response.data)
-                let fileUrl = window.URL.createObjectURL(new Blob(binaryData, {type: "application/zip"}));
-                let fileLink = document.createElement('a');
-
-                fileLink.href = fileUrl;
-                fileLink.setAttribute('download', 'Files.zip');
-                document.body.appendChild(fileLink)
-                fileLink.click();
-                fileLink.remove();
+                let blob = new Blob([response.data], {type: 'application/zip'})
+                let link = document.createElement('a')
+                link.href = window.URL.createObjectURL(blob)
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
               },
               error => {
                 this.content =
