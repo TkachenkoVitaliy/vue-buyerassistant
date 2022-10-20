@@ -28,6 +28,14 @@ class RestService {
         return api.post('/api/sendFiles', selectedBranches)
     }
 
+    downloadFiles() {
+        return api.get('/api/downloadAllFiles', {responseType: 'blob'})
+    }
+
+    postDownloadFiles(selectedBranches) {
+        return api.post('/api/downloadAllFiles', selectedBranches, {responseType: 'blob'})
+    }
+
     //LoadTables
     getLoadTables(username) {
         return api.get('/api/loadTables/'+ username)

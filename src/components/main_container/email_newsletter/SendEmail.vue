@@ -3,6 +3,7 @@
     <div>
       <h3>ОТПРАВКА ПОЧТЫ</h3>
       <v-btn v-on:click='sendFiles' class='send_to_all_btn primary'>ОТПРАВИТЬ РАССЫЛКУ</v-btn>
+      <v-btn v-on:click='downloadFiles' class='send_to_all_btn' style="color: #1976d2; font-weight: bold">СКАЧАТЬ ФАЙЛЫ</v-btn>
       <v-btn v-on:click='activateChoosing' class='choose_branches_btn'>{{ isChoosingBranches ? '&#9650; ОТМЕНА &#9650;' : '&#9660; ВЫБРАТЬ ФИЛИАЛЫ &#9660;'}}</v-btn>
       <div v-if='isChoosingBranches' class='checkbox_branch_container'>
         <v-checkbox
@@ -43,6 +44,7 @@
 
 <script>
   import store from '@/store'
+  import RestService from "@/services/rest.service";
   import EventBus from "@/common/EventBus";
 
   export default {
@@ -95,6 +97,55 @@
                 store.commit('status_message/setActive', true)
                 store.commit('status_message/setHaveError', true)
                 store.commit('status_message/setMessage', 'При рассылке произошла ошибка')
+              }
+          )
+        }
+      },
+      downloadFiles() {
+        if(!this.isChoosingBranches) {
+          RestService.downloadFiles().then(
+              (response) => {
+                console.log(response)
+                let blob = new Blob([response.data], {type: 'application/zip'})
+                let link = document.createElement('a')
+                link.href = window.URL.createObjectURL(blob)
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+              },
+              error => {
+                this.content =
+                    (error.response && error.response.data && error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                if (error.response && error.response.status === 403) {
+                  EventBus.dispatch("logout");
+                }
+              }
+          )
+        } else {
+          this.isChoosingBranches = false
+          RestService.postDownloadFiles(payload).then(
+              (response) => {
+                const binaryData = []
+                binaryData.push(response.data)
+                let fileUrl = window.URL.createObjectURL(new Blob(binaryData, {type: "application/zip"}));
+                let fileLink = document.createElement('a');
+
+                fileLink.href = fileUrl;
+                fileLink.setAttribute('download', 'Files.zip');
+                document.body.appendChild(fileLink)
+                fileLink.click();
+                fileLink.remove();
+              },
+              error => {
+                this.content =
+                    (error.response && error.response.data && error.response.data.message) ||
+                    error.message ||
+                    error.toString();
+                if (error.response && error.response.status === 403) {
+                  EventBus.dispatch("logout");
+                }
               }
           )
         }
