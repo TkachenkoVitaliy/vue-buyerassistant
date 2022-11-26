@@ -140,9 +140,9 @@
       },
       addDriver() {
         let someError = false
-        let regExpSeries = /^[0-9]{2} [0-9]{2}$/
-        let regExpSeriesWithoutSpace = /^[0-9]{2}[0-9]{2}$/
-        let regExpNumber = /^[0-9]{6}$/
+        let regExpSeries = /^[0-9A-ZА-Я]{2}( [0-9]{2}){0,1}$/
+        let regExpSeriesWithoutSpace = /^[0-9]{4}$/
+        let regExpNumber = /^[0-9]{6,7}$/
 
         if(this.driverLocal.name == null || this.driverLocal.name.length < 3) {
           this.info.push('Введите корректное ФИО')
@@ -155,7 +155,7 @@
         } else {
           if(!regExpSeries.test(this.driverLocal.passportSeries)
               && !regExpSeriesWithoutSpace.test(this.driverLocal.passportSeries)) {
-            this.info.push('Введите корректную серию паспорта (4 цифры вида NN NN или NNNN)')
+            this.info.push('Введите корректную серию паспорта (4 цифры вида NN NN или NNNN или CC)')
             someError = true
           }
         }
@@ -171,7 +171,7 @@
           someError = true
         } else {
           if (!regExpNumber.test(this.driverLocal.passportNumber)) {
-            this.info.push('Введите корректный номер паспорта - 6 цифр без прочих знаков')
+            this.info.push('Введите корректный номер паспорта - 6 или 7 цифр без прочих знаков')
             someError = true
           }
         }

@@ -84,7 +84,6 @@
               <v-text-field
                   dense
                   v-model='letterOfAuthorization.number'
-                  :readonly='haveInitialNumber'
               ></v-text-field>
             </v-col>
 
