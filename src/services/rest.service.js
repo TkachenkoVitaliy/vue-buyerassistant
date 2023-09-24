@@ -189,6 +189,11 @@ class RestService {
         return api.delete('/api/nomenclatures/' + id)
     }
 
+    // Principal templates
+    postUploadTemplate(formData, inn) {
+        return api.post('/api/uploadTemplate/' + inn, formData)
+    }
+
 }
 
 export default new RestService()

@@ -44,6 +44,11 @@ export default new Router({
                     component: () => import('@/views/app/LetterOfAuthorization'),
                 },
                 {
+                    path: 'templates',
+                    meta: {tabId : 7},
+                    component: () => import('@/views/app/PrincipalTemplates'),
+                },
+                {
                     path: 'error',
                     meta: {tabId : -1},
                     component: () => import('@/views/app/Error')

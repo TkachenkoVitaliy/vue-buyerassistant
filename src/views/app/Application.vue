@@ -29,6 +29,7 @@ export default {
         {id: 4, title: 'ШАХМАТКА', isActive: false, link: '/load_tables'},
         {id: 5, title: 'ЗАКАЗЫ', isActive: false, link: '/orders'},
         {id: 6, title: 'ДОВЕРЕННОСТИ', isActive: false, link: '/loas'},
+        {id: 7, title: 'ШАБЛОНЫ', isActive: false, link: '/templates'},
       ]
     }
   },
